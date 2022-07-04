@@ -1,0 +1,131 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_ffffff"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/tv_single_press_mode_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:text="ON"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:onClick="onSinglePressMode"
+            android:text="Single press mode"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <View style="@style/divider_line" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/tv_double_press_mode_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:text="ON"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:onClick="onDoublePressMode"
+            android:text="Double press mode"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <View style="@style/divider_line" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/tv_long_press_mode_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:text="ON"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:drawableRight="@drawable/arrow_right"
+            android:gravity="center_vertical"
+            android:onClick="onLongPressMode"
+            android:text="Long press mode"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <View style="@style/divider_line" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/tv_abnormal_inactivity_mode_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:text="ON"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:drawableRight="@drawable/arrow_right"
+            android:gravity="center_vertical"
+            android:onClick="onAbnormalInactivityMode"
+            android:text="Abnormal inactivity mode"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <View style="@style/divider_line" />
+
+</LinearLayout>

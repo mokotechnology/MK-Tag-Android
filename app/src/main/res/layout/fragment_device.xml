@@ -1,0 +1,190 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_ffffff"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center_vertical"
+        android:onClick="onQuickSwitch"
+        android:text="Quick switch"
+        android:textColor="@color/black_333333"
+        android:textSize="15sp" />
+
+    <View style="@style/divider_line" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center_vertical"
+        android:onClick="onTurnOffBeacon"
+        android:text="Turn off Beacon"
+        android:textColor="@color/black_333333"
+        android:textSize="15sp" />
+
+    <View style="@style/divider_line" />
+
+    <RelativeLayout
+        android:id="@+id/rl_reset_factory"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:onClick="onResetBeacon">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Reset Beacon"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="10dp"
+            android:text=""
+            android:textColor="@color/grey_666666"
+            android:textSize="14sp" />
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_password"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:onClick="onModifyPassword">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Modify password"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="10dp"
+            android:text=""
+            android:textColor="@color/grey_666666"
+            android:textSize="14sp" />
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center_vertical"
+        android:onClick="onDFU"
+        android:text="DFU"
+        android:textColor="@color/black_333333"
+        android:textSize="15sp" />
+
+    <View style="@style/divider_line" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center_vertical"
+        android:onClick="onSystemInfo"
+        android:text="Device info"
+        android:textColor="@color/black_333333"
+        android:textSize="15sp" />
+
+    <View style="@style/divider_line" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Device Name"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/et_device_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:hint="1-10 characters"
+            android:maxLength="10"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <View style="@style/divider_line" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Device ID"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/et_device_id"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@id/et_device_id"
+            android:text="0x"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/et_device_id"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:digits="0123456789abcdefABCDEF"
+            android:gravity="center"
+            android:hint="1-6 bytes"
+            android:maxLength="12"
+            android:singleLine="true"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <View style="@style/divider_line" />
+
+</LinearLayout>

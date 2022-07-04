@@ -1,0 +1,4 @@
+<paths>
+    <external-path name="log" path="MOKOTAG/"/>
+    <external-path name="*" path="."/>
+</paths>

@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_f2f2f2"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/blue_2f84d0">
+
+        <TextView
+            android:id="@+id/tv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:drawableLeft="@drawable/back"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
+            android:onClick="onBack"
+            android:paddingLeft="16dp"
+            android:text=""
+            android:textColor="@color/white_ffffff"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_alarm_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Single press mode"
+            android:textColor="@color/white_ffffff"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:onClick="onSave"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:src="@drawable/save" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_radius_white_bg"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_adv"
+                    android:drawablePadding="10dp"
+                    android:gravity="center"
+                    android:text="SLOT advertisement"
+                    android:textColor="@color/black_333333"
+                    android:textSize="17sp" />
+
+                <ImageView
+                    android:id="@+id/iv_slot_adv_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:clickable="true"
+                    android:onClick="onSlotAdvSwitch"
+                    android:src="@drawable/ic_unchecked" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_slot_alarm_params"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_radius_white_bg"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_params"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="Parameters"
+                        android:textColor="@color/black_333333"
+                        android:textSize="17sp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp">
+
+                        <TextView
+                            android:id="@+id/adv_interval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="Adv interval"
+                            android:textColor="@color/black_333333"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@id/adv_interval"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/adv_interval"
+                            android:text=""
+                            android:textColor="@color/grey_b3b3b3"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/adv_interval_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="5dp"
+                            android:text="x20ms"
+                            android:textColor="@color/black_333333"
+                            android:textSize="15sp" />
+
+                        <EditText
+                            android:id="@+id/et_adv_interval"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_toLeftOf="@id/adv_interval_unit"
+                            android:gravity="center"
+                            android:hint="1~500"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:singleLine="true"
+                            android:textColor="@color/black_333333"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp">
+
+                        <TextView
+                            android:id="@+id/adv_range_data"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ranging data"
+                            android:textColor="@color/black_333333"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@id/adv_range_data"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/adv_range_data"
+                            android:text="(-100dBm~0dBm)"
+                            android:textColor="@color/grey_b3b3b3"
+                            android:textSize="12sp" />
+
+                        <SeekBar
+                            android:id="@+id/sb_adv_range_data"
+                            style="@style/CustomSeekBarStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/adv_range_data"
+                            android:layout_marginTop="10dp"
+                            android:layout_toLeftOf="@+id/tv_adv_range_data"
+                            android:max="100"
+                            android:maxHeight="2dp"
+                            android:minHeight="2dp"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="0dp"
+                            android:progress="0" />
+
+                        <TextView
+                            android:id="@id/tv_adv_range_data"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/sb_adv_range_data"
+                            android:layout_alignParentRight="true"
+                            android:gravity="right"
+                            android:text="0dbm"
+                            android:textColor="@color/black_333333"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp">
+
+                        <TextView
+                            android:id="@+id/tx_power"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tx power"
+                            android:textColor="@color/black_333333"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@id/tx_power"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/tx_power"
+                            android:text="(-40, -20, -16, -12, -8, -4, 0, +3, +4)"
+                            android:textColor="@color/grey_b3b3b3"
+                            android:textSize="12sp" />
+
+                        <SeekBar
+                            android:id="@+id/sb_tx_power"
+                            style="@style/CustomSeekBarStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tx_power"
+                            android:layout_marginTop="10dp"
+                            android:layout_toLeftOf="@+id/tv_tx_power"
+                            android:max="8"
+                            android:maxHeight="2dp"
+                            android:minHeight="2dp"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="0dp"
+                            android:progress="0" />
+
+                        <TextView
+                            android:id="@id/tv_tx_power"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/sb_tx_power"
+                            android:layout_alignParentRight="true"
+                            android:gravity="right"
+                            android:text="0dBm"
+                            android:textColor="@color/black_333333"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/shape_radius_white_bg"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/ic_alarm_mode"
+                            android:drawablePadding="10dp"
+                            android:gravity="center"
+                            android:text="Alarm mode"
+                            android:textColor="@color/black_333333"
+                            android:textSize="17sp" />
+
+                        <ImageView
+                            android:id="@+id/iv_alarm_mode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:clickable="true"
+                            android:onClick="onSlotAlarmModeSwitch"
+                            android:src="@drawable/ic_unchecked" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_slot_trigger_params"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Stay advertising before triggered"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <ImageView
+                                android:id="@+id/iv_adv_before_triggered"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:clickable="true"
+                                android:onClick="onSlotAdvBeforeTriggeredSwitch"
+                                android:src="@drawable/ic_unchecked" />
+
+                        </RelativeLayout>
+
+
+                        <RelativeLayout
+                            android:id="@+id/rl_abnormal_inactivity_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBaseline="@id/abnormal_inactivity_time_unit"
+                                android:text="Abnormal inactivity time"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/abnormal_inactivity_time_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="5dp"
+                                android:text="s"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <EditText
+                                android:id="@+id/et_abnormal_inactivity_time"
+                                android:layout_width="120dp"
+                                android:layout_height="40dp"
+                                android:layout_alignBaseline="@id/abnormal_inactivity_time_unit"
+                                android:layout_marginRight="5dp"
+                                android:layout_toLeftOf="@id/abnormal_inactivity_time_unit"
+                                android:gravity="center"
+                                android:hint="1~65535"
+                                android:inputType="number"
+                                android:maxLength="5"
+                                android:singleLine="true"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/tv_abnormal_inactivity_time_tips"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/et_abnormal_inactivity_time"
+                                android:layout_marginTop="5dp"
+                                android:text="@string/abnormal_inactivity_time_tips"
+                                android:textColor="@color/red_ff0000"
+                                android:textSize="12sp" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="Advertising time"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/trigger_adv_time_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dp"
+                                android:text="s"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <EditText
+                                android:id="@+id/et_trigger_adv_time"
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_toLeftOf="@id/trigger_adv_time_unit"
+                                android:gravity="center"
+                                android:hint="1~65535"
+                                android:inputType="number"
+                                android:maxLength="5"
+                                android:singleLine="true"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+                        </RelativeLayout>
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="Adv interval"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/trigger_adv_interval_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dp"
+                                android:text="x20ms"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <EditText
+                                android:id="@+id/et_trigger_adv_interval"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_toLeftOf="@id/trigger_adv_interval_unit"
+                                android:gravity="center"
+                                android:hint="1~500"
+                                android:inputType="number"
+                                android:maxLength="3"
+                                android:singleLine="true"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp">
+
+                            <TextView
+                                android:id="@+id/trigger_tx_power"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tx power"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBaseline="@id/trigger_tx_power"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@id/trigger_tx_power"
+                                android:text="(-40, -20, -16, -12, -8, -4, 0, +3, +4)"
+                                android:textColor="@color/grey_b3b3b3"
+                                android:textSize="12sp" />
+
+                            <SeekBar
+                                android:id="@+id/sb_trigger_tx_power"
+                                style="@style/CustomSeekBarStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/trigger_tx_power"
+                                android:layout_marginTop="10dp"
+                                android:layout_toLeftOf="@+id/tv_trigger_tx_power"
+                                android:max="8"
+                                android:maxHeight="2dp"
+                                android:minHeight="2dp"
+                                android:paddingStart="0dp"
+                                android:paddingEnd="0dp"
+                                android:progress="0" />
+
+                            <TextView
+                                android:id="@id/tv_trigger_tx_power"
+                                android:layout_width="70dp"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBottom="@id/sb_trigger_tx_power"
+                                android:layout_alignParentRight="true"
+                                android:gravity="right"
+                                android:text="0dBm"
+                                android:textColor="@color/black_333333"
+                                android:textSize="15sp" />
+                        </RelativeLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="10dp"
+                            android:clickable="true"
+                            android:drawableRight="@drawable/arrow_right"
+                            android:gravity="center_vertical"
+                            android:onClick="onTriggerNotifyType"
+                            android:text="Trigger notification type"
+                            android:textColor="@color/black_333333"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
