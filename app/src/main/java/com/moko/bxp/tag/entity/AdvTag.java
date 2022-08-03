@@ -1,0 +1,14 @@
+package com.moko.bxp.tag.entity;
+
+import java.io.Serializable;
+
+
+public class AdvTag implements Serializable {
+    public String hallStatus;
+    public String motionStatus;
+    public String hallTriggerCount;
+    public String motionTriggerCount;
+    public String accX;
+    public String accY;
+    public String accZ;
+}

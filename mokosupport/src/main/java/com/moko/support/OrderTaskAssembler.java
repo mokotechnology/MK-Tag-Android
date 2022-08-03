@@ -3,6 +3,7 @@ package com.moko.support;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.support.entity.ParamsKeyEnum;
 import com.moko.support.task.GetFirmwareRevisionTask;
+import com.moko.support.task.GetMagnetStatusTask;
 import com.moko.support.task.GetHardwareRevisionTask;
 import com.moko.support.task.GetManufacturerNameTask;
 import com.moko.support.task.GetModelNumberTask;
@@ -126,18 +127,6 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask getEffectiveClickInterval() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_EFFECTIVE_CLICK_INTERVAL);
-        return task;
-    }
-
-    public static OrderTask setEffectiveClickInterval(@IntRange(from = 500, to = 1500) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setEffectiveClickInterval(interval);
-        return task;
-    }
-
     public static OrderTask getScanResponseEnable() {
         ParamsTask task = new ParamsTask();
         task.getData(ParamsKeyEnum.KEY_SCAN_RESPONSE_ENABLE);
@@ -150,64 +139,22 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask getChangePasswordDisconnectEnable() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_CHANGE_PASSWORD_DISCONNECT_ENABLE);
-        return task;
-    }
 
-    public static OrderTask setChangePasswordDisconnectEnable(@IntRange(from = 0, to = 1) int enable) {
+    /**
+     * @Description 获取霍尔关机功能
+     */
+    public static OrderTask getHallPowerEnable() {
         ParamsTask task = new ParamsTask();
-        task.setChangePasswordDisconnectEnable(enable);
+        task.getData(ParamsKeyEnum.KEY_HALL_POWER_ENABLE);
         return task;
     }
 
     /**
-     * @Description 获取UTC0时区时间
+     * @Description 设置霍尔关机功能
      */
-    public static OrderTask getSystemTime() {
+    public static OrderTask setHallPowerEnable(int enable) {
         ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_SYSTEM_TIME);
-        return task;
-    }
-
-    /**
-     * @Description 设置UTC0时区时间
-     */
-    public static OrderTask setSystemTime() {
-        ParamsTask task = new ParamsTask();
-        task.setSystemTime();
-        return task;
-    }
-
-
-    /**
-     * @Description 获取按键关键
-     */
-    public static OrderTask getButtonPowerEnable() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_BUTTON_POWER_ENABLE);
-        return task;
-    }
-
-    /**
-     * @Description 设置按键关键
-     */
-    public static OrderTask setButtonPowerEnable(int enable) {
-        ParamsTask task = new ParamsTask();
-        task.setButtonPowerEnable(enable);
-        return task;
-    }
-
-    public static OrderTask getButtonResetEnable() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_BUTTON_RESET_ENABLE);
-        return task;
-    }
-
-    public static OrderTask setButtonResetEnable(int enable) {
-        ParamsTask task = new ParamsTask();
-        task.setButtonResetEnable(enable);
+        task.setHallPowerEnable(enable);
         return task;
     }
 
@@ -247,308 +194,154 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask setSinglePressEventClear() {
+    public static OrderTask getAllSlot() {
         ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.KEY_SINGLE_PRESS_EVENT_CLEAR);
+        task.getData(ParamsKeyEnum.KEY_ALL_SLOT);
         return task;
     }
 
-    public static OrderTask setDoublePressEventClear() {
+    public static OrderTask getSensorType() {
         ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.KEY_DOUBLE_PRESS_EVENT_CLEAR);
+        task.getData(ParamsKeyEnum.KEY_SENSOR_TYPE);
         return task;
     }
 
-    public static OrderTask setLongPressEventClear() {
+    public static OrderTask getAccType() {
         ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.KEY_LONG_PRESS_EVENT_CLEAR);
+        task.getData(ParamsKeyEnum.KEY_ACC_TYPE);
         return task;
     }
 
-    public static OrderTask getSlotParams(@IntRange(from = 0, to = 3) int slot) {
+    public static OrderTask getMotionTriggerCount() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_MOTION_TRIGGER_COUNT);
+        return task;
+    }
+
+    public static OrderTask clearMotionTriggerCount() {
+        ParamsTask task = new ParamsTask();
+        task.setData(ParamsKeyEnum.KEY_MOTION_TRIGGER_COUNT);
+        return task;
+    }
+
+    public static OrderTask getMagneticTriggerCount() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_MAGNETIC_TRIGGER_COUNT);
+        return task;
+    }
+
+    public static OrderTask clearMagneticTriggerCount() {
+        ParamsTask task = new ParamsTask();
+        task.setData(ParamsKeyEnum.KEY_MAGNETIC_TRIGGER_COUNT);
+        return task;
+    }
+
+    public static OrderTask getMagnetStatus() {
+        GetMagnetStatusTask task = new GetMagnetStatusTask();
+        return task;
+    }
+
+    public static OrderTask getTriggerLEDIndicatorEnable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_TRIGGER_LED_INDICATOR_ENABLE);
+        return task;
+    }
+    public static OrderTask setTriggerLEDIndicatorEnable(@IntRange(from = 0, to = 1) int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setTriggerLEDIndicatorEnable(enable);
+        return task;
+    }
+
+    public static OrderTask getSlotAdvParams(@IntRange(from = 0, to = 5) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.getSlotAdvParams(slot);
+        return task;
+    }
+
+    public static OrderTask getSlotParams(@IntRange(from = 0, to = 5) int slot) {
         ParamsTask task = new ParamsTask();
         task.getSlotParams(slot);
         return task;
     }
 
-    public static OrderTask setSlotParams(@IntRange(from = 0, to = 3) int slot,
-                                          @IntRange(from = 0, to = 1) int enable,
-                                          @IntRange(from = -100, to = 0) int rssi,
-                                          @IntRange(from = 20, to = 10000) int interval,
-                                          @IntRange(from = -40, to = 4) int txPower) {
+    public static OrderTask setSlotAdvParams(@IntRange(from = 0, to = 5) int slot,
+                                             @IntRange(from = 1, to = 100) int interval,
+                                             @IntRange(from = 1, to = 65535) int duration,
+                                             @IntRange(from = 0, to = 65535) int standbyDuration,
+                                             @IntRange(from = -100, to = 0) int rssi,
+                                             @IntRange(from = -40, to = 4) int txPower) {
         ParamsTask task = new ParamsTask();
-        task.setSlotParams(slot, enable, rssi, interval, txPower);
+        task.setSlotAdvParams(slot, interval, duration, standbyDuration, rssi, txPower);
         return task;
     }
 
-    public static OrderTask getSlotTriggerParams(@IntRange(from = 0, to = 3) int slot) {
+    public static OrderTask setSlotParamsNoData(@IntRange(from = 0, to = 5) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotParamsNoData(slot);
+        return task;
+    }
+
+    public static OrderTask setSlotParamsUID(@IntRange(from = 0, to = 5) int slot,
+                                             String namespaceId, String instanceId) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotParamsUID(slot, namespaceId, instanceId);
+        return task;
+    }
+
+    public static OrderTask setSlotParamsURL(@IntRange(from = 0, to = 5) int slot,
+                                             int urlScheme, String urlContent) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotParamsURL(slot, urlScheme, urlContent);
+        return task;
+    }
+
+    public static OrderTask setSlotParamsTagInfo(@IntRange(from = 0, to = 5) int slot,
+                                                 String deviceName, String tagId) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotParamsTagInfo(slot, deviceName, tagId);
+        return task;
+    }
+
+    public static OrderTask setSlotParamsIBeacon(@IntRange(from = 0, to = 5) int slot,
+                                                 int major, int minor, String uuid) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotParamsIBeacon(slot, major, minor, uuid);
+        return task;
+    }
+
+    public static OrderTask setSlotParamsTLM(@IntRange(from = 0, to = 5) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotParamsTLM(slot);
+        return task;
+    }
+
+
+    public static OrderTask setTriggerClose(@IntRange(from = 0, to = 5) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotTriggerClose(slot);
+        return task;
+    }
+
+    public static OrderTask getSlotTriggerParams(@IntRange(from = 0, to = 5) int slot) {
         ParamsTask task = new ParamsTask();
         task.getSlotTriggerParams(slot);
         return task;
     }
 
-    public static OrderTask setSlotTriggerParams(@IntRange(from = 0, to = 3) int slot,
-                                                 @IntRange(from = 0, to = 1) int enable,
-                                                 @IntRange(from = -100, to = 0) int rssi,
-                                                 @IntRange(from = 20, to = 10000) int interval,
-                                                 @IntRange(from = -40, to = 4) int txPower,
-                                                 @IntRange(from = 1, to = 65535) int triggerAdvTime) {
+    public static OrderTask setSlotTriggerMotionParams(@IntRange(from = 0, to = 5) int slot,
+                                                       @IntRange(from = 0, to = 1) int status,
+                                                       @IntRange(from = 0, to = 65535) int duration,
+                                                       @IntRange(from = 1, to = 65535) int staticDuration) {
         ParamsTask task = new ParamsTask();
-        task.setSlotTriggerParams(slot, enable, rssi, interval, txPower, triggerAdvTime);
+        task.setSlotTriggerMotionParams(slot, status, duration, staticDuration);
         return task;
     }
 
-    public static OrderTask getSlotAdvBeforeTriggerEnable(@IntRange(from = 0, to = 3) int slot) {
+    public static OrderTask setSlotTriggerMagneticParams(@IntRange(from = 0, to = 5) int slot,
+                                                         @IntRange(from = 0, to = 1) int status,
+                                                         @IntRange(from = 0, to = 65535) int duration) {
         ParamsTask task = new ParamsTask();
-        task.getSlotAdvBeforeTriggerEnable(slot);
-        return task;
-    }
-
-    public static OrderTask setSlotAdvBeforeTriggerEnable(@IntRange(from = 0, to = 3) int slot,
-                                                          @IntRange(from = 0, to = 1) int enable) {
-        ParamsTask task = new ParamsTask();
-        task.setSlotAdvBeforeTriggerEnable(slot, enable);
-        return task;
-    }
-
-    public static OrderTask getAbnormalInactivityAlarmStaticInterval() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_ABNORMAL_INACTIVITY_ALARM_STATIC_INTERVAL);
-        return task;
-    }
-
-    public static OrderTask setAbnormalInactivityAlarmStaticInterval(@IntRange(from = 1, to = 65535) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setAbnormalInactivityAlarmStaticInterval(interval);
-        return task;
-    }
-
-    public static OrderTask getSlotTriggerAlarmNotifyType(@IntRange(from = 0, to = 3) int slot) {
-        ParamsTask task = new ParamsTask();
-        task.getSlotTriggerAlarmNotifyType(slot);
-        return task;
-    }
-
-    public static OrderTask setSlotTriggerAlarmNotifyType(@IntRange(from = 0, to = 3) int slot,
-                                                          @IntRange(from = 0, to = 5) int type) {
-        ParamsTask task = new ParamsTask();
-        task.setSlotTriggerAlarmNotifyType(slot, type);
-        return task;
-    }
-
-    public static OrderTask getPowerSavingEnable() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_POWER_SAVING_ENABLE);
-        return task;
-    }
-
-    public static OrderTask setPowerSavingEnable(@IntRange(from = 0, to = 1) int enable) {
-        ParamsTask task = new ParamsTask();
-        task.setPowerSavingEnable(enable);
-        return task;
-    }
-
-    public static OrderTask getPowerSavingStaticTriggerTime() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_POWER_SAVING_STATIC_TRIGGER_TIME);
-        return task;
-    }
-
-    public static OrderTask setPowerSavingStaticTriggerTime(@IntRange(from = 1, to = 65535) int time) {
-        ParamsTask task = new ParamsTask();
-        task.setPowerSavingStaticTriggerTime(time);
-        return task;
-    }
-
-    public static OrderTask getSlotLEDNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
-        ParamsTask task = new ParamsTask();
-        task.getSlotLEDNotifyAlarmParams(slot);
-        return task;
-    }
-
-    public static OrderTask setSlotLEDNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
-                                                        @IntRange(from = 1, to = 6000) int time,
-                                                        @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setSlotLEDNotifyAlarmParams(slot, time, interval);
-        return task;
-    }
-
-    public static OrderTask getSlotVibrationNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
-        ParamsTask task = new ParamsTask();
-        task.getSlotVibrationNotifyAlarmParams(slot);
-        return task;
-    }
-
-    public static OrderTask setSlotVibrationNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
-                                                              @IntRange(from = 1, to = 6000) int time,
-                                                              @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setSlotVibrationNotifyAlarmParams(slot, time, interval);
-        return task;
-    }
-
-    public static OrderTask getSlotBuzzerNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
-        ParamsTask task = new ParamsTask();
-        task.getSlotBuzzerNotifyAlarmParams(slot);
-        return task;
-    }
-
-    public static OrderTask setSlotBuzzerNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
-                                                           @IntRange(from = 1, to = 6000) int time,
-                                                           @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setSlotBuzzerNotifyAlarmParams(slot, time, interval);
-        return task;
-    }
-
-    public static OrderTask getRemoteLEDNotifyAlarmParams() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_REMOTE_LED_NOTIFY_ALARM_PARAMS);
-        return task;
-    }
-
-    public static OrderTask setRemoteLEDNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                          @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setRemoteLEDNotifyAlarmParams(time, interval);
-        return task;
-    }
-
-    public static OrderTask getRemoteVibrationNotifyAlarmParams() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS);
-        return task;
-    }
-
-    public static OrderTask setRemoteVibrationNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                                @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setRemoteVibrationNotifyAlarmParams(time, interval);
-        return task;
-    }
-
-    public static OrderTask getRemoteBuzzerNotifyAlarmParams() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_REMOTE_BUZZER_NOTIFY_ALARM_PARAMS);
-        return task;
-    }
-
-    public static OrderTask setRemoteBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                             @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setRemoteBuzzerNotifyAlarmParams(time, interval);
-        return task;
-    }
-
-    public static OrderTask setDismissAlarm() {
-        ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.KEY_DISMISS_ALARM);
-        return task;
-    }
-
-    public static OrderTask setDismissAlarmEnable(@IntRange(from = 0, to = 1) int enable) {
-        ParamsTask task = new ParamsTask();
-        task.setDismissAlarmEnable(enable);
-        return task;
-    }
-
-    public static OrderTask getDismissAlarmEnable() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DISMISS_ALARM_ENABLE);
-        return task;
-    }
-
-    public static OrderTask getDismissLEDNotifyAlarmParams() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DISMISS_LED_NOTIFY_ALARM_PARAMS);
-        return task;
-    }
-
-    public static OrderTask setDismissLEDNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                           @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setDismissLEDNotifyAlarmParams(time, interval);
-        return task;
-    }
-
-    public static OrderTask getDismissVibrationNotifyAlarmParams() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS);
-        return task;
-    }
-
-    public static OrderTask setDismissVibrationNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                                 @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setDismissVibrationNotifyAlarmParams(time, interval);
-        return task;
-    }
-
-    public static OrderTask getDismissBuzzerNotifyAlarmParams() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS);
-        return task;
-    }
-
-    public static OrderTask setDismissBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                              @IntRange(from = 100, to = 10000) int interval) {
-        ParamsTask task = new ParamsTask();
-        task.setDismissBuzzerNotifyAlarmParams(time, interval);
-        return task;
-    }
-
-    public static OrderTask getDismissAlarmType() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DISMISS_ALARM_TYPE);
-        return task;
-    }
-
-    public static OrderTask setDismissAlarmType(@IntRange(from = 0, to = 5) int type) {
-        ParamsTask task = new ParamsTask();
-        task.setDismissAlarmType(type);
-        return task;
-    }
-
-    public static OrderTask getDeviceId() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DEVICE_ID);
-        return task;
-    }
-
-    public static OrderTask setDeviceId(String deviceId) {
-        ParamsTask task = new ParamsTask();
-        task.setDeviceId(deviceId);
-        return task;
-    }
-
-    public static OrderTask getDeviceName() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DEVICE_NAME);
-        return task;
-    }
-
-    public static OrderTask setDeviceName(String deviceId) {
-        ParamsTask task = new ParamsTask();
-        task.setDeviceName(deviceId);
-        return task;
-    }
-
-    public static OrderTask getSinglePressEventCount() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_SINGLE_PRESS_EVENTS);
-        return task;
-    }
-
-    public static OrderTask getDoublePressEventCount() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DOUBLE_PRESS_EVENTS);
-        return task;
-    }
-
-    public static OrderTask getLongPressEventCount() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_LONG_PRESS_EVENTS);
+        task.setSlotTriggerMagneticParams(slot, status, duration);
         return task;
     }
 }

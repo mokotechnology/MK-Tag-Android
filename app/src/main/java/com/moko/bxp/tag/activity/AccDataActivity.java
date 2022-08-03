@@ -40,7 +40,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AccDataActivity extends BaseActivity{
+public class AccDataActivity extends BaseActivity {
 
     @BindView(R.id.iv_sync)
     ImageView ivSync;
@@ -60,6 +60,8 @@ public class AccDataActivity extends BaseActivity{
     EditText etMotionThreshold;
     @BindView(R.id.tv_motion_threshold_unit)
     TextView tvMotionThresholdUnit;
+    @BindView(R.id.tv_trigger_count)
+    TextView tvTriggerCount;
     private boolean mReceiverTag = false;
     private ArrayList<String> axisDataRates;
     private ArrayList<String> axisScales;
@@ -67,6 +69,7 @@ public class AccDataActivity extends BaseActivity{
     private int mSelectedRate;
     private int mSelectedScale;
     public boolean isConfigError;
+    private int mAccType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,29 +101,25 @@ public class AccDataActivity extends BaseActivity{
         } else {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
+            orderTasks.add(OrderTaskAssembler.getAccType());
+            orderTasks.add(OrderTaskAssembler.getMotionTriggerCount());
             orderTasks.add(OrderTaskAssembler.getAxisParams());
-            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getAxisParams());
+            MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
-                    // 设备断开，通知页面更新
-                    finish();
-                }
-                if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
-                    // 设备连接成功，通知页面更新
-                }
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
+                // 设备断开，通知页面更新
+                finish();
             }
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
     public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
         EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
@@ -156,6 +155,11 @@ public class AccDataActivity extends BaseActivity{
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
+                                        break;
+                                    case KEY_MOTION_TRIGGER_COUNT:
+                                        if (result == 0) {
+                                            isConfigError = true;
+                                        }
                                         if (isConfigError) {
                                             ToastUtils.showToast(AccDataActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
@@ -167,6 +171,21 @@ public class AccDataActivity extends BaseActivity{
                             if (flag == 0x00) {
                                 // read
                                 switch (configKeyEnum) {
+                                    case KEY_ACC_TYPE:
+                                        if (length != 1)
+                                            return;
+                                        mAccType = value[4] & 0xFF;
+                                        if (mAccType == 0)
+                                            etMotionThreshold.setHint("1~2048");
+                                        else
+                                            etMotionThreshold.setHint("1~255");
+                                        break;
+                                    case KEY_MOTION_TRIGGER_COUNT:
+                                        if (length != 2)
+                                            return;
+                                        int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
+                                        tvTriggerCount.setText(String.valueOf(count));
+                                        break;
                                     case KEY_AXIS_PARAMS:
                                         if (length == 4) {
                                             mSelectedRate = value[4] & 0xFF;
@@ -176,13 +195,13 @@ public class AccDataActivity extends BaseActivity{
                                             tvAxisScale.setText(axisScales.get(mSelectedScale));
                                             etMotionThreshold.setText(String.valueOf(threshold));
                                             if (mSelectedScale == 0) {
-                                                tvMotionThresholdUnit.setText("x1mg");
+                                                tvMotionThresholdUnit.setText(mAccType == 0 ? "x1mg" : "x3.91mg");
                                             } else if (mSelectedScale == 1) {
-                                                tvMotionThresholdUnit.setText("x2mg");
+                                                tvMotionThresholdUnit.setText(mAccType == 0 ? "x2mg" : "x7.81mg");
                                             } else if (mSelectedScale == 2) {
-                                                tvMotionThresholdUnit.setText("x4mg");
+                                                tvMotionThresholdUnit.setText(mAccType == 0 ? "x4mg" : "x15.63mg");
                                             } else if (mSelectedScale == 3) {
-                                                tvMotionThresholdUnit.setText("x12mg");
+                                                tvMotionThresholdUnit.setText(mAccType == 0 ? "x12mg" : "x31.25mg");
                                             }
                                         }
                                         break;
@@ -201,9 +220,9 @@ public class AccDataActivity extends BaseActivity{
                 switch (orderCHAR) {
                     case CHAR_ACC:
                         if (value.length > 9) {
-                            tvXData.setText(String.format("X-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value,4,6))));
-                            tvYData.setText(String.format("Y-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value,6,8))));
-                            tvZData.setText(String.format("Z-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value,8,10))));
+                            tvXData.setText(String.format("X-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 4, 6))));
+                            tvYData.setText(String.format("Y-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 6, 8))));
+                            tvZData.setText(String.format("Z-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 8, 10))));
                         }
                         break;
                 }
@@ -279,7 +298,7 @@ public class AccDataActivity extends BaseActivity{
             return;
         }
         int threshold = Integer.parseInt(thresholdStr);
-        if (threshold < 1 || threshold > 2048) {
+        if (threshold < 1 || threshold > (mAccType == 0 ? 2048 : 255)) {
             ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
             return;
         }
@@ -287,6 +306,18 @@ public class AccDataActivity extends BaseActivity{
         showSyncingProgressDialog();
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.setAxisParams(mSelectedRate, mSelectedScale, threshold));
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+    }
+
+
+    public void onClear(View view) {
+        if (isWindowLocked())
+            return;
+        // 保存
+        showSyncingProgressDialog();
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(OrderTaskAssembler.clearMotionTriggerCount());
+        orderTasks.add(OrderTaskAssembler.getMotionTriggerCount());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -315,13 +346,13 @@ public class AccDataActivity extends BaseActivity{
         scaleDialog.setListener(value -> {
             mSelectedScale = value;
             if (mSelectedScale == 0) {
-                tvMotionThresholdUnit.setText("x1mg");
+                tvMotionThresholdUnit.setText(mAccType == 0 ? "x1mg" : "x3.91mg");
             } else if (mSelectedScale == 1) {
-                tvMotionThresholdUnit.setText("x2mg");
+                tvMotionThresholdUnit.setText(mAccType == 0 ? "x2mg" : "x7.81mg");
             } else if (mSelectedScale == 2) {
-                tvMotionThresholdUnit.setText("x4mg");
+                tvMotionThresholdUnit.setText(mAccType == 0 ? "x4mg" : "x15.63mg");
             } else if (mSelectedScale == 3) {
-                tvMotionThresholdUnit.setText("x12mg");
+                tvMotionThresholdUnit.setText(mAccType == 0 ? "x12mg" : "x31.25mg");
             }
             tvAxisScale.setText(axisScales.get(value));
         });

@@ -28,22 +28,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/alarm_title"
+            android:text="SLOT"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp"
             android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/iv_save"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:onClick="onSave"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:src="@drawable/save"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <FrameLayout
@@ -68,18 +56,18 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radioBtn_alarm"
+                android:id="@+id/radioBtn_slot"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"
                 android:button="@null"
                 android:checked="true"
-                android:drawableTop="@drawable/selector_alarm"
+                android:drawableTop="@drawable/selector_slot"
                 android:drawablePadding="5dp"
                 android:gravity="center"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:text="AlARM"
+                android:text="SLOT"
                 android:textColor="@drawable/selector_option_radiobtn_color"
                 android:textSize="12sp" />
 

@@ -13,6 +13,7 @@ import com.moko.support.entity.DeviceInfo;
 import com.moko.support.entity.OrderServices;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.core.content.ContextCompat;
@@ -42,10 +43,11 @@ public final class MokoBleScanner {
         ScanSettings settings = new ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .build();
-        List<ScanFilter> scanFilterList = new ArrayList<>();
-        ScanFilter.Builder builder = new ScanFilter.Builder();
-        builder.setServiceData(new ParcelUuid(OrderServices.SERVICE_ADV_TRIGGER.getUuid()), null);
-        scanFilterList.add(builder.build());
+//        List<ScanFilter> scanFilterList = new ArrayList<>();
+//        ScanFilter.Builder builder = new ScanFilter.Builder();
+//        builder.setServiceData(new ParcelUuid(OrderServices.SERVICE_ADV_TRIGGER.getUuid()), null);
+//        scanFilterList.add(builder.build());
+        List<ScanFilter> scanFilterList = Collections.singletonList(new ScanFilter.Builder().build());
         mMokoLeScanHandler = new MokoLeScanHandler(callback);
         scanner.startScan(scanFilterList, settings, mMokoLeScanHandler);
         callback.onStartScan();

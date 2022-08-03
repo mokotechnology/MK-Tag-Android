@@ -41,26 +41,14 @@ public class QuickSwitchActivity extends BaseActivity {
     ImageView ivConnectable;
     @BindView(R.id.tv_connectable_status)
     TextView tvConnectableStatus;
-    @BindView(R.id.iv_button_power)
-    ImageView ivButtonPower;
-    @BindView(R.id.tv_button_power)
-    TextView tvButtonPower;
+    @BindView(R.id.iv_trigger_led_indicator)
+    ImageView ivTriggerLedIndicator;
+    @BindView(R.id.tv_trigger_led_indicator)
+    TextView tvTriggerLedIndicator;
     @BindView(R.id.iv_password_verify)
     ImageView ivPasswordVerify;
     @BindView(R.id.tv_password_verify)
     TextView tvPasswordVerify;
-    @BindView(R.id.iv_hw_reset)
-    ImageView ivHwReset;
-    @BindView(R.id.tv_hw_reset)
-    TextView tvHwReset;
-    @BindView(R.id.iv_scan_response_packet)
-    ImageView ivScanResponsePacket;
-    @BindView(R.id.tv_scan_response_packet)
-    TextView tvScanResponsePacket;
-    @BindView(R.id.iv_dismiss_alarm_enable)
-    ImageView ivDismissAlarmEnable;
-    @BindView(R.id.tv_dismiss_alarm_enable)
-    TextView tvDismissAlarmEnable;
     public boolean isConfigError;
 
     @Override
@@ -82,11 +70,8 @@ public class QuickSwitchActivity extends BaseActivity {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.getConnectable());
-            orderTasks.add(OrderTaskAssembler.getButtonPowerEnable());
+            orderTasks.add(OrderTaskAssembler.getTriggerLEDIndicatorEnable());
             orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
-            orderTasks.add(OrderTaskAssembler.getButtonResetEnable());
-            orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
-            orderTasks.add(OrderTaskAssembler.getDismissAlarmEnable());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
@@ -138,10 +123,7 @@ public class QuickSwitchActivity extends BaseActivity {
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_BLE_CONNECTABLE:
-                                    case KEY_BUTTON_POWER_ENABLE:
-                                    case KEY_BUTTON_RESET_ENABLE:
-                                    case KEY_SCAN_RESPONSE_ENABLE:
-                                    case KEY_DISMISS_ALARM_ENABLE:
+                                    case KEY_TRIGGER_LED_INDICATOR_ENABLE:
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
@@ -153,27 +135,18 @@ public class QuickSwitchActivity extends BaseActivity {
                                         break;
                                 }
                             }
-                            if (flag == 0x00 && length == 1) {
+                            if (flag == 0x00 && length == 0x01) {
                                 // read
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_BLE_CONNECTABLE:
                                         setConnectable(result);
                                         break;
-                                    case KEY_BUTTON_POWER_ENABLE:
-                                        setButtonPower(result);
+                                    case KEY_TRIGGER_LED_INDICATOR_ENABLE:
+                                        setTriggerLEDIndicator(result);
                                         break;
                                     case KEY_VERIFY_PASSWORD_ENABLE:
                                         setPasswordVerify(result);
-                                        break;
-                                    case KEY_BUTTON_RESET_ENABLE:
-                                        setButtonResetEnable(result);
-                                        break;
-                                    case KEY_SCAN_RESPONSE_ENABLE:
-                                        setScanResponseEnable(result);
-                                        break;
-                                    case KEY_DISMISS_ALARM_ENABLE:
-                                        setDismissAlarmEnable(result);
                                         break;
 
                                 }
@@ -208,7 +181,7 @@ public class QuickSwitchActivity extends BaseActivity {
                                         break;
                                 }
                             }
-                            if (flag == 0x00 && length == 1) {
+                            if (flag == 0x00 && length == 0x01) {
                                 // read
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
@@ -243,40 +216,13 @@ public class QuickSwitchActivity extends BaseActivity {
         tvConnectableStatus.setEnabled(enableConnected);
     }
 
-    private boolean enableButtonPower;
+    private boolean enableTriggerLEDIndicator;
 
-    public void setButtonPower(int enable) {
-        this.enableButtonPower = enable == 1;
-        ivButtonPower.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvButtonPower.setText(enableButtonPower ? "Enable" : "Disable");
-        tvButtonPower.setEnabled(enableButtonPower);
-    }
-
-    private boolean enableHWReset;
-
-    public void setButtonResetEnable(int enable) {
-        this.enableHWReset = enable == 1;
-        ivHwReset.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvHwReset.setText(enableHWReset ? "Enable" : "Disable");
-        tvHwReset.setEnabled(enableHWReset);
-    }
-
-    private boolean enableScanResponse;
-
-    public void setScanResponseEnable(int enable) {
-        this.enableScanResponse = enable == 1;
-        ivScanResponsePacket.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvScanResponsePacket.setText(enableScanResponse ? "Enable" : "Disable");
-        tvScanResponsePacket.setEnabled(enableScanResponse);
-    }
-
-    private boolean enableDismissAlarm;
-
-    public void setDismissAlarmEnable(int enable) {
-        this.enableDismissAlarm = enable == 1;
-        ivDismissAlarmEnable.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvDismissAlarmEnable.setText(enableDismissAlarm ? "Enable" : "Disable");
-        tvDismissAlarmEnable.setEnabled(enableDismissAlarm);
+    public void setTriggerLEDIndicator(int enable) {
+        this.enableTriggerLEDIndicator = enable == 1;
+        ivTriggerLedIndicator.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        tvTriggerLedIndicator.setText(enableTriggerLEDIndicator ? "Enable" : "Disable");
+        tvTriggerLedIndicator.setEnabled(enableTriggerLEDIndicator);
     }
 
     public void onChangeConnectable(View view) {
@@ -296,44 +242,10 @@ public class QuickSwitchActivity extends BaseActivity {
         }
     }
 
-    public void onChangeScanResponsePacket(View view) {
+    public void onChangeTriggerLEDIndicator(View view) {
         if (isWindowLocked())
             return;
-        setScanResponsePacket(!enableScanResponse);
-    }
-
-    public void onChangeButtonPower(View view) {
-        if (isWindowLocked())
-            return;
-        if (enableButtonPower) {
-            final AlertMessageDialog dialog = new AlertMessageDialog();
-            dialog.setTitle("Warning！");
-            dialog.setMessage("If this function is disabled, you cannot power off the Beacon by tag.");
-            dialog.setConfirm(R.string.ok);
-            dialog.setOnAlertConfirmListener(() -> {
-                setButtonPower(false);
-            });
-            dialog.show(getSupportFragmentManager());
-        } else {
-            setButtonPower(true);
-        }
-    }
-
-    public void onChangeHWReset(View view) {
-        if (isWindowLocked())
-            return;
-        if (enableHWReset) {
-            final AlertMessageDialog dialog = new AlertMessageDialog();
-            dialog.setTitle("Warning！");
-            dialog.setMessage("If Button reset is disabled, you cannot reset the Beacon by tag operation.");
-            dialog.setConfirm(R.string.ok);
-            dialog.setOnAlertConfirmListener(() -> {
-                setButtonResetEnable(false);
-            });
-            dialog.show(getSupportFragmentManager());
-        } else {
-            setButtonResetEnable(true);
-        }
+        setTriggerLEDIndicator(!enableTriggerLEDIndicator);
     }
 
     public void onChangePasswordVerify(View view) {
@@ -354,24 +266,6 @@ public class QuickSwitchActivity extends BaseActivity {
     }
 
 
-    public void onChangeDismissAlarm(View view) {
-        if (isWindowLocked())
-            return;
-        if (enableDismissAlarm) {
-            final AlertMessageDialog dialog = new AlertMessageDialog();
-            dialog.setTitle("Warning！");
-            dialog.setMessage("If this function is disabled, you cannot dismiss alarm by tag.");
-            dialog.setConfirm(R.string.ok);
-            dialog.setOnAlertConfirmListener(() -> {
-                setDismissAlarm(false);
-            });
-            dialog.show(getSupportFragmentManager());
-        } else {
-            setDismissAlarm(true);
-        }
-    }
-
-
     public void setConnectable(boolean enable) {
         showSyncingProgressDialog();
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
@@ -381,14 +275,6 @@ public class QuickSwitchActivity extends BaseActivity {
     }
 
 
-    public void setButtonPower(boolean enable) {
-        showSyncingProgressDialog();
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setButtonPowerEnable(enable ? 1 : 0));
-        orderTasks.add(OrderTaskAssembler.getButtonPowerEnable());
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-    }
-
     public void setVerifyPasswordEnable(boolean enable) {
         showSyncingProgressDialog();
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
@@ -397,30 +283,14 @@ public class QuickSwitchActivity extends BaseActivity {
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
-    public void setButtonResetEnable(boolean enable) {
+
+    public void setTriggerLEDIndicator(boolean enable) {
         showSyncingProgressDialog();
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setButtonResetEnable(enable ? 1 : 0));
-        orderTasks.add(OrderTaskAssembler.getButtonResetEnable());
+        orderTasks.add(OrderTaskAssembler.setTriggerLEDIndicatorEnable(enable ? 1 : 0));
+        orderTasks.add(OrderTaskAssembler.getTriggerLEDIndicatorEnable());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
-
-    public void setScanResponsePacket(boolean enable) {
-        showSyncingProgressDialog();
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setScanResponseEnable(enable ? 1 : 0));
-        orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-    }
-
-    public void setDismissAlarm(boolean enable) {
-        showSyncingProgressDialog();
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setDismissAlarmEnable(enable ? 1 : 0));
-        orderTasks.add(OrderTaskAssembler.getDismissAlarmEnable());
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-    }
-
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -479,5 +349,4 @@ public class QuickSwitchActivity extends BaseActivity {
         setResult(RESULT_OK, intent);
         finish();
     }
-
 }

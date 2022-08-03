@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:background="@color/white_ffffff"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_motion_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:onClick="onMotionStart">
+
+        <ImageView
+            android:id="@+id/iv_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/icon_selected"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/start_adv_for"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Start advertising for"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintLeft_toRightOf="@id/iv_start"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/et_duration"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="0~65535"
+            android:inputType="number"
+            android:maxLength="5"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/start_adv_for"
+            app:layout_constraintLeft_toRightOf="@id/start_adv_for" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="s"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/et_duration"
+            app:layout_constraintLeft_toRightOf="@id/et_duration" />
+
+        <TextView
+            android:id="@+id/after_static_for"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="after device keep static for"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintLeft_toLeftOf="@id/start_adv_for"
+            app:layout_constraintTop_toBottomOf="@id/start_adv_for" />
+
+        <EditText
+            android:id="@+id/et_static"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="1~65535"
+            android:inputType="number"
+            android:maxLength="5"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/after_static_for"
+            app:layout_constraintLeft_toRightOf="@id/after_static_for" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="s"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/et_static"
+            app:layout_constraintLeft_toRightOf="@id/et_static" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_motion_stop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:onClick="onMotionStop">
+
+        <ImageView
+            android:id="@+id/iv_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/icon_unselected"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/stop_adv_for"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Stop advertising after device"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintLeft_toRightOf="@id/iv_stop"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/keep_static_for"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="keep static for"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintTop_toBottomOf="@id/stop_adv_for"
+            app:layout_constraintLeft_toLeftOf="@id/stop_adv_for" />
+
+        <EditText
+            android:id="@+id/et_stop_static"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="1~65535"
+            android:inputType="number"
+            android:maxLength="5"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/keep_static_for"
+            app:layout_constraintLeft_toRightOf="@id/keep_static_for" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="s"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/et_stop_static"
+            app:layout_constraintLeft_toRightOf="@id/et_stop_static" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_trigger_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/trigger_motion_tips"
+        android:textColor="@color/black_333333"
+        android:textSize="12sp" />
+</LinearLayout>

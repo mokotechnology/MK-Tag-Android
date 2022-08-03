@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,9 +32,9 @@ import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.dialog.ModifyPasswordDialog;
-import com.moko.bxp.tag.fragment.AlarmFragment;
 import com.moko.bxp.tag.fragment.DeviceFragment;
 import com.moko.bxp.tag.fragment.SettingFragment;
+import com.moko.bxp.tag.fragment.SlotFragment;
 import com.moko.bxp.tag.service.DfuService;
 import com.moko.bxp.tag.utils.FileUtils;
 import com.moko.bxp.tag.utils.ToastUtils;
@@ -66,8 +65,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     @BindView(R.id.frame_container)
     FrameLayout frameContainer;
-    @BindView(R.id.radioBtn_alarm)
-    RadioButton radioBtnAlarm;
+    @BindView(R.id.radioBtn_slot)
+    RadioButton radioBtnSlot;
     @BindView(R.id.radioBtn_setting)
     RadioButton radioBtnSetting;
     @BindView(R.id.radioBtn_device)
@@ -76,27 +75,25 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     RadioGroup rgOptions;
     @BindView(R.id.tv_title)
     TextView tvTitle;
-    @BindView(R.id.iv_save)
-    ImageView ivSave;
     private FragmentManager fragmentManager;
-    private AlarmFragment alarmFragment;
+    private SlotFragment slotFragment;
     private SettingFragment settingFragment;
     private DeviceFragment deviceFragment;
-    public String mPassword;
     public String mDeviceMac;
     public String mDeviceName;
     private boolean mIsClose;
     private boolean mReceiverTag = false;
     private int mDisconnectType;
     public boolean isConfigError;
+    private boolean isVerifyPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_info);
         ButterKnife.bind(this);
-        mPassword = getIntent().getStringExtra(AppConstants.EXTRA_KEY_PASSWORD);
         fragmentManager = getFragmentManager();
+        isVerifyPassword = getIntent().getBooleanExtra(AppConstants.EXTRA_KEY_PASSWORD_VERIFICATION, false);
         initFragment();
         rgOptions.setOnCheckedChangeListener(this);
         EventBus.getDefault().register(this);
@@ -108,8 +105,12 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
             MokoSupport.getInstance().enableBluetooth();
+            return;
         }
-        getAlarmSwitch();
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(OrderTaskAssembler.getAllSlot());
+        orderTasks.add(OrderTaskAssembler.getDeviceMac());
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
@@ -118,18 +119,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         final String action = event.getAction();
         runOnUiThread(() -> {
             if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
-                if (MokoSupport.getInstance().exportSingleEvents != null) {
-                    MokoSupport.getInstance().exportSingleEvents.clear();
-                    MokoSupport.getInstance().storeSingleEventString = null;
-                }
-                if (MokoSupport.getInstance().exportDoubleEvents != null) {
-                    MokoSupport.getInstance().exportDoubleEvents.clear();
-                    MokoSupport.getInstance().storeDoubleEventString = null;
-                }
-                if (MokoSupport.getInstance().exportLongEvents != null) {
-                    MokoSupport.getInstance().exportLongEvents.clear();
-                    MokoSupport.getInstance().storeLongEventString = null;
-                }
                 // 设备断开，通知页面更新
                 if (mIsClose)
                     return;
@@ -248,17 +237,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                         break;
                                 }
                             }
-                            if (flag == 0x00) {
-                                // read
-                                switch (configKeyEnum) {
-                                    case KEY_VERIFY_PASSWORD_ENABLE:
-                                        if (length > 0) {
-                                            int enable = value[4] & 0xFF;
-                                            deviceFragment.setViewShown(enable == 1);
-                                        }
-                                        break;
-                                }
-                            }
                         }
                         break;
                     case CHAR_PARAMS:
@@ -273,62 +251,32 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                 return;
                             }
                             int length = value[3] & 0xFF;
-                            if (flag == 0x01 && length == 0x01) {
-                                // write
-                                int result = value[4] & 0xFF;
-                                switch (configKeyEnum) {
-                                    case KEY_DEVICE_NAME:
-                                        if (result == 0) {
-                                            isConfigError = true;
-                                        }
-                                        break;
-                                    case KEY_EFFECTIVE_CLICK_INTERVAL:
-                                    case KEY_DEVICE_ID:
-                                        if (result == 0) {
-                                            isConfigError = true;
-                                        }
-                                        if (isConfigError) {
-                                            ToastUtils.showToast(DeviceInfoActivity.this, "Opps！Save failed. Please check the input characters and try again.");
-                                        } else {
-                                            ToastUtils.showToast(this, "Success");
-                                        }
-                                        break;
-                                }
-                            }
+                            byte[] rawDataBytes = Arrays.copyOfRange(value, 4, 4 + length);
                             if (flag == 0x00) {
                                 // read
                                 switch (configKeyEnum) {
-                                    case KEY_SLOT_PARAMS:
+                                    case KEY_ALL_SLOT:
                                         if (length == 6) {
-                                            int slot = value[4];
-                                            int slotEnable = value[5] & 0xFF;
-                                            if (slot == 0) {
-                                                alarmFragment.setSinglePressModeSwitch(slotEnable);
-                                            } else if (slot == 1) {
-                                                alarmFragment.setDoublePressModeSwitch(slotEnable);
-                                            } else if (slot == 2) {
-                                                alarmFragment.setLongPressModeSwitch(slotEnable);
-                                            } else if (slot == 3) {
-                                                alarmFragment.setAbnormalInactivityModeSwitch(slotEnable);
-                                            }
+                                            slotFragment.updateSlotType(rawDataBytes);
                                         }
                                         break;
-                                    case KEY_EFFECTIVE_CLICK_INTERVAL:
-                                        if (length == 2) {
-                                            int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                            settingFragment.setEffectiveClickInterval(interval);
+                                    case KEY_SLOT_ADV_PARAMS:
+                                        if (length == 8)
+                                            slotFragment.setSlotAdvParams(rawDataBytes);
+                                        break;
+                                    case KEY_SLOT_PARAMS:
+                                        if (length > 1) {
+                                            slotFragment.setSlotParams(rawDataBytes);
                                         }
                                         break;
-                                    case KEY_DEVICE_NAME:
-                                        if (length > 0) {
-                                            String deviceName = new String(Arrays.copyOfRange(value, 4, 4 + length));
-                                            mDeviceName = deviceName;
-                                            deviceFragment.setDeviceName(deviceName);
+                                    case KEY_SLOT_TRIGGER_PARAMS:
+                                        if (length > 1) {
+                                            slotFragment.setSlotTriggerParams(rawDataBytes);
                                         }
                                         break;
                                     case KEY_DEVICE_MAC:
                                         if (length == 6) {
-                                            String mac = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 4, 10));
+                                            String mac = MokoUtils.bytesToHexString(rawDataBytes);
                                             StringBuffer stringBuffer = new StringBuffer(mac);
                                             stringBuffer.insert(2, ":");
                                             stringBuffer.insert(5, ":");
@@ -336,17 +284,37 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             stringBuffer.insert(11, ":");
                                             stringBuffer.insert(14, ":");
                                             mDeviceMac = stringBuffer.toString().toUpperCase();
+                                            deviceFragment.setMac(mDeviceMac);
                                         }
                                         break;
-                                    case KEY_DEVICE_ID:
-                                        if (length > 0) {
-                                            String deviceIdHex = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 4, 4 + length));
-                                            deviceFragment.setDeviceId(deviceIdHex);
+                                    case KEY_BATTERY_VOLTAGE:
+                                        if (length == 2) {
+                                            int battery = MokoUtils.toInt(rawDataBytes);
+                                            deviceFragment.setBattery(battery);
                                         }
                                         break;
                                 }
                             }
                         }
+                        break;
+
+                    case CHAR_MODEL_NUMBER:
+                        deviceFragment.setModelNumber(value);
+                        break;
+                    case CHAR_SOFTWARE_REVISION:
+                        deviceFragment.setSoftwareRevision(value);
+                        break;
+                    case CHAR_FIRMWARE_REVISION:
+                        deviceFragment.setFirmwareRevision(value);
+                        break;
+                    case CHAR_HARDWARE_REVISION:
+                        deviceFragment.setHardwareRevision(value);
+                        break;
+                    case CHAR_SERIAL_NUMBER:
+                        deviceFragment.setSerialNumber(value);
+                        break;
+                    case CHAR_MANUFACTURER_NAME:
+                        deviceFragment.setManufacturer(value);
                         break;
                 }
             }
@@ -354,30 +322,24 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     }
 
 
-    private void getAlarmSwitch() {
+    public void getAllSlot() {
         showSyncingProgressDialog();
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.getSlotParams(0));
-        orderTasks.add(OrderTaskAssembler.getSlotParams(1));
-        orderTasks.add(OrderTaskAssembler.getSlotParams(2));
-        orderTasks.add(OrderTaskAssembler.getSlotParams(3));
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+        tvTitle.postDelayed(() -> {
+            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getAllSlot());
+        }, 1500);
     }
 
     private void getDeviceInfo() {
         showSyncingProgressDialog();
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.getDeviceName());
+        orderTasks.add(OrderTaskAssembler.getBattery());
         orderTasks.add(OrderTaskAssembler.getDeviceMac());
-        orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
-        orderTasks.add(OrderTaskAssembler.getDeviceId());
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-    }
-
-    private void getSetting() {
-        showSyncingProgressDialog();
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.getEffectiveClickInterval());
+        orderTasks.add(OrderTaskAssembler.getDeviceModel());
+        orderTasks.add(OrderTaskAssembler.getSoftwareVersion());
+        orderTasks.add(OrderTaskAssembler.getFirmwareVersion());
+        orderTasks.add(OrderTaskAssembler.getHardwareVersion());
+        orderTasks.add(OrderTaskAssembler.getProductDate());
+        orderTasks.add(OrderTaskAssembler.getManufacturer());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -437,15 +399,17 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         if (requestCode == AppConstants.REQUEST_CODE_QUICK_SWITCH) {
             if (resultCode == RESULT_OK) {
                 boolean enablePasswordVerify = data.getBooleanExtra(AppConstants.EXTRA_KEY_PASSWORD_VERIFICATION, false);
-                if (enablePasswordVerify)
-                    deviceFragment.setResetShown();
+                settingFragment.setResetVisibility(enablePasswordVerify);
+                // 当连接时不需要密码验证，若启用Password verification，Reset Beacon选项显示，但Modify password需要再次连接时才显示。
+                if (isVerifyPassword)
+                    settingFragment.setModifyPasswordShown(enablePasswordVerify);
             }
         }
         if (requestCode == AppConstants.REQUEST_CODE_ALARM_MODE) {
             if (resultCode == RESULT_OK) {
                 int slotType = data.getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
                 showSyncingProgressDialog();
-                ivSave.postDelayed(() -> {
+                tvTitle.postDelayed(() -> {
                     ArrayList<OrderTask> orderTasks = new ArrayList<>();
                     if (slotType == 0)
                         orderTasks.add(OrderTaskAssembler.getSlotParams(0));
@@ -497,14 +461,14 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     }
 
     private void initFragment() {
-        alarmFragment = AlarmFragment.newInstance();
+        slotFragment = SlotFragment.newInstance();
         settingFragment = SettingFragment.newInstance();
         deviceFragment = DeviceFragment.newInstance();
         fragmentManager.beginTransaction()
-                .add(R.id.frame_container, alarmFragment)
+                .add(R.id.frame_container, slotFragment)
                 .add(R.id.frame_container, settingFragment)
                 .add(R.id.frame_container, deviceFragment)
-                .show(alarmFragment)
+                .show(slotFragment)
                 .hide(settingFragment)
                 .hide(deviceFragment)
                 .commit();
@@ -512,12 +476,11 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     }
 
     private void showSlotFragment() {
-        if (alarmFragment != null) {
-            ivSave.setVisibility(View.GONE);
+        if (slotFragment != null) {
             fragmentManager.beginTransaction()
                     .hide(settingFragment)
                     .hide(deviceFragment)
-                    .show(alarmFragment)
+                    .show(slotFragment)
                     .commit();
         }
         tvTitle.setText(getString(R.string.alarm_title));
@@ -525,9 +488,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     private void showSettingFragment() {
         if (settingFragment != null) {
-            ivSave.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction()
-                    .hide(alarmFragment)
+                    .hide(slotFragment)
                     .hide(deviceFragment)
                     .show(settingFragment)
                     .commit();
@@ -537,9 +499,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     private void showDeviceFragment() {
         if (deviceFragment != null) {
-            ivSave.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction()
-                    .hide(alarmFragment)
+                    .hide(slotFragment)
                     .hide(settingFragment)
                     .show(deviceFragment)
                     .commit();
@@ -549,12 +510,13 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-        if (checkedId == R.id.radioBtn_alarm) {
+        if (checkedId == R.id.radioBtn_slot) {
             showSlotFragment();
-            getAlarmSwitch();
+            getAllSlot();
         } else if (checkedId == R.id.radioBtn_setting) {
             showSettingFragment();
-            getSetting();
+            settingFragment.setResetVisibility(isVerifyPassword);
+            settingFragment.setModifyPasswordShown(isVerifyPassword);
         } else if (checkedId == R.id.radioBtn_device) {
             showDeviceFragment();
             getDeviceInfo();
@@ -595,93 +557,14 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         back();
     }
 
+///////////////////////////////////////////////////////////////////////////
+//
+///////////////////////////////////////////////////////////////////////////
 
-    public void onSave(View view) {
+    public void onSensorConfig(View view) {
         if (isWindowLocked())
             return;
-        if (radioBtnSetting.isChecked()) {
-            if (settingFragment.isValid()) {
-                showSyncingProgressDialog();
-                settingFragment.saveParams();
-            } else {
-                ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
-            }
-        }
-        if (radioBtnDevice.isChecked()) {
-            if (deviceFragment.isValid()) {
-                showSyncingProgressDialog();
-                deviceFragment.saveParams();
-            } else {
-                ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
-            }
-        }
-    }
-
-    public void onSinglePressMode(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, AlarmModeConfigActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
-        startActivityForResult(intent, AppConstants.REQUEST_CODE_ALARM_MODE);
-    }
-
-    public void onDoublePressMode(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, AlarmModeConfigActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 1);
-        startActivityForResult(intent, AppConstants.REQUEST_CODE_ALARM_MODE);
-    }
-
-    public void onLongPressMode(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, AlarmModeConfigActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 2);
-        startActivityForResult(intent, AppConstants.REQUEST_CODE_ALARM_MODE);
-    }
-
-    public void onAbnormalInactivityMode(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, AlarmModeConfigActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 3);
-        startActivityForResult(intent, AppConstants.REQUEST_CODE_ALARM_MODE);
-    }
-
-    public void onAlarmEvent(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, AlarmEventActivity.class);
-        startActivity(intent);
-    }
-
-    public void onDismissAlarmConfig(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, DismissAlarmNotifyTypeActivity.class);
-        startActivity(intent);
-    }
-
-    public void onRemoteReminder(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, RemoteReminderActivity.class);
-        startActivity(intent);
-    }
-
-    public void onAcc(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, AccDataActivity.class);
-        startActivity(intent);
-    }
-
-    public void onPowerSavingConfig(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, PowerSavingConfigActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, SensorConfigActivity.class));
     }
 
     public void onQuickSwitch(View view) {
@@ -714,14 +597,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             resetDevice();
         });
         resetDeviceDialog.show(getSupportFragmentManager());
-    }
-
-
-    public void onSystemInfo(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, SystemInfoActivity.class);
-        startActivity(intent);
     }
 
     private ProgressDialog mDFUDialog;

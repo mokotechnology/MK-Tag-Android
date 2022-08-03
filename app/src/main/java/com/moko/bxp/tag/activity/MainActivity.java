@@ -83,6 +83,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     private MokoBleScanner mokoBleScanner;
     private Handler mHandler;
     private boolean isPasswordError;
+    private boolean isVerifyPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +159,11 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             // 设备断开，通知页面更新
             dismissLoadingProgressDialog();
             dismissLoadingMessageDialog();
+            if (isVerifyPassword) {
+                isVerifyPassword = false;
+                showPasswordDialog();
+                return;
+            }
             if (animation == null) {
                 if (isPasswordError) {
                     isPasswordError = false;
@@ -170,18 +176,21 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
             // 设备连接成功，通知页面更新
             dismissLoadingProgressDialog();
-            if (TextUtils.isEmpty(mPassword)) {
-                Intent i = new Intent(this, DeviceInfoActivity.class);
-                startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
-            } else {
+            if (!TextUtils.isEmpty(mPassword)) {
                 showLoadingMessageDialog();
                 mHandler.postDelayed(() -> {
                     ArrayList<OrderTask> orderTasks = new ArrayList<>();
                     orderTasks.add(OrderTaskAssembler.setPassword(mPassword));
                     MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
                 }, 500);
+                return;
             }
-
+            showLoadingProgressDialog();
+            mHandler.postDelayed(() -> {
+                ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
+                MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+            }, 500);
         }
     }
 
@@ -192,6 +201,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
         if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
             dismissLoadingMessageDialog();
+            dismissLoadingProgressDialog();
         }
         if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
             OrderTaskResponse response = event.getResponse();
@@ -211,6 +221,22 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                             return;
                         }
                         int length = value[3] & 0xFF;
+                        if (flag == 0x00 && length == 0x01) {
+                            // read
+                            int result = value[4] & 0xFF;
+                            switch (configKeyEnum) {
+                                case KEY_VERIFY_PASSWORD_ENABLE:
+                                    if (result == 0x01) {
+                                        isVerifyPassword = true;
+                                        MokoSupport.getInstance().disConnectBle();
+                                    } else {
+                                        Intent i = new Intent(this, DeviceInfoActivity.class);
+                                        i.putExtra(AppConstants.EXTRA_KEY_PASSWORD_VERIFICATION, false);
+                                        startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
+                                    }
+                                    break;
+                            }
+                        }
                         if (flag == 0x01 && length == 0x01) {
                             // write
                             int result = value[4] & 0xFF;
@@ -221,6 +247,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                                         SPUtiles.setStringValue(this, AppConstants.SP_KEY_SAVED_PASSWORD, mSavedPassword);
                                         XLog.i("Success");
                                         Intent i = new Intent(this, DeviceInfoActivity.class);
+                                        i.putExtra(AppConstants.EXTRA_KEY_PASSWORD_VERIFICATION, true);
                                         startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
                                     } else {
                                         isPasswordError = true;
@@ -420,13 +447,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                 mokoBleScanner.stopScanDevice();
             }
             mSelectedDeviceMac = advInfo.mac;
-            if (advInfo.verifyEnable == 1) {
-                // 开启验证
-                showPasswordDialog();
-            } else {
-                showLoadingProgressDialog();
-                ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(advInfo.mac), 500);
-            }
+            showLoadingProgressDialog();
+            ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(advInfo.mac), 500);
         }
     }
 
@@ -449,7 +471,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
             @Override
             public void onDismiss() {
-
+                if (animation == null)
+                    startScan();
             }
         });
         dialog.show(getSupportFragmentManager());

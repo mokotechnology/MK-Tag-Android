@@ -137,14 +137,8 @@ public class MokoSupport extends MokoBleLib {
         if (responseUUID.equals(OrderCHAR.CHAR_ACC.getUuid())) {
             orderCHAR = OrderCHAR.CHAR_ACC;
         }
-        if (responseUUID.equals(OrderCHAR.CHAR_SINGLE_TRIGGER.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_SINGLE_TRIGGER;
-        }
-        if (responseUUID.equals(OrderCHAR.CHAR_DOUBLE_TRIGGER.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_DOUBLE_TRIGGER;
-        }
-        if (responseUUID.equals(OrderCHAR.CHAR_LONG_TRIGGER.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_LONG_TRIGGER;
+        if (responseUUID.equals(OrderCHAR.CHAR_HALL.getUuid())) {
+            orderCHAR = OrderCHAR.CHAR_HALL;
         }
         if (orderCHAR == null)
             return false;
@@ -159,34 +153,14 @@ public class MokoSupport extends MokoBleLib {
         return true;
     }
 
-    public void enableSingleTriggerNotify() {
+    public void enableHallStatusNotify() {
         if (mBleConfig != null)
-            mBleConfig.enableSingleTriggerNotify();
+            mBleConfig.enableHallStatusNotify();
     }
 
-    public void disableSingleTriggerNotify() {
+    public void disableHallStatusNotify() {
         if (mBleConfig != null)
-            mBleConfig.disableSingleTriggerNotify();
-    }
-
-    public void enableDoubleTriggerNotify() {
-        if (mBleConfig != null)
-            mBleConfig.enableDoubleTriggerNotify();
-    }
-
-    public void disableDoubleTriggerNotify() {
-        if (mBleConfig != null)
-            mBleConfig.disableDoubleTriggerNotify();
-    }
-
-    public void enableLongTriggerNotify() {
-        if (mBleConfig != null)
-            mBleConfig.enableLongTriggerNotify();
-    }
-
-    public void disableLongTriggerNotify() {
-        if (mBleConfig != null)
-            mBleConfig.disableLongTriggerNotify();
+            mBleConfig.disableHallStatusNotify();
     }
 
     public void enableAccNotify() {
@@ -198,11 +172,4 @@ public class MokoSupport extends MokoBleLib {
         if (mBleConfig != null)
             mBleConfig.disableAccNotify();
     }
-
-    public ArrayList<ExportData> exportSingleEvents;
-    public StringBuilder storeSingleEventString;
-    public ArrayList<ExportData> exportDoubleEvents;
-    public StringBuilder storeDoubleEventString;
-    public ArrayList<ExportData> exportLongEvents;
-    public StringBuilder storeLongEventString;
 }

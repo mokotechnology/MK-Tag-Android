@@ -1,9 +1,16 @@
 package com.moko.bxp.tag.entity;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class AdvInfo implements Serializable {
+
+    public static final int VALID_DATA_FRAME_TYPE_UID = 0x00;
+    public static final int VALID_DATA_FRAME_TYPE_URL = 0x10;
+    public static final int VALID_DATA_FRAME_TYPE_TLM = 0x20;
+    public static final int VALID_DATA_FRAME_TYPE_IBEACON = 0x50;
+    public static final int VALID_DATA_FRAME_TYPE_TAG_INFO = 0x80;
 
     public String name;
     public int rssi;
@@ -14,17 +21,8 @@ public class AdvInfo implements Serializable {
     public long scanTime;
     public int txPower;
     public int rangingData;
-    public int accX = 0;
-    public int accY = 0;
-    public int accZ = 0;
-    public int accShown = 0;
     public int connectState;
-    public int verifyEnable;
-    public int deviceType;
-    public int deviceInfoFrame;
-    public String beaconTemp;
-    public String deviceId;
-    public LinkedHashMap<Integer, TriggerData> triggerDataHashMap;
+    public HashMap<String, ValidData> validDataHashMap;
 
     @Override
     public String toString() {
@@ -34,18 +32,18 @@ public class AdvInfo implements Serializable {
                 '}';
     }
 
-    public static class TriggerData {
-        public int triggerType;
-        public int triggerStatus;
-        public int triggerCount;
-        public byte[] dataBytes;
-        public String dataStr;
+
+    public static class ValidData {
+        public int type;
+        public int txPower;
+        public byte[] values;
+        public String data;
 
         @Override
         public String toString() {
-            return "TriggerData{" +
-                    "triggerType=" + triggerType +
-                    ", data='" + dataStr + '\'' +
+            return "ValidData{" +
+                    "type=" + type +
+                    ", data='" + data + '\'' +
                     '}';
         }
     }

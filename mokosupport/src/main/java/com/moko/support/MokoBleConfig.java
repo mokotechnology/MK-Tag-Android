@@ -22,10 +22,8 @@ final class MokoBleConfig extends MokoBleManager {
     private MokoResponseCallback mMokoResponseCallback;
     private BluetoothGattCharacteristic paramsCharacteristic;
     private BluetoothGattCharacteristic disconnectCharacteristic;
-    private BluetoothGattCharacteristic singleTriggerCharacteristic;
-    private BluetoothGattCharacteristic doubleTriggerCharacteristic;
-    private BluetoothGattCharacteristic longTriggerCharacteristic;
     private BluetoothGattCharacteristic accCharacteristic;
+    private BluetoothGattCharacteristic hallCharacteristic;
     private BluetoothGattCharacteristic passwordCharacteristic;
 
     public MokoBleConfig(@NonNull Context context, MokoResponseCallback callback) {
@@ -39,10 +37,8 @@ final class MokoBleConfig extends MokoBleManager {
         if (service != null) {
             paramsCharacteristic = service.getCharacteristic(OrderCHAR.CHAR_PARAMS.getUuid());
             disconnectCharacteristic = service.getCharacteristic(OrderCHAR.CHAR_DISCONNECT.getUuid());
-            singleTriggerCharacteristic = service.getCharacteristic(OrderCHAR.CHAR_SINGLE_TRIGGER.getUuid());
-            doubleTriggerCharacteristic = service.getCharacteristic(OrderCHAR.CHAR_DOUBLE_TRIGGER.getUuid());
-            longTriggerCharacteristic = service.getCharacteristic(OrderCHAR.CHAR_LONG_TRIGGER.getUuid());
             accCharacteristic = service.getCharacteristic(OrderCHAR.CHAR_ACC.getUuid());
+            hallCharacteristic = service.getCharacteristic(OrderCHAR.CHAR_HALL.getUuid());
             passwordCharacteristic = service.getCharacteristic(OrderCHAR.CHAR_PASSWORD.getUuid());
             enableParamsNotify();
             enableDisconnectNotify();
@@ -141,46 +137,18 @@ final class MokoBleConfig extends MokoBleManager {
         disableNotifications(passwordCharacteristic).enqueue();
     }
 
-    public void enableSingleTriggerNotify() {
-        setIndicationCallback(singleTriggerCharacteristic).with((device, data) -> {
+    public void enableHallStatusNotify() {
+        setIndicationCallback(hallCharacteristic).with((device, data) -> {
             final byte[] value = data.getValue();
             XLog.e("onDataReceived");
             XLog.e("device to app : " + MokoUtils.bytesToHexString(value));
-            mMokoResponseCallback.onCharacteristicChanged(singleTriggerCharacteristic, value);
+            mMokoResponseCallback.onCharacteristicChanged(hallCharacteristic, value);
         });
-        enableNotifications(singleTriggerCharacteristic).enqueue();
+        enableNotifications(hallCharacteristic).enqueue();
     }
 
-    public void disableSingleTriggerNotify() {
-        disableNotifications(singleTriggerCharacteristic).enqueue();
-    }
-
-    public void enableDoubleTriggerNotify() {
-        setIndicationCallback(doubleTriggerCharacteristic).with((device, data) -> {
-            final byte[] value = data.getValue();
-            XLog.e("onDataReceived");
-            XLog.e("device to app : " + MokoUtils.bytesToHexString(value));
-            mMokoResponseCallback.onCharacteristicChanged(doubleTriggerCharacteristic, value);
-        });
-        enableNotifications(doubleTriggerCharacteristic).enqueue();
-    }
-
-    public void disableDoubleTriggerNotify() {
-        disableNotifications(doubleTriggerCharacteristic).enqueue();
-    }
-
-    public void enableLongTriggerNotify() {
-        setIndicationCallback(longTriggerCharacteristic).with((device, data) -> {
-            final byte[] value = data.getValue();
-            XLog.e("onDataReceived");
-            XLog.e("device to app : " + MokoUtils.bytesToHexString(value));
-            mMokoResponseCallback.onCharacteristicChanged(longTriggerCharacteristic, value);
-        });
-        enableNotifications(longTriggerCharacteristic).enqueue();
-    }
-
-    public void disableLongTriggerNotify() {
-        disableNotifications(longTriggerCharacteristic).enqueue();
+    public void disableHallStatusNotify() {
+        disableNotifications(hallCharacteristic).enqueue();
     }
 
     public void enableAccNotify() {

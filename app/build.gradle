@@ -9,8 +9,8 @@ android {
         applicationId "com.moko.bxp.tag"
         minSdkVersion 18
         targetSdkVersion 30
-        versionCode 6
-        versionName "1.0.3"
+        versionCode 1
+        versionName "1.0.0"
     }
 
     buildTypes {

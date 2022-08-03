@@ -1,21 +1,21 @@
 <resources>
-    <string name="app_name">MOKOTAG</string>
+    <string name="app_name">MOKO TAG</string>
 
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="ok">OK</string>
 
     <string name="permission_storage_close_title">Storage permission is not available</string>
-    <string name="permission_storage_close_content">Please find it in cellphone setting- permission, and allow MOKOTAG use the Storage permission</string>
+    <string name="permission_storage_close_content">Please find it in cellphone setting- permission, and allow MOKO TAG use the Storage permission</string>
     <string name="permission_open">OK</string>
     <string name="permission_storage_need_title">Please turn on Storage permissions</string>
-    <string name="permission_storage_need_content">MOKOTAG requires access to Location and Storage permission. If the permissions are not on, MOKOTAG cannot be used normally.</string>
+    <string name="permission_storage_need_content">MOKO TAG requires access to Location and Storage permission. If the permissions are not on, MOKO TAG cannot be used normally.</string>
     <string name="location_need_title">Turn on Location permission</string>
-    <string name="location_need_content">After that, MOKOTAG could search and connect with the MOKOTAG</string>
+    <string name="location_need_content">After that, MOKO TAG could search and connect with the MOKO TAG</string>
     <string name="permission_location_close_title">Location persission is not available</string>
-    <string name="permission_location_close_content">Please find it in cellphone setting- permission, and allow MOKOTAG use the Location and Storage permission</string>
+    <string name="permission_location_close_content">Please find it in cellphone setting- permission, and allow MOKO TAG use the Location and Storage permission</string>
     <string name="permission_location_need_title">Turn on Location permission</string>
-    <string name="permission_location_need_content">After that, MOKOTAG could search and connect with the MOKOTAG</string>
+    <string name="permission_location_need_content">After that, MOKO TAG could search and connect with the MOKO TAG</string>
 
     <string name="main_exit_tips">Are you sure you want to quit?</string>
     <string name="setting_syncing">syncing</string>
@@ -34,14 +34,14 @@
     <!--    <string name="t_h_tips_3"><![CDATA[*The device stores T&H data when the temperature or humidity changes arbitrarily.]]></string>-->
     <!--    <string name="trigger_tapped_tips_3">*The Beacon will always stop advertising after press tag %s times.</string>-->
     <string name="rssi_filter_tips">* RSSI filtering is the highest priority filtering condition. BLE Name and MAC Address filtering must first meet the RSSI filtering condition.\n* There is an \"OR\" relationship between the BLE Name filtering and the MAC Address filtering.</string>
-    <string name="abnormal_inactivity_time_tips">*After device keep static for %ss, abnormal inactivity alarm will be triggered and start advertising for %ss.</string>
-    <string name="static_trigger_time_tips">*After device keep static for %ss, it will stop advertising and disable alarm mode to enter into power saving mode until device moves.</string>
-    <string-array name="alarm_notify_type">
-        <item>Silent</item>
-        <item>LED</item>
-        <item>Vibration</item>
-        <item>Buzzer</item>
-        <item>LED+Vibration</item>
-        <item>LED+Buzzer</item>
+    <string name="trigger_magnetic_tips">*The Beacon will %s when magnet is absent, and %s advertising immediately when magnet is present.</string>
+    <string name="trigger_motion_tips">*The Beacon will %s after device keep static for %ds, and %s advertising immediately after device moves.</string>
+    <string-array name="slot_type">
+        <item>TLM</item>
+        <item>UID</item>
+        <item>URL</item>
+        <item>iBeacon</item>
+        <item>Tag info</item>
+        <item>No data</item>
     </string-array>
 </resources>

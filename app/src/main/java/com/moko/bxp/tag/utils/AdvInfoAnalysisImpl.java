@@ -7,13 +7,11 @@ import android.text.TextUtils;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.entity.AdvInfo;
 import com.moko.support.entity.DeviceInfo;
-import com.moko.support.entity.OrderServices;
 import com.moko.support.service.DeviceInfoAnalysis;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import no.nordicsemi.android.support.v18.scanner.ScanRecord;
@@ -29,61 +27,86 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
 
     @Override
     public AdvInfo parseDeviceInfo(DeviceInfo deviceInfo) {
+        int battery = -1;
         ScanResult result = deviceInfo.scanResult;
         ScanRecord record = result.getScanRecord();
         Map<ParcelUuid, byte[]> map = record.getServiceData();
-        if (map == null || map.isEmpty()) return null;
-        int battery = -1;
-        int triggerStatus = -1;
-        int triggerCount = -1;
-        String deviceId = "";
-//        String beaconTemp = "";
-        int accX = 0;
-        int accY = 0;
-        int accZ = 0;
-        int accShown = 0;
-        int deviceInfoFrame = -1;
-        int triggerTypeFrame = -1;
-        int rangeData = -1;
-        int verifyEnable = 0;
-        int deviceType = 0;
-        String dataStr = "";
-        byte[] dataBytes = new byte[0];
-        final Iterator iterator = map.keySet().iterator();
-        while (iterator.hasNext()) {
-            final ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
-            if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_DEVICE.getUuid())) {
-                byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_DEVICE.getUuid()));
-                if (data == null || data.length == 0 || data.length < 21)
-                    continue;
-                deviceInfoFrame = data[0] & 0xFF;
-                accX = MokoUtils.toIntSigned(Arrays.copyOfRange(data, 4, 6));
-                accY = MokoUtils.toIntSigned(Arrays.copyOfRange(data, 6, 8));
-                accZ = MokoUtils.toIntSigned(Arrays.copyOfRange(data, 8, 10));
-//                int tempInteger = data[10];
-//                int tempDecimal = data[11] & 0xFF;
-//                beaconTemp = String.format("%d.%d", tempInteger, tempDecimal);
-                rangeData = data[12];
-                battery = MokoUtils.toInt(Arrays.copyOfRange(data, 13, 15));
-            }
-            if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_TRIGGER.getUuid())) {
-                byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_TRIGGER.getUuid()));
-                if (data == null || data.length == 0 || data.length < 5)
-                    continue;
-                dataStr = MokoUtils.bytesToHexString(data);
-                dataBytes = data;
-                triggerTypeFrame = data[0] & 0xFF;
-                verifyEnable = (data[1] & 0x01) == 0x01 ? 1 : 0;
-                triggerStatus = (data[1] & 0x02) == 0x02 ? 1 : 0;
-                triggerCount = MokoUtils.toInt(Arrays.copyOfRange(data, 2, 4));
-                deviceId = String.format("0x%s", MokoUtils.bytesToHexString(Arrays.copyOfRange(data, 4, data.length - 2)).toUpperCase());
-                deviceType = data[data.length - 2] & 0xFF;
-            }
+        // filter
+        boolean isEddystone = false;
+        boolean isTagInfo = false;
+        byte[] values = null;
+        int type = -1;
+        if (TextUtils.isEmpty(deviceInfo.name) || !deviceInfo.name.contains("Tag"))
+            return null;
+        if (map != null && !map.isEmpty()) {
+            Iterator iterator = map.keySet().iterator();
+            while (iterator.hasNext()) {
+                ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
+                if (parcelUuid.toString().startsWith("0000feaa")) {
+                    isEddystone = true;
+                    byte[] bytes = map.get(parcelUuid);
+                    if (bytes != null) {
+                        switch (bytes[0] & 0xff) {
+                            case AdvInfo.VALID_DATA_FRAME_TYPE_UID:
+                                if (bytes.length != 20)
+                                    return null;
+                                type = AdvInfo.VALID_DATA_FRAME_TYPE_UID;
+                                // 00ee0102030405060708090a0102030405060000
+                                break;
+                            case AdvInfo.VALID_DATA_FRAME_TYPE_URL:
+                                if (bytes.length > 20)
+                                    return null;
+                                type = AdvInfo.VALID_DATA_FRAME_TYPE_URL;
+                                // 100c0141424344454609
+                                break;
+                            case AdvInfo.VALID_DATA_FRAME_TYPE_TLM:
+                                if (bytes.length != 14)
+                                    return null;
+                                type = AdvInfo.VALID_DATA_FRAME_TYPE_TLM;
+                                // 20000d18158000017eb20002e754
+                                break;
+                        }
+                    }
+                    values = bytes;
+                    break;
+                } else if (parcelUuid.toString().startsWith("0000feab")) {
+                    isTagInfo = true;
+                    byte[] bytes = map.get(parcelUuid);
+                    if (bytes != null) {
+                        switch (bytes[0] & 0xff) {
+                            case AdvInfo.VALID_DATA_FRAME_TYPE_IBEACON:
+                                if (bytes.length != 23)
+                                    return null;
+                                type = AdvInfo.VALID_DATA_FRAME_TYPE_IBEACON;
+                                // 50ee0c0102030405060708090a0b0c0d0e0f1000010002
+                                break;
+                        }
+                    }
+                    values = bytes;
+                    break;
+                } else if (parcelUuid.toString().startsWith("0000ea01")) {
+                    isTagInfo = true;
+                    byte[] bytes = map.get(parcelUuid);
+                    if (bytes != null) {
+                        switch (bytes[0] & 0xff) {
+                            case AdvInfo.VALID_DATA_FRAME_TYPE_TAG_INFO:
+                                if (bytes.length != 21)
+                                    return null;
+                                type = AdvInfo.VALID_DATA_FRAME_TYPE_TAG_INFO;
+                                battery = MokoUtils.toInt(Arrays.copyOfRange(bytes, 16, 18));
+                                break;
+                        }
+                    }
+                    values = bytes;
+                    break;
+                }
 
+            }
         }
-        if (accX != 0 || accY != 0 || accZ != 0) {
-            accShown = 1;
+        if ((!isEddystone && !isTagInfo) || values == null || type == -1) {
+            return null;
         }
+        // avoid repeat
         AdvInfo advInfo;
         if (beaconXInfoHashMap.containsKey(deviceInfo.mac)) {
             advInfo = beaconXInfoHashMap.get(deviceInfo.mac);
@@ -96,11 +119,6 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             }
             if (result.isConnectable())
                 advInfo.connectState = 1;
-            advInfo.txPower = record.getTxPowerLevel();
-            advInfo.rangingData = rangeData;
-            advInfo.deviceId = deviceId;
-            advInfo.verifyEnable = verifyEnable;
-            advInfo.deviceType = deviceType;
             advInfo.scanRecord = deviceInfo.scanRecord;
             long currentTime = SystemClock.elapsedRealtime();
             long intervalTime = currentTime - advInfo.scanTime;
@@ -121,32 +139,28 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             } else {
                 advInfo.connectState = 0;
             }
-            advInfo.txPower = record.getTxPowerLevel();
-            advInfo.rangingData = rangeData;
-            advInfo.deviceId = deviceId;
-            advInfo.verifyEnable = verifyEnable;
-            advInfo.deviceType = deviceType;
             advInfo.scanRecord = deviceInfo.scanRecord;
             advInfo.scanTime = SystemClock.elapsedRealtime();
-            advInfo.triggerDataHashMap = new LinkedHashMap<>();
+            advInfo.validDataHashMap = new HashMap<>();
             beaconXInfoHashMap.put(deviceInfo.mac, advInfo);
         }
-        if (triggerTypeFrame > 0) {
-            AdvInfo.TriggerData triggerData = new AdvInfo.TriggerData();
-            triggerData.dataStr = dataStr;
-            triggerData.dataBytes = dataBytes;
-            triggerData.triggerType = triggerTypeFrame;
-            triggerData.triggerStatus = triggerStatus;
-            triggerData.triggerCount = triggerCount;
-            advInfo.triggerDataHashMap.put(triggerTypeFrame, triggerData);
-        }
-        advInfo.deviceInfoFrame = deviceInfoFrame;
-        if (deviceInfoFrame == 0) {
-            advInfo.rangingData = rangeData;
-            advInfo.accX = accX;
-            advInfo.accY = accY;
-            advInfo.accZ = accZ;
-            advInfo.accShown = accShown;
+        String data = MokoUtils.bytesToHexString(values);
+        if (advInfo.validDataHashMap.containsKey(data)) {
+            return advInfo;
+        } else {
+            AdvInfo.ValidData validData = new AdvInfo.ValidData();
+            validData.data = data;
+            validData.type = type;
+            validData.txPower = record.getTxPowerLevel();
+            if (type == AdvInfo.VALID_DATA_FRAME_TYPE_TLM) {
+                advInfo.validDataHashMap.put(String.valueOf(type), validData);
+                return advInfo;
+            }
+            if (type == AdvInfo.VALID_DATA_FRAME_TYPE_TAG_INFO) {
+                advInfo.validDataHashMap.put(String.valueOf(type), validData);
+                return advInfo;
+            }
+            advInfo.validDataHashMap.put(String.valueOf(type), validData);
         }
         return advInfo;
     }

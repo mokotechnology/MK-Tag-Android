@@ -124,6 +124,53 @@
                 </LinearLayout>
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_radius_white_bg"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="Motion trigger count"
+                    android:textColor="@color/black_333333"
+                    android:textSize="17sp"
+                     />
+
+                <TextView
+                    android:id="@+id/tv_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/shape_radius_blue_btn_bg"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClear"
+                    android:paddingLeft="12dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="12dp"
+                    android:paddingBottom="5dp"
+                    android:text="Clear"
+                    android:textColor="@color/white_ffffff"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_trigger_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/tv_clear"
+                    android:gravity="center"
+                    android:text="100"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -140,7 +187,7 @@
                     android:text="Sensor parameters"
                     android:textColor="@color/black_333333"
                     android:textSize="17sp"
-                    android:textStyle="bold"
+
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
