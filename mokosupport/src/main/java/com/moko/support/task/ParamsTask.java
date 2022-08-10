@@ -63,17 +63,15 @@ public class ParamsTask extends OrderTask {
 
     public void setAxisParams(@IntRange(from = 0, to = 4) int rate,
                               @IntRange(from = 0, to = 3) int scale,
-                              @IntRange(from = 1, to = 2048) int sensitivity) {
-        byte[] paramsBytes = MokoUtils.toByteArray(sensitivity, 2);
+                              @IntRange(from = 1, to = 255) int sensitivity) {
         data = new byte[]{
                 (byte) 0xEA,
                 (byte) 0x01,
                 (byte) ParamsKeyEnum.KEY_AXIS_PARAMS.getParamsKey(),
-                (byte) 0x04,
+                (byte) 0x03,
                 (byte) rate,
                 (byte) scale,
-                paramsBytes[0],
-                paramsBytes[1],
+                (byte) sensitivity
         };
         response.responseValue = data;
     }

@@ -85,7 +85,7 @@ public class SensorConfigActivity extends BaseActivity {
                                     case KEY_SENSOR_TYPE:
                                         if (length == 2) {
                                             // bit0 表示带三轴 bit1 表示带温湿度 bit2 表示带光感
-                                            tvAccConfig.setVisibility((value[1] & 0x01) == 0x01 ? View.VISIBLE : View.GONE);
+                                            tvAccConfig.setVisibility((value[5] & 0x01) == 0x01 ? View.VISIBLE : View.GONE);
                                         }
                                         break;
                                 }

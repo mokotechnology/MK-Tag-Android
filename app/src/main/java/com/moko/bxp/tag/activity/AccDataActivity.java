@@ -69,7 +69,6 @@ public class AccDataActivity extends BaseActivity {
     private int mSelectedRate;
     private int mSelectedScale;
     public boolean isConfigError;
-    private int mAccType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +100,6 @@ public class AccDataActivity extends BaseActivity {
         } else {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
-            orderTasks.add(OrderTaskAssembler.getAccType());
             orderTasks.add(OrderTaskAssembler.getMotionTriggerCount());
             orderTasks.add(OrderTaskAssembler.getAxisParams());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
@@ -152,10 +150,6 @@ public class AccDataActivity extends BaseActivity {
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_AXIS_PARAMS:
-                                        if (result == 0) {
-                                            isConfigError = true;
-                                        }
-                                        break;
                                     case KEY_MOTION_TRIGGER_COUNT:
                                         if (result == 0) {
                                             isConfigError = true;
@@ -171,15 +165,6 @@ public class AccDataActivity extends BaseActivity {
                             if (flag == 0x00) {
                                 // read
                                 switch (configKeyEnum) {
-                                    case KEY_ACC_TYPE:
-                                        if (length != 1)
-                                            return;
-                                        mAccType = value[4] & 0xFF;
-                                        if (mAccType == 0)
-                                            etMotionThreshold.setHint("1~2048");
-                                        else
-                                            etMotionThreshold.setHint("1~255");
-                                        break;
                                     case KEY_MOTION_TRIGGER_COUNT:
                                         if (length != 2)
                                             return;
@@ -187,21 +172,21 @@ public class AccDataActivity extends BaseActivity {
                                         tvTriggerCount.setText(String.valueOf(count));
                                         break;
                                     case KEY_AXIS_PARAMS:
-                                        if (length == 4) {
+                                        if (length == 3) {
                                             mSelectedRate = value[4] & 0xFF;
                                             mSelectedScale = value[5] & 0xFF;
-                                            int threshold = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
+                                            int threshold = value[6] & 0xFF;
                                             tvAxisDataRate.setText(axisDataRates.get(mSelectedRate));
                                             tvAxisScale.setText(axisScales.get(mSelectedScale));
                                             etMotionThreshold.setText(String.valueOf(threshold));
                                             if (mSelectedScale == 0) {
-                                                tvMotionThresholdUnit.setText(mAccType == 0 ? "x1mg" : "x3.91mg");
+                                                tvMotionThresholdUnit.setText("x3.91mg");
                                             } else if (mSelectedScale == 1) {
-                                                tvMotionThresholdUnit.setText(mAccType == 0 ? "x2mg" : "x7.81mg");
+                                                tvMotionThresholdUnit.setText("x7.81mg");
                                             } else if (mSelectedScale == 2) {
-                                                tvMotionThresholdUnit.setText(mAccType == 0 ? "x4mg" : "x15.63mg");
+                                                tvMotionThresholdUnit.setText("x15.63mg");
                                             } else if (mSelectedScale == 3) {
-                                                tvMotionThresholdUnit.setText(mAccType == 0 ? "x12mg" : "x31.25mg");
+                                                tvMotionThresholdUnit.setText("x31.25mg");
                                             }
                                         }
                                         break;
@@ -298,7 +283,7 @@ public class AccDataActivity extends BaseActivity {
             return;
         }
         int threshold = Integer.parseInt(thresholdStr);
-        if (threshold < 1 || threshold > (mAccType == 0 ? 2048 : 255)) {
+        if (threshold < 1 || threshold > 255) {
             ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
             return;
         }
@@ -346,13 +331,13 @@ public class AccDataActivity extends BaseActivity {
         scaleDialog.setListener(value -> {
             mSelectedScale = value;
             if (mSelectedScale == 0) {
-                tvMotionThresholdUnit.setText(mAccType == 0 ? "x1mg" : "x3.91mg");
+                tvMotionThresholdUnit.setText("x3.91mg");
             } else if (mSelectedScale == 1) {
-                tvMotionThresholdUnit.setText(mAccType == 0 ? "x2mg" : "x7.81mg");
+                tvMotionThresholdUnit.setText("x7.81mg");
             } else if (mSelectedScale == 2) {
-                tvMotionThresholdUnit.setText(mAccType == 0 ? "x4mg" : "x15.63mg");
+                tvMotionThresholdUnit.setText("x15.63mg");
             } else if (mSelectedScale == 3) {
-                tvMotionThresholdUnit.setText(mAccType == 0 ? "x12mg" : "x31.25mg");
+                tvMotionThresholdUnit.setText("x31.25mg");
             }
             tvAxisScale.setText(axisScales.get(value));
         });

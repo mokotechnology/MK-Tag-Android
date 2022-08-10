@@ -31,19 +31,6 @@
 
     <View style="@style/divider_line" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:clickable="true"
-        android:drawableRight="@drawable/arrow_right"
-        android:gravity="center_vertical"
-        android:onClick="onTurnOffBeacon"
-        android:text="Turn off Beacon"
-        android:textColor="@color/black_333333"
-        android:textSize="15sp" />
-
-    <View style="@style/divider_line" />
-
     <LinearLayout
         android:id="@+id/ll_reset"
         android:layout_width="match_parent"

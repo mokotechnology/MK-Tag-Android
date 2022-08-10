@@ -3,12 +3,13 @@ package com.moko.support;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.support.entity.ParamsKeyEnum;
 import com.moko.support.task.GetFirmwareRevisionTask;
-import com.moko.support.task.GetMagnetStatusTask;
 import com.moko.support.task.GetHardwareRevisionTask;
+import com.moko.support.task.GetMagnetStatusTask;
 import com.moko.support.task.GetManufacturerNameTask;
 import com.moko.support.task.GetModelNumberTask;
 import com.moko.support.task.GetSerialNumberTask;
 import com.moko.support.task.GetSoftwareRevisionTask;
+import com.moko.support.task.OTAControlTask;
 import com.moko.support.task.ParamsTask;
 import com.moko.support.task.PasswordTask;
 
@@ -79,7 +80,7 @@ public class OrderTaskAssembler {
 
     public static OrderTask setAxisParams(@IntRange(from = 0, to = 4) int rate,
                                           @IntRange(from = 0, to = 3) int scale,
-                                          @IntRange(from = 1, to = 2048) int sensitivity) {
+                                          @IntRange(from = 1, to = 255) int sensitivity) {
         ParamsTask task = new ParamsTask();
         task.setAxisParams(rate, scale, sensitivity);
         return task;
@@ -246,6 +247,7 @@ public class OrderTaskAssembler {
         task.getData(ParamsKeyEnum.KEY_TRIGGER_LED_INDICATOR_ENABLE);
         return task;
     }
+
     public static OrderTask setTriggerLEDIndicatorEnable(@IntRange(from = 0, to = 1) int enable) {
         ParamsTask task = new ParamsTask();
         task.setTriggerLEDIndicatorEnable(enable);
@@ -342,6 +344,18 @@ public class OrderTaskAssembler {
                                                          @IntRange(from = 0, to = 65535) int duration) {
         ParamsTask task = new ParamsTask();
         task.setSlotTriggerMagneticParams(slot, status, duration);
+        return task;
+    }
+
+    public static OrderTask startDFU() {
+        OTAControlTask task = new OTAControlTask();
+        task.startDFU();
+        return task;
+    }
+
+    public static OrderTask endDFU() {
+        OTAControlTask task = new OTAControlTask();
+        task.endDFU();
         return task;
     }
 }
