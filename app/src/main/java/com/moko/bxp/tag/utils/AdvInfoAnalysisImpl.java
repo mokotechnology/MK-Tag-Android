@@ -36,8 +36,6 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
         boolean isTagInfo = false;
         byte[] values = null;
         int type = -1;
-        if (TextUtils.isEmpty(deviceInfo.name) || !deviceInfo.name.contains("Tag"))
-            return null;
         if (map != null && !map.isEmpty()) {
             Iterator iterator = map.keySet().iterator();
             while (iterator.hasNext()) {
@@ -90,7 +88,7 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
                     if (bytes != null) {
                         switch (bytes[0] & 0xff) {
                             case AdvInfo.VALID_DATA_FRAME_TYPE_TAG_INFO:
-                                if (bytes.length != 21)
+                                if (bytes.length < 19)
                                     return null;
                                 type = AdvInfo.VALID_DATA_FRAME_TYPE_TAG_INFO;
                                 battery = MokoUtils.toInt(Arrays.copyOfRange(bytes, 16, 18));

@@ -37,6 +37,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
         helper.setText(R.id.tv_battery, item.battery < 0 ? "N/A" : String.format("%dmV", item.battery));
         helper.addOnClickListener(R.id.tv_connect);
         helper.setGone(R.id.tv_connect, item.connectState > 0);
+        helper.setVisible(R.id.tv_tag_id, false);
         LinearLayout parent = helper.getView(R.id.ll_adv_info);
         parent.removeAllViews();
         ArrayList<AdvInfo.ValidData> validDataList = new ArrayList<>(item.validDataHashMap.values());

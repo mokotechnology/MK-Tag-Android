@@ -157,7 +157,7 @@ public class TriggerMotionFragment extends Fragment {
     }
 
     public int getStaticDuration() {
-        String staticStr = etStatic.getText().toString();
+        String staticStr = mIsStart ? etStatic.getText().toString() : etStopStatic.getText().toString();
         if (TextUtils.isEmpty(staticStr)) {
             ToastUtils.showToast(getActivity(), "The static duration can not be empty.");
             return -1;

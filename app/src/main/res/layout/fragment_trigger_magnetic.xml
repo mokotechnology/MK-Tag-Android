@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="0~65535"
+            android:inputType="number"
             android:textColor="@color/black_333333"
             android:textSize="13sp"
             app:layout_constraintBaseline_toBaselineOf="@id/start_adv_for"
