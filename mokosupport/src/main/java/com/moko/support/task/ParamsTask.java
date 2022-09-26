@@ -185,7 +185,7 @@ public class ParamsTask extends OrderTask {
                 urlContentHex = MokoUtils.string2Hex(urlContent);
             } else {
                 String content = urlContent.substring(0, urlContent.lastIndexOf("."));
-                urlContentHex = MokoUtils.string2Hex(content + MokoUtils.int2HexString(urlExpansionEnum.getUrlExpanType()));
+                urlContentHex = MokoUtils.string2Hex(content) + MokoUtils.int2HexString(urlExpansionEnum.getUrlExpanType());
             }
         } else {
             urlContentHex = MokoUtils.string2Hex(urlContent);

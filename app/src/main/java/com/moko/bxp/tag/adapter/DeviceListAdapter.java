@@ -32,7 +32,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
     protected void convert(BaseViewHolder helper, AdvInfo item) {
         helper.setText(R.id.tv_name, TextUtils.isEmpty(item.name) ? "N/A" : item.name);
         helper.setText(R.id.tv_mac, "MAC:" + item.mac);
-        helper.setText(R.id.tv_rssi, item.rssi + "");
+        helper.setText(R.id.tv_rssi, String.format("%ddBm", item.rssi));
         helper.setText(R.id.tv_interval_time, item.intervalTime == 0 ? "<->N/A" : String.format("<->%dms", item.intervalTime));
         helper.setText(R.id.tv_battery, item.battery < 0 ? "N/A" : String.format("%dmV", item.battery));
         helper.addOnClickListener(R.id.tv_connect);
@@ -117,7 +117,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
         tv_rssi_1m.setText(String.format("%sdBm", iBeacon.rssi));
         tv_tx_power.setText(String.format("%sdBm", iBeacon.txPower));
         tv_proximity_state.setText(iBeacon.distanceDesc);
-        tv_uuid.setText(iBeacon.uuid.toUpperCase());
+        tv_uuid.setText(iBeacon.uuid);
         tv_major.setText(iBeacon.major);
         tv_minor.setText(iBeacon.minor);
         return view;
@@ -127,14 +127,20 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
         View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_tag_info, null);
         TextView tvMagneticStatus = view.findViewById(R.id.tv_magnetic_status);
         TextView tvMagneticTriggerCount = view.findViewById(R.id.tv_magnetic_trigger_count);
+        LinearLayout llAccInfo = view.findViewById(R.id.ll_acc_info);
         TextView tvMotionStatus = view.findViewById(R.id.tv_motion_status);
         TextView tvMotionTriggerCount = view.findViewById(R.id.tv_motion_trigger_count);
         TextView tvAcc = view.findViewById(R.id.tv_acc);
         tvMagneticStatus.setText(tag.hallStatus);
         tvMagneticTriggerCount.setText(tag.hallTriggerCount);
-        tvMotionStatus.setText(tag.motionStatus);
-        tvMotionTriggerCount.setText(tag.motionTriggerCount);
-        tvAcc.setText(String.format("%s;%s;%s", tag.accX, tag.accY, tag.accZ));
+        if (tag.isAccEnable) {
+            llAccInfo.setVisibility(View.VISIBLE);
+            tvMotionStatus.setText(tag.motionStatus);
+            tvMotionTriggerCount.setText(tag.motionTriggerCount);
+            tvAcc.setText(String.format("%s;%s;%s", tag.accX, tag.accY, tag.accZ));
+        } else {
+            llAccInfo.setVisibility(View.GONE);
+        }
         return view;
     }
 }

@@ -85,6 +85,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private int mDisconnectType;
     public boolean isConfigError;
     private boolean isVerifyPassword;
+    public boolean isSupportAcc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +110,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.getAllSlot());
         orderTasks.add(OrderTaskAssembler.getDeviceMac());
+        orderTasks.add(OrderTaskAssembler.getSensorType());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -350,6 +352,12 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             stringBuffer.insert(14, ":");
                                             mDeviceMac = stringBuffer.toString().toUpperCase();
                                             deviceFragment.setMac(mDeviceMac);
+                                        }
+                                        break;
+                                    case KEY_SENSOR_TYPE:
+                                        if (length == 2) {
+                                            // bit0 表示带三轴 bit1 表示带温湿度 bit2 表示带光感
+                                            isSupportAcc = (value[5] & 0x01) == 0x01;
                                         }
                                         break;
                                     case KEY_BATTERY_VOLTAGE:

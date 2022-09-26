@@ -6,6 +6,7 @@ import java.io.Serializable;
 public class AdvTag implements Serializable {
     public String hallStatus;
     public String motionStatus;
+    public boolean isAccEnable;
     public String hallTriggerCount;
     public String motionTriggerCount;
     public String accX;

@@ -19,6 +19,7 @@ public class AppConstants {
     public static final String EXTRA_KEY_RESPONSE_ORDER_TYPE = "EXTRA_KEY_RESPONSE_ORDER_TYPE";
     public static final String EXTRA_KEY_SLOT_TYPE = "EXTRA_KEY_SLOT_TYPE";
     public static final String EXTRA_KEY_SLOT_DATA = "EXTRA_KEY_SLOT_DATA";
+    public static final String EXTRA_KEY_SUPPORT_ACC = "EXTRA_KEY_SUPPORT_ACC";
     public static final String EXTRA_KEY_PASSWORD = "EXTRA_KEY_PASSWORD";
     public static final String EXTRA_KEY_DEVICE_TYPE = "EXTRA_KEY_DEVICE_TYPE";
     public static final String EXTRA_KEY_TRIGGER_TYPE = "EXTRA_KEY_TRIGGER_TYPE";

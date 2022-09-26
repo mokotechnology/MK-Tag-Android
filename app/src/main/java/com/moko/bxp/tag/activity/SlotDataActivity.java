@@ -84,6 +84,8 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     private int triggerTypeSelected;
     public SlotFrameTypeEnum currentFrameTypeEnum;
     public boolean isConfigError;
+    private boolean isTriggerEnable;
+    private boolean isSupportAcc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         ButterKnife.bind(this);
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotData = (SlotData) getIntent().getSerializableExtra(AppConstants.EXTRA_KEY_SLOT_DATA);
+            isSupportAcc = getIntent().getBooleanExtra(AppConstants.EXTRA_KEY_SUPPORT_ACC, false);
             currentFrameTypeEnum = slotData.frameTypeEnum;
             triggerType = slotData.triggerType;
             XLog.i(slotData.toString());
@@ -121,9 +124,11 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
             rlTriggerSwitch.setVisibility(View.GONE);
         }
         if (triggerType > 0) {
+            isTriggerEnable = true;
             ivTrigger.setImageResource(R.drawable.ic_checked);
             rlTrigger.setVisibility(View.VISIBLE);
         } else {
+            isTriggerEnable = false;
             ivTrigger.setImageResource(R.drawable.ic_unchecked);
             rlTrigger.setVisibility(View.GONE);
         }
@@ -313,15 +318,13 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     public void onTrigger(View view) {
         if (isWindowLocked())
             return;
-        if (triggerType > 0) {
-            triggerType = 0;
+        isTriggerEnable = !isTriggerEnable;
+        if (isTriggerEnable) {
             ivTrigger.setImageResource(R.drawable.ic_unchecked);
             rlTrigger.setVisibility(View.GONE);
         } else {
             ivTrigger.setImageResource(R.drawable.ic_checked);
             rlTrigger.setVisibility(View.VISIBLE);
-            triggerType = TRIGGER_TYPE_MAGNETIC;
-            showTriggerFragment();
         }
     }
 
@@ -372,6 +375,8 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
 
     public void onTriggerType(View view) {
         if (isWindowLocked())
+            return;
+        if (!isSupportAcc)
             return;
         // 选择触发条件
         BottomDialog dialog = new BottomDialog();

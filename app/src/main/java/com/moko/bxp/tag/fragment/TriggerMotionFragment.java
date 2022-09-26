@@ -40,8 +40,8 @@ public class TriggerMotionFragment extends Fragment {
 
     private SlotDataActivity activity;
     private boolean mIsStart = true;
-    private int mDuration = 30;
-    private int mStatic = 60;
+    private String mDuration = "30";
+    private String mStatic = "60";
 
 
     public TriggerMotionFragment() {
@@ -68,13 +68,19 @@ public class TriggerMotionFragment extends Fragment {
         if (activity.slotData.triggerType == 5) {
             // 移动触发
             mIsStart = activity.slotData.triggerAdvStatus == 1;
-            mDuration = activity.slotData.triggerAdvDuration;
-            mStatic = activity.slotData.staticDuration;
+            mDuration = String.valueOf(activity.slotData.triggerAdvDuration);
+            mStatic = String.valueOf(activity.slotData.staticDuration);
         }
         changeTips();
-        etDuration.setText(String.valueOf(mDuration));
-        etStatic.setText(String.valueOf(mStatic));
-        etStopStatic.setText(String.valueOf(mStatic));
+        if (mIsStart) {
+            etDuration.setText(String.valueOf(mDuration));
+            etStatic.setText(String.valueOf(mStatic));
+            etStopStatic.setText("60");
+        } else {
+            etDuration.setText("30");
+            etStatic.setText("60");
+            etStopStatic.setText(String.valueOf(mStatic));
+        }
         etDuration.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -89,10 +95,8 @@ public class TriggerMotionFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String durationStr = s.toString();
-                if (!TextUtils.isEmpty(durationStr)) {
-                    mDuration = Integer.parseInt(durationStr);
-                    changeTips();
-                }
+                mDuration = durationStr;
+                changeTips();
             }
         });
         etStatic.addTextChangedListener(new TextWatcher() {
@@ -109,8 +113,8 @@ public class TriggerMotionFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String staticStr = s.toString();
-                if (mIsStart && !TextUtils.isEmpty(staticStr)) {
-                    mStatic = Integer.parseInt(staticStr);
+                if (mIsStart) {
+                    mStatic = staticStr;
                     changeTips();
                 }
             }
@@ -129,8 +133,8 @@ public class TriggerMotionFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String staticStr = s.toString();
-                if (!mIsStart && !TextUtils.isEmpty(staticStr)) {
-                    mStatic = Integer.parseInt(staticStr);
+                if (!mIsStart) {
+                    mStatic = staticStr;
                     changeTips();
                 }
             }
@@ -190,20 +194,22 @@ public class TriggerMotionFragment extends Fragment {
 
     public void motionStart() {
         mIsStart = true;
+        mStatic = etStatic.getText().toString();
         changeTips();
     }
 
     public void motionStop() {
         mIsStart = false;
+        mStatic = etStopStatic.getText().toString();
         changeTips();
     }
 
 
     private void changeTips() {
         String triggerTips = getString(R.string.trigger_motion_tips, mIsStart ?
-                        (mDuration == 0 ?
+                        ("0".equals(mDuration) ?
                                 "start advertising"
-                                : String.format("start advertising for %ds", mDuration))
+                                : String.format("start advertising for %ss", mDuration))
                         : "stop advertising", mStatic,
                 mIsStart ? "stop" : "start");
         tvTriggerTips.setText(triggerTips);

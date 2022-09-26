@@ -36,7 +36,7 @@ public class TriggerMagneticFragment extends Fragment {
 
     private SlotDataActivity activity;
     private boolean mIsStart = true;
-    private int mDuration = 30;
+    private String mDuration = "30";
 
 
     public TriggerMagneticFragment() {
@@ -63,10 +63,10 @@ public class TriggerMagneticFragment extends Fragment {
         if (activity.slotData.triggerType == 6) {
             // 霍尔触发
             mIsStart = activity.slotData.triggerAdvStatus == 1;
-            mDuration = activity.slotData.triggerAdvDuration;
+            mDuration = String.valueOf(activity.slotData.triggerAdvDuration);
         }
         changeTips();
-        etDuration.setText(String.valueOf(mDuration));
+        etDuration.setText(mDuration);
         etDuration.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -81,10 +81,8 @@ public class TriggerMagneticFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String durationStr = s.toString();
-                if (!TextUtils.isEmpty(durationStr)) {
-                    mDuration = Integer.parseInt(durationStr);
-                    changeTips();
-                }
+                mDuration = durationStr;
+                changeTips();
             }
         });
         return view;
@@ -139,7 +137,7 @@ public class TriggerMagneticFragment extends Fragment {
 
     private void changeTips() {
         String triggerTips = getString(R.string.trigger_magnetic_tips, mIsStart ?
-                (mDuration == 0 ? "start advertising" : String.format("start advertising for %ds", mDuration)) :
+                ("0".equals(mDuration) ? "start advertising" : String.format("start advertising for %ss", mDuration)) :
                 "stop advertising", mIsStart ? "stop" : "start");
         tvTriggerTips.setText(triggerTips);
         ivStart.setImageResource(mIsStart ? R.drawable.icon_selected : R.drawable.icon_unselected);

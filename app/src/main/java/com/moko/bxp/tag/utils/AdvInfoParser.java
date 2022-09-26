@@ -79,7 +79,13 @@ public class AdvInfoParser {
         AdvIBeacon iBeacon = new AdvIBeacon();
         int rssi_1m = Integer.parseInt(data.substring(2, 4), 16);
         iBeacon.rssi = (byte) rssi_1m + "";
-        iBeacon.uuid = data.substring(6, 38).toUpperCase();
+        String uuid = data.substring(6, 38).toLowerCase();
+        StringBuilder stringBuilder = new StringBuilder(uuid);
+        stringBuilder.insert(8, "-");
+        stringBuilder.insert(13, "-");
+        stringBuilder.insert(18, "-");
+        stringBuilder.insert(23, "-");
+        iBeacon.uuid = stringBuilder.toString();
         iBeacon.major = Integer.parseInt(data.substring(38, 42), 16) + "";
         iBeacon.minor = Integer.parseInt(data.substring(42, 46), 16) + "";
         double distance = MokoUtils.getDistance(rssi, Math.abs((byte) rssi_1m));
@@ -98,12 +104,15 @@ public class AdvInfoParser {
     public static AdvTag getTagInfo(String data) {
         AdvTag advTag = new AdvTag();
         advTag.hallStatus = (Integer.parseInt(data.substring(2, 4), 16) & 0x01) == 1 ? "Absent" : "Present";
-        advTag.motionStatus = (Integer.parseInt(data.substring(2, 4), 16) & 0x02) == 2 ? "In progress" : "No Movement";
         advTag.hallTriggerCount = String.valueOf(Integer.parseInt(data.substring(4, 8), 16));
-        advTag.motionTriggerCount = String.valueOf(Integer.parseInt(data.substring(8, 12), 16));
-        advTag.accX = String.format("X:%dmg", MokoUtils.toIntSigned(MokoUtils.hex2bytes(data.substring(12, 16))));
-        advTag.accY = String.format("Y:%dmg", MokoUtils.toIntSigned(MokoUtils.hex2bytes(data.substring(16, 20))));
-        advTag.accZ = String.format("Z:%dmg", MokoUtils.toIntSigned(MokoUtils.hex2bytes(data.substring(20, 24))));
+        advTag.isAccEnable = (Integer.parseInt(data.substring(2, 4), 16) & 0x04) == 4;
+        if (advTag.isAccEnable) {
+            advTag.motionStatus = (Integer.parseInt(data.substring(2, 4), 16) & 0x02) == 2 ? "In progress" : "No Movement";
+            advTag.motionTriggerCount = String.valueOf(Integer.parseInt(data.substring(8, 12), 16));
+            advTag.accX = String.format("X:%dmg", MokoUtils.toIntSigned(MokoUtils.hex2bytes(data.substring(12, 16))));
+            advTag.accY = String.format("Y:%dmg", MokoUtils.toIntSigned(MokoUtils.hex2bytes(data.substring(16, 20))));
+            advTag.accZ = String.format("Z:%dmg", MokoUtils.toIntSigned(MokoUtils.hex2bytes(data.substring(20, 24))));
+        }
         return advTag;
     }
 }
