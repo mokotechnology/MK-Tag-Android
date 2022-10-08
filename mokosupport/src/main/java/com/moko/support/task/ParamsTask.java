@@ -35,6 +35,7 @@ public class ParamsTask extends OrderTask {
             case KEY_MOTION_TRIGGER_COUNT:
             case KEY_MAGNETIC_TRIGGER_COUNT:
             case KEY_TRIGGER_LED_INDICATOR_ENABLE:
+            case KEY_ADV_MODE:
                 createGetParamsData(key.getParamsKey());
                 break;
         }
@@ -349,6 +350,17 @@ public class ParamsTask extends OrderTask {
                 (byte) status,
                 durationBytes[0],
                 durationBytes[1]
+        };
+        response.responseValue = data;
+    }
+
+    public void setAdvMode(int advMode) {
+        data = new byte[]{
+                (byte) 0xEA,
+                (byte) 0x01,
+                (byte) ParamsKeyEnum.KEY_ADV_MODE.getParamsKey(),
+                (byte) 0x01,
+                (byte) advMode
         };
         response.responseValue = data;
     }

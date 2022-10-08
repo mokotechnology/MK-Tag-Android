@@ -76,7 +76,7 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
             etAdvInterval.setText("10");
             etAdvDuration.setText("10");
             etStandbyDuration.setText("0");
-            sbTxPower.setProgress(6);
+            sbTxPower.setProgress(5);
         } else {
             etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
             etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
@@ -198,7 +198,7 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
             etAdvInterval.setText("10");
             etAdvDuration.setText("10");
             etStandbyDuration.setText("0");
-            sbTxPower.setProgress(6);
+            sbTxPower.setProgress(5);
         }
     }
 }

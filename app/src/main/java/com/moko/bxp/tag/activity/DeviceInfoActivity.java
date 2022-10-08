@@ -31,6 +31,7 @@ import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
+import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.dialog.ModifyPasswordDialog;
 import com.moko.bxp.tag.fragment.DeviceFragment;
@@ -86,6 +87,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public boolean isConfigError;
     private boolean isVerifyPassword;
     public boolean isSupportAcc;
+    private ArrayList<String> mAdvModeList;
+    private int mAdvModeSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,9 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             MokoSupport.getInstance().enableBluetooth();
             return;
         }
+        mAdvModeList = new ArrayList<>();
+        mAdvModeList.add("Legacy");
+        mAdvModeList.add("Long Range");
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.getAllSlot());
         orderTasks.add(OrderTaskAssembler.getDeviceMac());
@@ -366,6 +372,12 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             deviceFragment.setBattery(battery);
                                         }
                                         break;
+                                    case KEY_ADV_MODE:
+                                        if (length == 1) {
+                                            mAdvModeSelected = value[4];
+                                            settingFragment.setAdvMode(mAdvModeList.get(mAdvModeSelected));
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -414,6 +426,11 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         orderTasks.add(OrderTaskAssembler.getProductDate());
         orderTasks.add(OrderTaskAssembler.getManufacturer());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+    }
+
+    private void getAdvMode() {
+        showSyncingProgressDialog();
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getAdvMode());
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -594,6 +611,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             showSettingFragment();
             settingFragment.setResetVisibility(isVerifyPassword);
             settingFragment.setModifyPasswordShown(isVerifyPassword);
+            getAdvMode();
         } else if (checkedId == R.id.radioBtn_device) {
             showDeviceFragment();
             getDeviceInfo();
@@ -780,5 +798,22 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             }
         });
         modifyPasswordDialog.show(getSupportFragmentManager());
+    }
+
+
+    public void onAdvMode(View view) {
+        if (isWindowLocked())
+            return;
+        BottomDialog dialog = new BottomDialog();
+        dialog.setDatas(mAdvModeList, mAdvModeSelected);
+        dialog.setListener(value -> {
+            mAdvModeSelected = value;
+            showSyncingProgressDialog();
+            ArrayList<OrderTask> orderTasks = new ArrayList<>();
+            orderTasks.add(OrderTaskAssembler.setAdvMode(value));
+            orderTasks.add(OrderTaskAssembler.getAdvMode());
+            MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+        });
+        dialog.show(getSupportFragmentManager());
     }
 }

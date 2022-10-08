@@ -358,4 +358,16 @@ public class OrderTaskAssembler {
         task.endDFU();
         return task;
     }
+
+    public static OrderTask getAdvMode() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_ADV_MODE);
+        return task;
+    }
+
+    public static OrderTask setAdvMode(int advMode) {
+        ParamsTask task = new ParamsTask();
+        task.setAdvMode(advMode);
+        return task;
+    }
 }

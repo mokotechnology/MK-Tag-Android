@@ -86,7 +86,7 @@ public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeList
             etAdvDuration.setText("10");
             etStandbyDuration.setText("0");
             sbRssi.setProgress(100);
-            sbTxPower.setProgress(6);
+            sbTxPower.setProgress(5);
         } else {
             etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
             etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
@@ -265,7 +265,7 @@ public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeList
             etAdvDuration.setText("10");
             etStandbyDuration.setText("0");
             sbRssi.setProgress(100);
-            sbTxPower.setProgress(6);
+            sbTxPower.setProgress(5);
 
             etNamespace.setText("");
             etInstanceId.setText("");

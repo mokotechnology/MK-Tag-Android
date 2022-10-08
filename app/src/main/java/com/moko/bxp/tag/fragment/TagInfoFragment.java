@@ -101,7 +101,7 @@ public class TagInfoFragment extends Fragment implements SeekBar.OnSeekBarChange
             etAdvDuration.setText("10");
             etStandbyDuration.setText("0");
             sbRssi.setProgress(100);
-            sbTxPower.setProgress(6);
+            sbTxPower.setProgress(5);
         } else {
             etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
             etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
@@ -281,7 +281,7 @@ public class TagInfoFragment extends Fragment implements SeekBar.OnSeekBarChange
             etAdvDuration.setText("10");
             etStandbyDuration.setText("0");
             sbRssi.setProgress(100);
-            sbTxPower.setProgress(6);
+            sbTxPower.setProgress(5);
             etDeviceName.setText("");
             etTagId.setText("");
         }

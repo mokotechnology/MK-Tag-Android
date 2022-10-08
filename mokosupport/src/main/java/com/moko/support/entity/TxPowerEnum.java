@@ -4,7 +4,6 @@ package com.moko.support.entity;
 import java.io.Serializable;
 
 public enum TxPowerEnum implements Serializable {
-    NEGATIVE_40(-40),
     NEGATIVE_20(-20),
     NEGATIVE_16(-16),
     NEGATIVE_12(-12),
@@ -12,7 +11,8 @@ public enum TxPowerEnum implements Serializable {
     NEGATIVE_4(-4),
     NEGATIVE_0(0),
     POSITIVE_3(3),
-    POSITIVE_4(4);
+    POSITIVE_4(4),
+    POSITIVE_6(6);
 
     private int txPower;
 

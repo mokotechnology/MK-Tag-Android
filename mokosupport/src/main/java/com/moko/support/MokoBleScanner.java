@@ -42,6 +42,7 @@ public final class MokoBleScanner {
         final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
         ScanSettings settings = new ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setLegacy(false)
                 .build();
 //        List<ScanFilter> scanFilterList = new ArrayList<>();
 //        ScanFilter.Builder builder = new ScanFilter.Builder();

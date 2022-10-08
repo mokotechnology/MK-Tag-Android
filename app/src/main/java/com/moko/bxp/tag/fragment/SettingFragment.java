@@ -19,6 +19,8 @@ public class SettingFragment extends Fragment {
     LinearLayout llReset;
     @BindView(R.id.ll_modify_password)
     LinearLayout llModifyPassword;
+    @BindView(R.id.tv_adv_mode)
+    TextView tvAdvMode;
 
     public SettingFragment() {
     }
@@ -42,5 +44,9 @@ public class SettingFragment extends Fragment {
 
     public void setModifyPasswordShown(boolean enablePasswordVerify) {
         llModifyPassword.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
+    }
+
+    public void setAdvMode(String advMode) {
+        tvAdvMode.setText(advMode);
     }
 }

@@ -89,7 +89,7 @@ public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChange
             etAdvDuration.setText("10");
             etStandbyDuration.setText("0");
             sbRssi.setProgress(41);
-            sbTxPower.setProgress(6);
+            sbTxPower.setProgress(5);
         } else {
             etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
             etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
@@ -285,7 +285,7 @@ public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChange
             etAdvDuration.setText("10");
             etStandbyDuration.setText("0");
             sbRssi.setProgress(41);
-            sbTxPower.setProgress(6);
+            sbTxPower.setProgress(5);
 
             etMajor.setText("");
             etMinor.setText("");
