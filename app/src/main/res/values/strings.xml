@@ -7,15 +7,19 @@
 
     <string name="permission_storage_close_title">Storage permission is not available</string>
     <string name="permission_storage_close_content">Please find it in cellphone setting- permission, and allow MOKO TAG use the Storage permission</string>
+    <string name="permission_ble_close_title">bluetooth permission is not available</string>
+    <string name="permission_ble_close_content">Please find it in cellphone setting- permission, and allow MOKO TAG use the bluetooth permission</string>
     <string name="permission_open">OK</string>
     <string name="permission_storage_need_title">Please turn on Storage permissions</string>
-    <string name="permission_storage_need_content">MOKO TAG requires access to Location and Storage permission. If the permissions are not on, MOKO TAG cannot be used normally.</string>
+    <string name="permission_storage_need_content">MOKO TAG requires access to Storage permission. If the permissions are not on, MOKO TAG cannot be used normally.</string>
     <string name="location_need_title">Turn on Location permission</string>
-    <string name="location_need_content">After that, MOKO TAG could search and connect with the MOKO TAG</string>
+    <string name="location_need_content">After that, MOKO TAG could search and connect with the MK Button</string>
     <string name="permission_location_close_title">Location persission is not available</string>
-    <string name="permission_location_close_content">Please find it in cellphone setting- permission, and allow MOKO TAG use the Location and Storage permission</string>
+    <string name="permission_location_close_content">Please find it in cellphone setting- permission, and allow MOKO TAG use the Location permission</string>
     <string name="permission_location_need_title">Turn on Location permission</string>
-    <string name="permission_location_need_content">After that, MOKO TAG could search and connect with the MOKO TAG</string>
+    <string name="permission_location_need_content">MOKO TAG requires access to Location permission. If the permissions are not on, MOKO TAG cannot be used normally.</string>
+    <string name="permission_ble_title">Turn on Bluetooth Permissions</string>
+    <string name="permission_ble_content">MOKO TAG requires access to bluetooth scan and contract permission. If the permissions are not on, MOKO TAG cannot be used normally.</string>
 
     <string name="main_exit_tips">Are you sure you want to quit?</string>
     <string name="setting_syncing">syncing</string>
