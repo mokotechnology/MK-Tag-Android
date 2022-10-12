@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 
+import com.elvishew.xlog.XLog;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.dialog.PermissionDialog;
 import com.moko.bxp.tag.utils.Utils;
@@ -39,32 +40,45 @@ public class GuideActivity extends BaseActivity {
 
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            //申请存储权限 10以下的版本
-            if (!isWriteStoragePermissionOpen()) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, getResources().getString(R.string.permission_storage_need_content),
-                        getResources().getString(R.string.permission_storage_close_content));
-                return;
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
-            //判断GPS是否打开
+            //申请存储权限 6-9的版本走这里 需要申请写SD卡权限和定位权限
             if (!Utils.isLocServiceEnable(this)) {
                 showOpenLocationDialog();
                 return;
             }
-            //申请定位权限 11及以下的版本
+            if (!isWriteStoragePermissionOpen() || !isLocationPermissionOpen()) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION}, getResources().getString(R.string.permission_storage_need_content),
+                        getResources().getString(R.string.permission_storage_close_content));
+                return;
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+            //判断GPS是否打开  10-11走这里 不再申请写SD权限 申请了也没用
+            if (!Utils.isLocServiceEnable(this)) {
+                showOpenLocationDialog();
+                return;
+            }
+            //申请定位权限 BLUETOOTH BLUETOOTH_ADMIN不属于动态权限
             if (!isLocationPermissionOpen()) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, getResources().getString(R.string.permission_location_need_content),
                         getResources().getString(R.string.permission_location_close_content));
                 return;
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            //申请蓝牙权限 12及以上办版本
-            if (!hasBlePermission()) {
-                requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN}, getResources().getString(R.string.permission_ble_content),
+            //申请蓝牙、定位权限 12及以上版本还是需要位置权限 如果没有位置权限扫描的设备类型会受到限制  12以上版本走这里
+            if (!Utils.isLocServiceEnable(this)) {
+                showOpenLocationDialog();
+                return;
+            }
+            if (!hasBlePermission() || !isLocationPermissionOpen()) {
+                requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN,
+                                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, getResources().getString(R.string.permission_ble_content),
                         getResources().getString(R.string.permission_ble_close_content));
                 return;
             }
         }
+        gotoMain();
+    }
+
+    private void gotoMain() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -76,6 +90,7 @@ public class GuideActivity extends BaseActivity {
                 onExplainRequestReason((scope, deniedList) -> scope.showRequestReasonDialog(new PermissionDialog(deniedList, requestContent))).
                 onForwardToSettings((scope, deniedList) -> scope.showForwardToSettingsDialog(new PermissionDialog(deniedList, closeContent))).
                 request((allGranted, grantedList, deniedList) -> {
+                    XLog.i("333333" + allGranted);
                     if (allGranted) requestPermission();
                     else finish();
                 });
