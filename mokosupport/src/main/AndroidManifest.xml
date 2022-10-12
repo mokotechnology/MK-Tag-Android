@@ -14,12 +14,10 @@
         android:maxSdkVersion="30" />
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <!--12新权限  12开始如果不在需要通过扫描的结果获取物理位置 就不再需要位置权限-->
-    <uses-permission
-        android:name="android.permission.BLUETOOTH_SCAN" />
+    <!--12新权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- 按时required为true时，则应用只能在支持BLE的Android设备上安装运行；required为false时，Android设备均可正常安装运行 -->
