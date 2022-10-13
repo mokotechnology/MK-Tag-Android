@@ -65,7 +65,7 @@ final class MokoBleConfig extends MokoBleManager {
     public void discovered(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         UUID lastCharacteristicUUID = characteristic.getUuid();
         if (passwordCharacteristic.getUuid().equals(lastCharacteristicUUID)) {
-            gatt.requestMtu(103);
+            gatt.requestMtu(83);
             mMokoResponseCallback.onServicesDiscovered(gatt);
         }
     }

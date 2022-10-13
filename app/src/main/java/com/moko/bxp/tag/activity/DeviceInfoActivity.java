@@ -682,7 +682,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private int mIndex = 0;
     private boolean mLastPackage = false;
     private int mPackageCount = 0;
-    private int MTU = 100;
+    private int MTU = 80;
     private boolean isUpgrading;
     private boolean isUpgradeCompleted;
     private boolean isOTAMode;
