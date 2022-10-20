@@ -577,7 +577,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     .show(slotFragment)
                     .commit();
         }
-        tvTitle.setText(getString(R.string.alarm_title));
+        tvTitle.setText(getString(R.string.slot_title));
     }
 
     private void showSettingFragment() {

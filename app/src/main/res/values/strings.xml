@@ -29,7 +29,7 @@
 
     <string name="company_website">www.mokoblue.com</string>
     <string name="please_enter_password">Please enter password</string>
-    <string name="alarm_title">ALARM</string>
+    <string name="slot_title">SLOT</string>
     <string name="setting_title">SETTING</string>
     <string name="device_title">DEVICE</string>
     <string name="password_null">Password cannot be empty!</string>

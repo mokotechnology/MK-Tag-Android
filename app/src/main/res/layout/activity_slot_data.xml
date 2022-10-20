@@ -166,7 +166,7 @@
                             android:clickable="true"
                             android:onClick="onTriggerType"
                             android:paddingBottom="5dp"
-                            android:text="Magnetic detection"
+                            android:text="Motion detection"
                             android:textColor="@color/black_333333"
                             android:textSize="15sp" />
                     </LinearLayout>

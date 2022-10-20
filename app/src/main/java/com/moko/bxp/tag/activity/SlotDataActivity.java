@@ -18,7 +18,6 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
-import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.entity.SlotData;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
@@ -81,7 +80,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     private int triggerType;
     private String[] slotTypeArray;
     private ArrayList<String> triggerTypes;
-    private int triggerTypeSelected;
+    private int triggerTypeSelected = 1;
     public SlotFrameTypeEnum currentFrameTypeEnum;
     public boolean isConfigError;
     private boolean isTriggerEnable;
@@ -118,7 +117,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
             }
         }
         tvSlotTitle.setText(slotData.slotEnum.getTitle());
-        if (slotData.frameTypeEnum != SlotFrameTypeEnum.NO_DATA) {
+        if (slotData.frameTypeEnum != SlotFrameTypeEnum.NO_DATA && isSupportAcc) {
             rlTriggerSwitch.setVisibility(View.VISIBLE);
         } else {
             rlTriggerSwitch.setVisibility(View.GONE);
@@ -134,22 +133,22 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         }
         createTriggerFragments();
         showTriggerFragment();
-        setTriggerData();
+//        setTriggerData();
         EventBus.getDefault().register(this);
     }
 
-    private void setTriggerData() {
-        switch (triggerType) {
-            case TRIGGER_TYPE_MAGNETIC:
-                triggerTypeSelected = 0;
-                break;
-            case TRIGGER_TYPE_MOTION:
-                triggerTypeSelected = 1;
-                break;
-
-        }
-        tvTriggerType.setText(triggerTypes.get(triggerTypeSelected));
-    }
+//    private void setTriggerData() {
+//        switch (triggerType) {
+//            case TRIGGER_TYPE_MAGNETIC:
+//                triggerTypeSelected = 0;
+//                break;
+//            case TRIGGER_TYPE_MOTION:
+//                triggerTypeSelected = 1;
+//                break;
+//
+//        }
+//        tvTriggerType.setText(triggerTypes.get(triggerTypeSelected));
+//    }
 
     private void showTriggerFragment() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -169,7 +168,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         magneticFragment = TriggerMagneticFragment.newInstance();
         fragmentTransaction.add(R.id.frame_trigger_container, motionFragment)
                 .add(R.id.frame_trigger_container, magneticFragment)
-                .show(magneticFragment).hide(motionFragment).commit();
+                .hide(magneticFragment).show(motionFragment).commit();
     }
 
     private void createFragments() {
@@ -275,7 +274,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
             slotDataActionImpl.resetParams();
         }
         SlotFrameTypeEnum slotFrameTypeEnum = SlotFrameTypeEnum.fromShowName(slotTypeArray[newVal]);
-        if (slotFrameTypeEnum != SlotFrameTypeEnum.NO_DATA) {
+        if (slotFrameTypeEnum != SlotFrameTypeEnum.NO_DATA && isSupportAcc) {
             rlTriggerSwitch.setVisibility(View.VISIBLE);
         } else {
             rlTriggerSwitch.setVisibility(View.GONE);
@@ -320,11 +319,13 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
             return;
         isTriggerEnable = !isTriggerEnable;
         if (isTriggerEnable) {
-            ivTrigger.setImageResource(R.drawable.ic_unchecked);
-            rlTrigger.setVisibility(View.GONE);
-        } else {
+            triggerType = TRIGGER_TYPE_MOTION;
             ivTrigger.setImageResource(R.drawable.ic_checked);
             rlTrigger.setVisibility(View.VISIBLE);
+        } else {
+            triggerType = TRIGGER_TYPE_NULL;
+            ivTrigger.setImageResource(R.drawable.ic_unchecked);
+            rlTrigger.setVisibility(View.GONE);
         }
     }
 
@@ -374,27 +375,27 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     }
 
     public void onTriggerType(View view) {
-        if (isWindowLocked())
-            return;
-        if (!isSupportAcc)
-            return;
-        // 选择触发条件
-        BottomDialog dialog = new BottomDialog();
-        dialog.setDatas(triggerTypes, triggerTypeSelected);
-        dialog.setListener(value -> {
-            triggerTypeSelected = value;
-            switch (triggerTypeSelected) {
-                case 0:
-                    triggerType = TRIGGER_TYPE_MAGNETIC;
-                    break;
-                case 1:
-                    triggerType = TRIGGER_TYPE_MOTION;
-                    break;
-            }
-            showTriggerFragment();
-            tvTriggerType.setText(triggerTypes.get(value));
-        });
-        dialog.show(getSupportFragmentManager());
+//        if (isWindowLocked())
+//            return;
+//        if (!isSupportAcc)
+//            return;
+//        // 选择触发条件
+//        BottomDialog dialog = new BottomDialog();
+//        dialog.setDatas(triggerTypes, triggerTypeSelected);
+//        dialog.setListener(value -> {
+//            triggerTypeSelected = value;
+//            switch (triggerTypeSelected) {
+//                case 0:
+//                    triggerType = TRIGGER_TYPE_MAGNETIC;
+//                    break;
+//                case 1:
+//                    triggerType = TRIGGER_TYPE_MOTION;
+//                    break;
+//            }
+//            showTriggerFragment();
+//            tvTriggerType.setText(triggerTypes.get(value));
+//        });
+//        dialog.show(getSupportFragmentManager());
     }
 
     public void onSelectUrlScheme(View view) {
