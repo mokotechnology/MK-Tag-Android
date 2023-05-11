@@ -140,7 +140,7 @@ public class StaticHeartbeatActivity extends BaseActivity {
                                 if (result == 0xAA) {
                                     ToastUtils.showToast(this, "Success");
                                 } else {
-                                    ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
+                                    ToastUtils.showToast(this, "Opps！Save failed!");
                                 }
                             }
                         }
