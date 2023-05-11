@@ -78,19 +78,26 @@ public class StaticHeartbeatActivity extends BaseActivity {
         int time = 1;
         int duration = 1;
         if (isSwitch) {
-            if (TextUtils.isEmpty(etStaticTime.getText()) || TextUtils.isEmpty(etDuration.getText()) || inValid(etStaticTime) || inValid(etDuration)) {
+            if (TextUtils.isEmpty(etStaticTime.getText()) || TextUtils.isEmpty(etDuration.getText())) {
                 ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
                 return;
             }
             time = Integer.parseInt(etStaticTime.getText().toString());
             duration = Integer.parseInt(etDuration.getText().toString());
+            if (!isValid(time)) {
+                ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
+                return;
+            }
+            if (!isValid(duration)) {
+                ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
+                return;
+            }
         }
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setStaticHeartbeat(time, duration, isSwitch ? 1 : 0));
     }
 
-    private boolean inValid(EditText editText) {
-        int result = Integer.parseInt(editText.getText().toString());
-        return result < 1 || result > 65535;
+    private boolean isValid(int result) {
+        return result >= 1 && result <= 65535;
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 400)
