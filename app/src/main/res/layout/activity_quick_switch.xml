@@ -239,5 +239,71 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_scan_response_indicator"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.13"
+            app:layout_constraintHorizontal_bias="0.94"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2"
+            app:layout_constraintWidth_percent="0.44">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_scan_response_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_radius_stroke_white_bg"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Scan response packet"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_scan_response_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="10dp"
+                    android:clickable="true"
+                    android:onClick="onChangeScanResponseIndicator"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_unchecked"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.3"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_scan_response_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:enabled="false"
+                    android:text="Disabled"
+                    android:textColor="@drawable/selector_text_enable_color"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_scan_response_indicator"
+                    app:layout_constraintHorizontal_bias="0.7"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/iv_scan_response_indicator" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

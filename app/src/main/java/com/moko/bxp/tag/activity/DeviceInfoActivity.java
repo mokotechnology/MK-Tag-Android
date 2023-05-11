@@ -21,6 +21,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
+
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -56,7 +58,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import androidx.annotation.IdRes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -117,6 +118,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         orderTasks.add(OrderTaskAssembler.getAllSlot());
         orderTasks.add(OrderTaskAssembler.getDeviceMac());
         orderTasks.add(OrderTaskAssembler.getSensorType());
+        //获取固件版本
+        orderTasks.add(OrderTaskAssembler.getFirmwareVersion());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -378,6 +381,24 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             settingFragment.setAdvMode(mAdvModeList.get(mAdvModeSelected));
                                         }
                                         break;
+
+                                    case KEY_BATTERY_MODE:
+                                        if (length == 1) {
+                                            if ((value[4] & 0xff) != 0) {
+                                                //纽扣电池不支持重置电池计算
+                                                settingFragment.visibleResetBattery();
+                                            }
+                                        }
+                                        break;
+                                }
+                            } else if (flag == 1) {
+                                if (configKeyEnum == ParamsKeyEnum.KEY_RESET_BATTERY && length == 1) {
+                                    int result = value[4] & 0xff;
+                                    if (result == 0xAA) {
+                                        ToastUtils.showToast(this, "success");
+                                    } else {
+                                        ToastUtils.showToast(this, "fail");
+                                    }
                                 }
                             }
                         }
@@ -390,6 +411,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                         deviceFragment.setSoftwareRevision(value);
                         break;
                     case CHAR_FIRMWARE_REVISION:
+                        setFirmwareVersion(new String(value).trim());
                         deviceFragment.setFirmwareRevision(value);
                         break;
                     case CHAR_HARDWARE_REVISION:
@@ -404,6 +426,21 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 }
             }
         });
+    }
+
+    private int firmwareVersion;
+
+    private void setFirmwareVersion(String firmwareVersion) {
+        if (TextUtils.isEmpty(firmwareVersion)) return;
+        XLog.i("333333**" + firmwareVersion);
+        if (firmwareVersion.startsWith("v") || firmwareVersion.startsWith("V")) {
+            String result = firmwareVersion.substring(1).replaceAll("\\.", "");
+            try {
+                this.firmwareVersion = Integer.parseInt(result);
+            } catch (Exception e) {
+                XLog.i(e);
+            }
+        }
     }
 
 
@@ -609,6 +646,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             getAllSlot();
         } else if (checkedId == R.id.radioBtn_setting) {
             showSettingFragment();
+            settingFragment.setFirmwareVersion(firmwareVersion);
             settingFragment.setResetVisibility(isVerifyPassword);
             settingFragment.setModifyPasswordShown(isVerifyPassword);
             getAdvMode();
@@ -651,15 +689,17 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     ///////////////////////////////////////////////////////////////////////////
 
     public void onSensorConfig(View view) {
-        if (isWindowLocked())
-            return;
-        startActivity(new Intent(this, SensorConfigActivity.class));
+        if (isWindowLocked()) return;
+        Intent intent = new Intent(this, SensorConfigActivity.class);
+        intent.putExtra(AppConstants.FIRMWARE_VERSION, firmwareVersion);
+        startActivity(intent);
     }
 
     public void onQuickSwitch(View view) {
-        if (isWindowLocked())
-            return;
-        startActivityForResult(new Intent(this, QuickSwitchActivity.class), AppConstants.REQUEST_CODE_QUICK_SWITCH);
+        if (isWindowLocked()) return;
+        Intent intent = new Intent(this, QuickSwitchActivity.class);
+        intent.putExtra(AppConstants.FIRMWARE_VERSION, firmwareVersion);
+        startActivityForResult(intent, AppConstants.REQUEST_CODE_QUICK_SWITCH);
     }
 
     public void onResetBeacon(View view) {
@@ -669,8 +709,25 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         resetDeviceDialog.setTitle("Warning！");
         resetDeviceDialog.setMessage("Are you sure to reset the Beacon？");
         resetDeviceDialog.setConfirm(R.string.ok);
+        resetDeviceDialog.setOnAlertConfirmListener(() -> resetDevice());
+        resetDeviceDialog.show(getSupportFragmentManager());
+    }
+
+    public void onRemoteMinder(View view) {
+        Intent intent = new Intent(this, RemoteReminderActivity.class);
+        startActivity(intent);
+    }
+
+    public void onResetBattery(View view) {
+        //重置电池计算
+        if (isWindowLocked()) return;
+        AlertMessageDialog resetDeviceDialog = new AlertMessageDialog();
+        resetDeviceDialog.setTitle("Warning！");
+        resetDeviceDialog.setMessage("Please ensure you have replaced the new battery for this beacon before reset the Battery");
+        resetDeviceDialog.setConfirm(R.string.ok);
         resetDeviceDialog.setOnAlertConfirmListener(() -> {
-            resetDevice();
+            showSyncingProgressDialog();
+            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.resetBattery());
         });
         resetDeviceDialog.show(getSupportFragmentManager());
     }

@@ -14,7 +14,7 @@ public enum ParamsKeyEnum implements Serializable {
     KEY_DEFAULT(0x27),
     KEY_RESET(0x28),
     KEY_HALL_POWER_ENABLE(0x29),
-//    KEY_MANUFACTURER(0x2A),
+    //    KEY_MANUFACTURER(0x2A),
 //    KEY_SERIAL_NUMBER(0x2B),
 //    KEY_SOFTWARE_VERSION(0x2C),
 //    KEY_HARDWARE_VERSION(0x2D),
@@ -32,6 +32,10 @@ public enum ParamsKeyEnum implements Serializable {
     KEY_MODIFY_PASSWORD(0x52),
     KEY_VERIFY_PASSWORD_ENABLE(0x53),
     KEY_ADV_MODE(0x57),
+    KEY_REMOTE_REMINDER(0x59),
+    KEY_STATIC_HEARTBEAT(0X5A),
+    KEY_BATTERY_MODE(0x5D),
+    KEY_RESET_BATTERY(0x5E),
     ;
 
     private int paramsKey;

@@ -6,6 +6,7 @@ import com.moko.support.entity.OrderCHAR;
 import com.moko.support.entity.ParamsKeyEnum;
 import com.moko.support.entity.UrlExpansionEnum;
 
+import androidx.annotation.FontRes;
 import androidx.annotation.IntRange;
 
 
@@ -36,6 +37,8 @@ public class ParamsTask extends OrderTask {
             case KEY_MAGNETIC_TRIGGER_COUNT:
             case KEY_TRIGGER_LED_INDICATOR_ENABLE:
             case KEY_ADV_MODE:
+            case KEY_STATIC_HEARTBEAT:
+            case KEY_BATTERY_MODE:
                 createGetParamsData(key.getParamsKey());
                 break;
         }
@@ -51,6 +54,52 @@ public class ParamsTask extends OrderTask {
                 createSetParamsData(key.getParamsKey());
                 break;
         }
+    }
+
+    public void setStaticHeartbeat(@IntRange(from = 1, to = 65535) int staticTime,
+                                   @IntRange(from = 1, to = 65535) int advDuration,
+                                   @IntRange(from = 0, to = 1) int enable) {
+        byte[] bytesTime = MokoUtils.toByteArray(staticTime, 2);
+        byte[] bytesDuration = MokoUtils.toByteArray(advDuration, 2);
+        response.responseValue = data = new byte[]{
+                (byte) 0xEA,
+                (byte) 0x01,
+                (byte) ParamsKeyEnum.KEY_STATIC_HEARTBEAT.getParamsKey(),
+                (byte) 0x05,
+                (byte) enable,
+                bytesTime[0],
+                bytesTime[1],
+                bytesDuration[0],
+                bytesDuration[1]
+        };
+    }
+
+    //设置远程控制led
+    public void setRemoteReminder(@IntRange(from = 100, to = 10000) int interval,
+                                  @IntRange(from = 1, to = 600) int time) {
+        byte[] bytesInterval = MokoUtils.toByteArray(interval, 2);
+        byte[] bytesTime = MokoUtils.toByteArray(time, 2);
+        response.responseValue = data = new byte[]{
+                (byte) 0xEA,
+                (byte) 0x01,
+                (byte) ParamsKeyEnum.KEY_REMOTE_REMINDER.getParamsKey(),
+                (byte) 0x05,
+                (byte) 0x03,
+                bytesInterval[0],
+                bytesInterval[1],
+                bytesTime[0],
+                bytesTime[1]
+        };
+    }
+
+    public void resetBattery() {
+        response.responseValue = data = new byte[]{
+                (byte) 0xEA,
+                (byte) 0x01,
+                (byte) ParamsKeyEnum.KEY_RESET_BATTERY.getParamsKey(),
+                (byte) 0x01,
+                (byte) 0x01
+        };
     }
 
 

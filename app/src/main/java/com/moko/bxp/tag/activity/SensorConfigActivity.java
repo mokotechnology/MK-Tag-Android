@@ -9,6 +9,7 @@ import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTaskResponse;
+import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.support.MokoSupport;
@@ -28,6 +29,7 @@ public class SensorConfigActivity extends BaseActivity {
 
     @BindView(R.id.tv_acc_config)
     TextView tvAccConfig;
+    private int firmwareVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class SensorConfigActivity extends BaseActivity {
         setContentView(R.layout.activity_sensor_config);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        firmwareVersion = getIntent().getIntExtra(AppConstants.FIRMWARE_VERSION,0);
         showSyncingProgressDialog();
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSensorType());
     }
@@ -123,9 +126,10 @@ public class SensorConfigActivity extends BaseActivity {
     }
 
     public void onAccConfig(View view) {
-        if (isWindowLocked())
-            return;
-        startActivity(new Intent(this, AccDataActivity.class));
+        if (isWindowLocked()) return;
+        Intent intent = new Intent(this, AccDataActivity.class);
+        intent.putExtra(AppConstants.FIRMWARE_VERSION,firmwareVersion);
+        startActivity(intent);
     }
 
     public void onHallSensorConfig(View view) {

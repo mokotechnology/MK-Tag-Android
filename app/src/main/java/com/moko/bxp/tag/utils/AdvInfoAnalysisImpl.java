@@ -97,6 +97,16 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
                     }
                     values = bytes;
                     break;
+                }else if (parcelUuid.toString().startsWith("0000eb01")){
+                    byte[] bytes = map.get(parcelUuid);
+                    if (bytes != null) {
+                        switch (bytes[0] & 0xff) {
+                            case AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST:
+                                if (bytes.length < 13) return null;
+                                type = AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST;
+                                break;
+                        }
+                    }
                 }
 
             }

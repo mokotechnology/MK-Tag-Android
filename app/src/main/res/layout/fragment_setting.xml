@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white_ffffff"
     android:orientation="vertical"
     android:paddingLeft="15dp"
@@ -88,6 +89,44 @@
         android:textSize="15sp" />
 
     <View style="@style/divider_line" />
+    <!--新增功能-->
+    <LinearLayout
+        android:id="@+id/layoutBattery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableRight="@drawable/arrow_right"
+            android:gravity="center_vertical"
+            android:onClick="onRemoteMinder"
+            android:text="Remote reminder"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp" />
+
+        <View style="@style/divider_line" />
+
+        <TextView
+            android:id="@+id/tvResetBattery"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableRight="@drawable/arrow_right"
+            android:gravity="center_vertical"
+            android:onClick="onResetBattery"
+            android:text="Reset Battery"
+            android:textColor="@color/black_333333"
+            android:visibility="gone"
+            android:textSize="15sp" />
+
+        <View style="@style/divider_line"
+            android:id="@+id/lineBattery"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -107,15 +146,15 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/shape_radius_blue_btn_bg"
-            android:gravity="center_vertical"
-            android:text="Legacy"
             android:clickable="true"
+            android:gravity="center_vertical"
             android:onClick="onAdvMode"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:text="Legacy"
             android:textColor="@color/white_ffffff"
             android:textSize="15sp" />
 

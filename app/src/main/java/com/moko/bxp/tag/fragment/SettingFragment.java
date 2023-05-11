@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
+import com.moko.support.MokoSupport;
+import com.moko.support.OrderTaskAssembler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +24,12 @@ public class SettingFragment extends Fragment {
     LinearLayout llModifyPassword;
     @BindView(R.id.tv_adv_mode)
     TextView tvAdvMode;
+    @BindView(R.id.layoutBattery)
+    LinearLayout layoutBattery;
+    @BindView(R.id.tvResetBattery)
+    TextView tvResetBattery;
+    @BindView(R.id.lineBattery)
+    View viewLine;
 
     public SettingFragment() {
     }
@@ -28,6 +37,18 @@ public class SettingFragment extends Fragment {
     public static SettingFragment newInstance() {
         SettingFragment fragment = new SettingFragment();
         return fragment;
+    }
+
+    public void setFirmwareVersion(int firmwareVersion) {
+        if (firmwareVersion > AppConstants.BASE_VERSION) {
+            layoutBattery.setVisibility(View.VISIBLE);
+            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getBatteryMode());
+        }
+    }
+
+    public void visibleResetBattery(){
+        tvResetBattery.setVisibility(View.VISIBLE);
+        viewLine.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -370,4 +370,37 @@ public class OrderTaskAssembler {
         task.setAdvMode(advMode);
         return task;
     }
+
+    public static OrderTask getStaticHeartbeat() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_STATIC_HEARTBEAT);
+        return task;
+    }
+
+    public static OrderTask setStaticHeartbeat(@IntRange(from = 1, to = 65535) int staticTime,
+                                               @IntRange(from = 1, to = 65535) int advDuration,
+                                               @IntRange(from = 0, to = 1) int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setStaticHeartbeat(staticTime, advDuration, enable);
+        return task;
+    }
+
+    public static OrderTask setRemoteReminder(@IntRange(from = 100, to = 10000) int interval,
+                                              @IntRange(from = 1, to = 600) int time) {
+        ParamsTask task = new ParamsTask();
+        task.setRemoteReminder(interval, time);
+        return task;
+    }
+
+    public static OrderTask getBatteryMode(){
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_BATTERY_MODE);
+        return task;
+    }
+
+    public static OrderTask resetBattery(){
+        ParamsTask task = new ParamsTask();
+        task.resetBattery();
+        return task;
+    }
 }

@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -31,6 +33,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +52,14 @@ public class QuickSwitchActivity extends BaseActivity {
     ImageView ivPasswordVerify;
     @BindView(R.id.tv_password_verify)
     TextView tvPasswordVerify;
+    @BindView(R.id.iv_scan_response_indicator)
+    ImageView ivScanResponseIndicator;
+    @BindView(R.id.tv_scan_response_indicator)
+    TextView tvScanResponseIndicator;
+    @BindView(R.id.cv_scan_response_indicator)
+    CardView cardView;
     public boolean isConfigError;
+    private int firmwareVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +68,10 @@ public class QuickSwitchActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         EventBus.getDefault().register(this);
-
+        firmwareVersion = getIntent().getIntExtra(AppConstants.FIRMWARE_VERSION, 0);
+        if (firmwareVersion > AppConstants.BASE_VERSION) {
+            cardView.setVisibility(View.VISIBLE);
+        }
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -72,6 +85,9 @@ public class QuickSwitchActivity extends BaseActivity {
             orderTasks.add(OrderTaskAssembler.getConnectable());
             orderTasks.add(OrderTaskAssembler.getTriggerLEDIndicatorEnable());
             orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
+            if (firmwareVersion > AppConstants.BASE_VERSION) {
+                orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
+            }
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
@@ -124,6 +140,7 @@ public class QuickSwitchActivity extends BaseActivity {
                                 switch (configKeyEnum) {
                                     case KEY_BLE_CONNECTABLE:
                                     case KEY_TRIGGER_LED_INDICATOR_ENABLE:
+                                    case KEY_SCAN_RESPONSE_ENABLE:
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
@@ -147,6 +164,9 @@ public class QuickSwitchActivity extends BaseActivity {
                                         break;
                                     case KEY_VERIFY_PASSWORD_ENABLE:
                                         setPasswordVerify(result);
+                                        break;
+                                    case KEY_SCAN_RESPONSE_ENABLE:
+                                        setScanResponseIndicator(result);
                                         break;
 
                                 }
@@ -224,6 +244,29 @@ public class QuickSwitchActivity extends BaseActivity {
         tvTriggerLedIndicator.setText(enableTriggerLEDIndicator ? "Enable" : "Disable");
         tvTriggerLedIndicator.setEnabled(enableTriggerLEDIndicator);
     }
+
+    private boolean enableScanResponse;
+
+    public void setScanResponseIndicator(int enable) {
+        enableScanResponse = enable == 1;
+        ivScanResponseIndicator.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        tvScanResponseIndicator.setText(enable == 1 ? "Enable" : "Disable");
+        tvScanResponseIndicator.setEnabled(enable == 1);
+    }
+
+    public void onChangeScanResponseIndicator(View view) {
+        if (isWindowLocked()) return;
+        setChangeScanResponseIndicator(!enableScanResponse);
+    }
+
+    private void setChangeScanResponseIndicator(boolean enable) {
+        showSyncingProgressDialog();
+        List<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(OrderTaskAssembler.setScanResponseEnable(enable ? 1 : 0));
+        orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+    }
+
 
     public void onChangeConnectable(View view) {
         if (isWindowLocked())
