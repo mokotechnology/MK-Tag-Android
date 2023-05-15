@@ -48,7 +48,7 @@ public class StaticHeartbeatActivity extends BaseActivity {
     @BindView(R.id.tvTips)
     TextView tvTips;
     private boolean isSwitch;
-    private final String checkedText = "*Please ensure that all active SLOTs have enabled the Motion detection trigger function.\n*Please ensure that the configured static cycle time value is greater than the maximum keep static time value parameter configured for all enabled SLOTs' Motion detection trigger function parameters.";
+    private final String checkedText = "*Please ensure that all active SLOTs have enabled the Motion detection trigger function.\n\n*Please ensure that the configured static cycle time value is greater than the maximum keep static time value parameter configured for all enabled SLOTs' Motion detection trigger function parameters.";
     private final String uncheckedText = "*Before enabling the static heartbeat function, please ensure that all active SLOTs have enabled the Motion detection trigger function.";
 
     @Override
