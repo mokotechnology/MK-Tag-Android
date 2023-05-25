@@ -4,6 +4,7 @@ import android.os.ParcelUuid;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
+import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.entity.AdvInfo;
 import com.moko.support.entity.DeviceInfo;
@@ -34,6 +35,7 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
         // filter
         boolean isEddystone = false;
         boolean isTagInfo = false;
+        boolean isProductTest = false;
         byte[] values = null;
         int type = -1;
         if (map != null && !map.isEmpty()) {
@@ -92,26 +94,29 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
                                     return null;
                                 type = AdvInfo.VALID_DATA_FRAME_TYPE_TAG_INFO;
                                 battery = MokoUtils.toInt(Arrays.copyOfRange(bytes, 16, 18));
+                                XLog.i("333333***"+MokoUtils.bytesToHexString(bytes));
                                 break;
                         }
                     }
                     values = bytes;
                     break;
                 }else if (parcelUuid.toString().startsWith("0000eb01")){
+                    isProductTest = true;
                     byte[] bytes = map.get(parcelUuid);
                     if (bytes != null) {
                         switch (bytes[0] & 0xff) {
                             case AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST:
-                                if (bytes.length < 13) return null;
+                                battery = MokoUtils.toInt(Arrays.copyOfRange(bytes,1,3));
                                 type = AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST;
                                 break;
                         }
                     }
+                    values = bytes;
+                    break;
                 }
-
             }
         }
-        if ((!isEddystone && !isTagInfo) || values == null || type == -1) {
+        if ((!isEddystone && !isTagInfo&& !isProductTest) || values == null || type == -1) {
             return null;
         }
         // avoid repeat

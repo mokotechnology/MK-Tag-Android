@@ -75,8 +75,8 @@ public class StaticHeartbeatActivity extends BaseActivity {
 
     public void onSave(View view) {
         if (isWindowLocked()) return;
-        int time = 1;
-        int duration = 1;
+        int time = staticTime;
+        int duration = staticDuration;
         if (isSwitch) {
             if (TextUtils.isEmpty(etStaticTime.getText()) || TextUtils.isEmpty(etDuration.getText())) {
                 ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
@@ -150,16 +150,17 @@ public class StaticHeartbeatActivity extends BaseActivity {
                                 group.setVisibility(enable == 1 ? View.VISIBLE : View.GONE);
                                 isSwitch = enable == 1;
                                 if (enable == 1) {
-                                    int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
-                                    int duration = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
-                                    etStaticTime.setText(String.valueOf(time));
-                                    etStaticTime.setSelection(etStaticTime.getText().length());
-                                    etDuration.setText(String.valueOf(duration));
-                                    etDuration.setSelection(etDuration.getText().length());
                                     tvTips.setText(checkedText);
                                 } else {
                                     tvTips.setText(uncheckedText);
                                 }
+                                ivSwitch.setImageResource(isSwitch ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+                                staticTime = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
+                                staticDuration = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
+                                etStaticTime.setText(String.valueOf(staticTime));
+                                etStaticTime.setSelection(etStaticTime.getText().length());
+                                etDuration.setText(String.valueOf(staticDuration));
+                                etDuration.setSelection(etDuration.getText().length());
                             }
                         }
                     }
@@ -167,6 +168,9 @@ public class StaticHeartbeatActivity extends BaseActivity {
             }
         });
     }
+
+    private int staticTime;
+    private int staticDuration;
 
     @Override
     protected void onDestroy() {

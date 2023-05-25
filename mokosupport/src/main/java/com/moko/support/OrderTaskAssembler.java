@@ -398,6 +398,12 @@ public class OrderTaskAssembler {
         return task;
     }
 
+    public static OrderTask setBatteryMode(int mode){
+        ParamsTask task = new ParamsTask();
+        task.setBatteryMode(mode);
+        return task;
+    }
+
     public static OrderTask resetBattery(){
         ParamsTask task = new ParamsTask();
         task.resetBattery();

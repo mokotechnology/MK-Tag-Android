@@ -58,6 +58,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -321,8 +322,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     @Override
     public void onScanDevice(DeviceInfo deviceInfo) {
         AdvInfo advInfo = advInfoAnalysisImpl.parseDeviceInfo(deviceInfo);
-        if (advInfo == null)
-            return;
+        if (advInfo == null) return;
         advInfoHashMap.put(advInfo.mac, advInfo);
     }
 

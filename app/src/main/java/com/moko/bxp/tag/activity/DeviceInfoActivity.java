@@ -98,6 +98,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         ButterKnife.bind(this);
         fragmentManager = getFragmentManager();
         isVerifyPassword = getIntent().getBooleanExtra(AppConstants.EXTRA_KEY_PASSWORD_VERIFICATION, false);
+        enablePasswordVerify = isVerifyPassword;
         initFragment();
         rgOptions.setOnCheckedChangeListener(this);
         EventBus.getDefault().register(this);
@@ -534,6 +535,12 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 // 当连接时不需要密码验证，若启用Password verification，Reset Beacon选项显示，但Modify password需要再次连接时才显示。
                 if (isVerifyPassword)
                     settingFragment.setModifyPasswordShown(enablePasswordVerify);
+                if (!isVerifyPassword && enablePasswordVerify) {
+                    //连接时候不需要密码验证  但是现在打开了密码验证
+                    hasPwdChanged = true;
+                } else {
+                    this.enablePasswordVerify = enablePasswordVerify;
+                }
             }
         }
         if (requestCode == AppConstants.REQUEST_CODE_ALARM_MODE) {
@@ -555,6 +562,9 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             }
         }
     }
+
+    private boolean hasPwdChanged;
+    private boolean enablePasswordVerify;
 
     @Override
     protected void onDestroy() {
@@ -647,8 +657,12 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         } else if (checkedId == R.id.radioBtn_setting) {
             showSettingFragment();
             settingFragment.setFirmwareVersion(firmwareVersion);
-            settingFragment.setResetVisibility(isVerifyPassword);
-            settingFragment.setModifyPasswordShown(isVerifyPassword);
+            if (hasPwdChanged){
+                settingFragment.setResetVisibility(true);
+            }else{
+                settingFragment.setResetVisibility(enablePasswordVerify);
+                settingFragment.setModifyPasswordShown(enablePasswordVerify);
+            }
             getAdvMode();
         } else if (checkedId == R.id.radioBtn_device) {
             showDeviceFragment();
@@ -723,7 +737,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         if (isWindowLocked()) return;
         AlertMessageDialog resetDeviceDialog = new AlertMessageDialog();
         resetDeviceDialog.setTitle("Warning！");
-        resetDeviceDialog.setMessage("Please ensure you have replaced the new battery for this beacon before reset the Battery");
+        resetDeviceDialog.setMessage("*Please ensure you have replaced the new battery for this beacon before reset the Battery");
         resetDeviceDialog.setConfirm(R.string.ok);
         resetDeviceDialog.setOnAlertConfirmListener(() -> {
             showSyncingProgressDialog();

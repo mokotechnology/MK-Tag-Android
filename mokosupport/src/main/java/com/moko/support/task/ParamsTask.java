@@ -102,6 +102,16 @@ public class ParamsTask extends OrderTask {
         };
     }
 
+    public void setBatteryMode(int mode){
+        response.responseValue = data = new byte[]{
+                (byte) 0xEA,
+                (byte) 0x01,
+                (byte) ParamsKeyEnum.KEY_BATTERY_MODE.getParamsKey(),
+                (byte) 0x01,
+                (byte) mode
+        };
+    }
+
 
     private void createGetParamsData(int paramsKey) {
         data = new byte[]{(byte) 0xEA, (byte) 0x00, (byte) paramsKey, (byte) 0x00};

@@ -59,7 +59,7 @@ public class QuickSwitchActivity extends BaseActivity {
     @BindView(R.id.cv_scan_response_indicator)
     CardView cardView;
     public boolean isConfigError;
-    private int firmwareVersion;
+//    private int firmwareVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +68,10 @@ public class QuickSwitchActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         EventBus.getDefault().register(this);
-        firmwareVersion = getIntent().getIntExtra(AppConstants.FIRMWARE_VERSION, 0);
-        if (firmwareVersion > AppConstants.BASE_VERSION) {
-            cardView.setVisibility(View.VISIBLE);
-        }
+//        firmwareVersion = getIntent().getIntExtra(AppConstants.FIRMWARE_VERSION, 0);
+//        if (firmwareVersion > AppConstants.BASE_VERSION) {
+//            cardView.setVisibility(View.VISIBLE);
+//        }
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -85,9 +85,9 @@ public class QuickSwitchActivity extends BaseActivity {
             orderTasks.add(OrderTaskAssembler.getConnectable());
             orderTasks.add(OrderTaskAssembler.getTriggerLEDIndicatorEnable());
             orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
-            if (firmwareVersion > AppConstants.BASE_VERSION) {
-                orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
-            }
+//            if (firmwareVersion > AppConstants.BASE_VERSION) {
+//                orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
+//            }
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }

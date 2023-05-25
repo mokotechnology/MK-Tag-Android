@@ -46,7 +46,7 @@ public class SettingFragment extends Fragment {
         }
     }
 
-    public void visibleResetBattery(){
+    public void visibleResetBattery() {
         tvResetBattery.setVisibility(View.VISIBLE);
         viewLine.setVisibility(View.VISIBLE);
     }

@@ -62,6 +62,8 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
                 helper.setVisible(R.id.tv_tag_id, true);
                 helper.setText(R.id.tv_tag_id, String.format("Tag ID:0x%s", validData.data.substring(36)));
             }
+            if (validData.type == AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST){
+            }
         }
     }
 
