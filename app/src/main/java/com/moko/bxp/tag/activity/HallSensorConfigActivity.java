@@ -18,6 +18,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -35,9 +36,10 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 霍尔传感器
+ */
 public class HallSensorConfigActivity extends BaseActivity {
-
-
     @BindView(R.id.tv_magnet_status)
     TextView tvMagnetStatus;
     @BindView(R.id.tv_trigger_count)
@@ -45,8 +47,6 @@ public class HallSensorConfigActivity extends BaseActivity {
     @BindView(R.id.iv_hall_sensor_enable)
     ImageView ivHallSensorEnable;
     private boolean mReceiverTag = false;
-
-    public boolean isConfigError;
 
     private boolean mIsHallPowerEnable;
 
@@ -69,7 +69,7 @@ public class HallSensorConfigActivity extends BaseActivity {
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.getMagnetStatus());
             orderTasks.add(OrderTaskAssembler.getMagneticTriggerCount());
-            orderTasks.add(OrderTaskAssembler.getHallPowerEnable());
+//            orderTasks.add(OrderTaskAssembler.getHallPowerEnable());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
@@ -140,14 +140,22 @@ public class HallSensorConfigActivity extends BaseActivity {
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_HALL_POWER_ENABLE:
-                                    case KEY_MAGNETIC_TRIGGER_COUNT:
-                                        if (result == 0) {
-                                            isConfigError = true;
-                                        }
-                                        if (isConfigError) {
-                                            ToastUtils.showToast(HallSensorConfigActivity.this, "Opps！Save failed. Please check the input characters and try again.");
-                                        } else {
+                                        if (result == 0xAA) {
                                             ToastUtils.showToast(this, "Success");
+                                            Intent intent = new Intent();
+                                            intent.putExtra("status", 1);
+                                            setResult(RESULT_OK, intent);
+                                            back();
+                                        } else {
+                                            ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
+                                        }
+                                        break;
+
+                                    case KEY_MAGNETIC_TRIGGER_COUNT:
+                                        if (result == 0xAA) {
+                                            ToastUtils.showToast(this, "Success");
+                                        } else {
+                                            ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
                                         }
                                         break;
                                 }
@@ -161,13 +169,13 @@ public class HallSensorConfigActivity extends BaseActivity {
                                         int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                         tvTriggerCount.setText(String.valueOf(count));
                                         break;
-                                    case KEY_HALL_POWER_ENABLE:
-                                        if (length == 1) {
-                                            mIsHallPowerEnable = (value[4] & 0xFF) == 1;
-                                            ivHallSensorEnable.setImageResource(mIsHallPowerEnable ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-                                            MokoSupport.getInstance().enableHallStatusNotify();
-                                        }
-                                        break;
+//                                    case KEY_HALL_POWER_ENABLE:
+//                                        if (length == 1) {
+//                                            mIsHallPowerEnable = (value[4] & 0xFF) == 1;
+//                                            ivHallSensorEnable.setImageResource(mIsHallPowerEnable ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+//                                            MokoSupport.getInstance().enableHallStatusNotify();
+//                                        }
+//                                        break;
 
                                 }
                             }
@@ -273,14 +281,26 @@ public class HallSensorConfigActivity extends BaseActivity {
     }
 
     public void onHallSensorEnable(View view) {
-        if (isWindowLocked())
-            return;
-        mIsHallPowerEnable = !mIsHallPowerEnable;
-        // 保存
-        showSyncingProgressDialog();
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setHallPowerEnable(mIsHallPowerEnable ? 1 : 0));
-        orderTasks.add(OrderTaskAssembler.getHallPowerEnable());
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+        if (isWindowLocked()) return;
+        //能到这里霍尔关机功能是禁用的
+        AlertMessageDialog dialog = new AlertMessageDialog();
+        dialog.setTitle("Warning！");
+        dialog.setMessage("*If you enable it, you will not be able to use the Hall trigger and count functions");
+        dialog.setConfirm(R.string.ok);
+        dialog.setCancel(R.string.cancel);
+        dialog.setOnAlertConfirmListener(() -> {
+            showSyncingProgressDialog();
+            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setHallPowerEnable(1));
+        });
+        dialog.show(getSupportFragmentManager());
+
+
+//        mIsHallPowerEnable = !mIsHallPowerEnable;
+//        // 保存
+//        showSyncingProgressDialog();
+//        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+//        orderTasks.add(OrderTaskAssembler.setHallPowerEnable(mIsHallPowerEnable ? 1 : 0));
+//        orderTasks.add(OrderTaskAssembler.getHallPowerEnable());
+//        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 }

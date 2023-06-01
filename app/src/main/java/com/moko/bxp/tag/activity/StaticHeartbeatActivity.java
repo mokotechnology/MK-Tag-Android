@@ -75,8 +75,8 @@ public class StaticHeartbeatActivity extends BaseActivity {
 
     public void onSave(View view) {
         if (isWindowLocked()) return;
-        int time = staticTime;
-        int duration = staticDuration;
+        int time = TextUtils.isEmpty(etStaticTime.getText()) ? 1 : Integer.parseInt(etStaticTime.getText().toString());
+        int duration = TextUtils.isEmpty(etDuration.getText()) ? 1 : Integer.parseInt(etDuration.getText().toString());
         if (isSwitch) {
             if (TextUtils.isEmpty(etStaticTime.getText()) || TextUtils.isEmpty(etDuration.getText())) {
                 ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");

@@ -88,6 +88,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public boolean isConfigError;
     private boolean isVerifyPassword;
     public boolean isSupportAcc;
+    private boolean isHallPowerEnable;
     private ArrayList<String> mAdvModeList;
     private int mAdvModeSelected;
 
@@ -119,6 +120,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         orderTasks.add(OrderTaskAssembler.getAllSlot());
         orderTasks.add(OrderTaskAssembler.getDeviceMac());
         orderTasks.add(OrderTaskAssembler.getSensorType());
+        orderTasks.add(OrderTaskAssembler.getHallPowerEnable());
         //获取固件版本
         orderTasks.add(OrderTaskAssembler.getFirmwareVersion());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
@@ -370,6 +372,16 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             isSupportAcc = (value[5] & 0x01) == 0x01;
                                         }
                                         break;
+
+                                    case KEY_HALL_POWER_ENABLE:
+                                        if (length == 1) {
+                                            isHallPowerEnable = (value[4] & 0xff) == 1;
+                                            if (!isSupportAcc && isHallPowerEnable) {
+                                                settingFragment.setSensorGone();
+                                            }
+                                        }
+                                        break;
+
                                     case KEY_BATTERY_VOLTAGE:
                                         if (length == 2) {
                                             int battery = MokoUtils.toInt(rawDataBytes);
@@ -561,6 +573,14 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 }, 500);
             }
         }
+        if (requestCode == 200 && resultCode == RESULT_OK) {
+            if (null != data) {
+                int status = data.getIntExtra("status", 0);
+                if (status == 1) {
+                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getHallPowerEnable());
+                }
+            }
+        }
     }
 
     private boolean hasPwdChanged;
@@ -657,9 +677,9 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         } else if (checkedId == R.id.radioBtn_setting) {
             showSettingFragment();
             settingFragment.setFirmwareVersion(firmwareVersion);
-            if (hasPwdChanged){
+            if (hasPwdChanged) {
                 settingFragment.setResetVisibility(true);
-            }else{
+            } else {
                 settingFragment.setResetVisibility(enablePasswordVerify);
                 settingFragment.setModifyPasswordShown(enablePasswordVerify);
             }
@@ -706,7 +726,9 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         if (isWindowLocked()) return;
         Intent intent = new Intent(this, SensorConfigActivity.class);
         intent.putExtra(AppConstants.FIRMWARE_VERSION, firmwareVersion);
-        startActivity(intent);
+        intent.putExtra("acc", isSupportAcc);
+        intent.putExtra("hall", isHallPowerEnable);
+        startActivityForResult(intent, 200);
     }
 
     public void onQuickSwitch(View view) {

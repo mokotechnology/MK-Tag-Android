@@ -142,7 +142,7 @@
                     android:clickable="true"
                     android:onClick="onHallSensorEnable"
                     android:paddingLeft="20dp"
-                    android:src="@drawable/ic_checked"
+                    android:src="@drawable/ic_unchecked"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

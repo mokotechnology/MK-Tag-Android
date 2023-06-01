@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -25,10 +27,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SensorConfigActivity extends BaseActivity {
-
-
     @BindView(R.id.tv_acc_config)
     TextView tvAccConfig;
+    @BindView(R.id.tvHall)
+    TextView tvHall;
     private int firmwareVersion;
 
     @Override
@@ -37,9 +39,13 @@ public class SensorConfigActivity extends BaseActivity {
         setContentView(R.layout.activity_sensor_config);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        firmwareVersion = getIntent().getIntExtra(AppConstants.FIRMWARE_VERSION,0);
-        showSyncingProgressDialog();
-        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSensorType());
+        firmwareVersion = getIntent().getIntExtra(AppConstants.FIRMWARE_VERSION, 0);
+//        showSyncingProgressDialog();
+//        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSensorType());
+        boolean isSupportAcc = getIntent().getBooleanExtra("acc", false);
+        boolean isHallPowerEnable = getIntent().getBooleanExtra("hall", false);
+        tvAccConfig.setVisibility(isSupportAcc ? View.VISIBLE : View.GONE);
+        tvHall.setVisibility(isHallPowerEnable ? View.GONE : View.VISIBLE);
     }
 
 
@@ -120,21 +126,47 @@ public class SensorConfigActivity extends BaseActivity {
             mLoadingMessageDialog.dismissAllowingStateLoss();
     }
 
+    @Override
+    public void onBackPressed() {
+        back();
+    }
 
     public void onBack(View view) {
+        back();
+    }
+
+    private void back() {
+        Intent intent = new Intent();
+        intent.putExtra("status", status);
+        setResult(RESULT_OK, intent);
         finish();
     }
 
     public void onAccConfig(View view) {
         if (isWindowLocked()) return;
         Intent intent = new Intent(this, AccDataActivity.class);
-        intent.putExtra(AppConstants.FIRMWARE_VERSION,firmwareVersion);
+        intent.putExtra(AppConstants.FIRMWARE_VERSION, firmwareVersion);
         startActivity(intent);
     }
 
     public void onHallSensorConfig(View view) {
-        if (isWindowLocked())
-            return;
-        startActivity(new Intent(this, HallSensorConfigActivity.class));
+        if (isWindowLocked()) return;
+        Intent intent = new Intent(this, HallSensorConfigActivity.class);
+        startActivityForResult(intent, 200);
+    }
+
+    private int status;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 200 && resultCode == RESULT_OK) {
+            if (null != data) {
+                status = data.getIntExtra("status", 0);
+                if (status == 1) {
+                    tvHall.setVisibility(View.GONE);
+                }
+            }
+        }
     }
 }

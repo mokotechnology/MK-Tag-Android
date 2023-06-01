@@ -30,6 +30,8 @@ public class SettingFragment extends Fragment {
     TextView tvResetBattery;
     @BindView(R.id.lineBattery)
     View viewLine;
+    @BindView(R.id.layoutSensor)
+    LinearLayout layoutSensor;
 
     public SettingFragment() {
     }
@@ -69,5 +71,9 @@ public class SettingFragment extends Fragment {
 
     public void setAdvMode(String advMode) {
         tvAdvMode.setText(advMode);
+    }
+
+    public void setSensorGone() {
+        layoutSensor.setVisibility(View.GONE);
     }
 }

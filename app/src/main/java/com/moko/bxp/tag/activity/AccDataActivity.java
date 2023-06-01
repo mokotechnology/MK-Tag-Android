@@ -74,6 +74,7 @@ public class AccDataActivity extends BaseActivity {
     private int mSelectedScale;
     public boolean isConfigError;
     private int firmwareVersion;
+    private int accType = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,9 @@ public class AccDataActivity extends BaseActivity {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.getMotionTriggerCount());
-            orderTasks.add(OrderTaskAssembler.getAxisParams());
+//            orderTasks.add(OrderTaskAssembler.getAxisParams());
+            //先获取三轴传感器类型
+            orderTasks.add(OrderTaskAssembler.getAccType());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
         if (firmwareVersion > AppConstants.BASE_VERSION) {
@@ -176,8 +179,7 @@ public class AccDataActivity extends BaseActivity {
                                 // read
                                 switch (configKeyEnum) {
                                     case KEY_MOTION_TRIGGER_COUNT:
-                                        if (length != 2)
-                                            return;
+                                        if (length != 2) return;
                                         int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                         tvTriggerCount.setText(String.valueOf(count));
                                         break;
@@ -190,15 +192,21 @@ public class AccDataActivity extends BaseActivity {
                                             tvAxisScale.setText(axisScales.get(mSelectedScale));
                                             etMotionThreshold.setText(String.valueOf(threshold));
                                             if (mSelectedScale == 0) {
-                                                tvMotionThresholdUnit.setText("x3.91mg");
+                                                tvMotionThresholdUnit.setText(accType == 1 ? "x3.91mg" : "x16mg");
                                             } else if (mSelectedScale == 1) {
-                                                tvMotionThresholdUnit.setText("x7.81mg");
+                                                tvMotionThresholdUnit.setText(accType == 1 ? "x7.81mg" : "x32mg");
                                             } else if (mSelectedScale == 2) {
-                                                tvMotionThresholdUnit.setText("x15.63mg");
+                                                tvMotionThresholdUnit.setText(accType == 1 ? "x15.63mg" : "x62mg");
                                             } else if (mSelectedScale == 3) {
-                                                tvMotionThresholdUnit.setText("x31.25mg");
+                                                tvMotionThresholdUnit.setText(accType == 1 ? "x31.25mg" : "x186mg");
                                             }
                                         }
+                                        break;
+
+                                    case KEY_ACC_TYPE:
+                                        //三轴传感器类型
+                                        if (length == 1) accType = value[4] & 0xff;
+                                        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getAxisParams());
                                         break;
 
                                 }
@@ -225,7 +233,7 @@ public class AccDataActivity extends BaseActivity {
         });
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -285,8 +293,7 @@ public class AccDataActivity extends BaseActivity {
     }
 
     public void onSave(View view) {
-        if (isWindowLocked())
-            return;
+        if (isWindowLocked()) return;
         String thresholdStr = etMotionThreshold.getText().toString();
         if (TextUtils.isEmpty(thresholdStr)) {
             ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
@@ -334,20 +341,19 @@ public class AccDataActivity extends BaseActivity {
     }
 
     public void onAxisScale(View view) {
-        if (isWindowLocked())
-            return;
+        if (isWindowLocked()) return;
         BottomDialog scaleDialog = new BottomDialog();
         scaleDialog.setDatas(axisScales, mSelectedScale);
         scaleDialog.setListener(value -> {
             mSelectedScale = value;
             if (mSelectedScale == 0) {
-                tvMotionThresholdUnit.setText("x3.91mg");
+                tvMotionThresholdUnit.setText(accType == 1 ? "x3.91mg" : "x16mg");
             } else if (mSelectedScale == 1) {
-                tvMotionThresholdUnit.setText("x7.81mg");
+                tvMotionThresholdUnit.setText(accType == 1 ? "x7.81mg" : "x32mg");
             } else if (mSelectedScale == 2) {
-                tvMotionThresholdUnit.setText("x15.63mg");
+                tvMotionThresholdUnit.setText(accType == 1 ? "x15.63mg" : "x62mg");
             } else if (mSelectedScale == 3) {
-                tvMotionThresholdUnit.setText("x31.25mg");
+                tvMotionThresholdUnit.setText(accType == 1 ? "x31.25mg" : "x186mg");
             }
             tvAxisScale.setText(axisScales.get(value));
         });
@@ -355,8 +361,7 @@ public class AccDataActivity extends BaseActivity {
     }
 
     public void onAxisDataRate(View view) {
-        if (isWindowLocked())
-            return;
+        if (isWindowLocked()) return;
         BottomDialog dataRateDialog = new BottomDialog();
         dataRateDialog.setDatas(axisDataRates, mSelectedRate);
         dataRateDialog.setListener(value -> {
