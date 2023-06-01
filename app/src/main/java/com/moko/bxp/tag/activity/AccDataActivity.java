@@ -22,7 +22,6 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
-import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
@@ -73,7 +72,6 @@ public class AccDataActivity extends BaseActivity {
     private int mSelectedRate;
     private int mSelectedScale;
     public boolean isConfigError;
-    private int firmwareVersion;
     private int accType = -1;
 
     @Override
@@ -94,7 +92,6 @@ public class AccDataActivity extends BaseActivity {
         axisScales.add("±16g");
 
         EventBus.getDefault().register(this);
-        firmwareVersion = getIntent().getIntExtra(AppConstants.FIRMWARE_VERSION, 0);
 
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
@@ -113,10 +110,7 @@ public class AccDataActivity extends BaseActivity {
             orderTasks.add(OrderTaskAssembler.getAccType());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
-        if (firmwareVersion > AppConstants.BASE_VERSION) {
-            layoutStaticHeart.setVisibility(View.VISIBLE);
-            layoutStaticHeart.setOnClickListener(v -> startActivity(new Intent(this, StaticHeartbeatActivity.class)));
-        }
+        layoutStaticHeart.setOnClickListener(v -> startActivity(new Intent(this, StaticHeartbeatActivity.class)));
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)

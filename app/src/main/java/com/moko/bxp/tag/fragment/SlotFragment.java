@@ -61,6 +61,7 @@ public class SlotFragment extends Fragment {
 
     private DeviceInfoActivity activity;
     private SlotData slotData;
+    private boolean hallPowerEnable;
 
     public SlotFragment() {
     }
@@ -74,6 +75,10 @@ public class SlotFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate: ");
         super.onCreate(savedInstanceState);
+    }
+
+    public void setHallPowerEnable(boolean hallPowerEnable){
+        this.hallPowerEnable = hallPowerEnable;
     }
 
     @Override
@@ -139,6 +144,7 @@ public class SlotFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), SlotDataActivity.class);
                 intent.putExtra(AppConstants.EXTRA_KEY_SLOT_DATA, slotData);
                 intent.putExtra(AppConstants.EXTRA_KEY_SUPPORT_ACC, activity.isSupportAcc);
+                intent.putExtra("hall",hallPowerEnable);
                 startActivityForResult(intent, AppConstants.REQUEST_CODE_SLOT_DATA);
                 break;
             case IBEACON:
@@ -259,6 +265,7 @@ public class SlotFragment extends Fragment {
         Intent intent = new Intent(getActivity(), SlotDataActivity.class);
         intent.putExtra(AppConstants.EXTRA_KEY_SLOT_DATA, slotData);
         intent.putExtra(AppConstants.EXTRA_KEY_SUPPORT_ACC, activity.isSupportAcc);
+        intent.putExtra("hall",hallPowerEnable);
         startActivityForResult(intent, AppConstants.REQUEST_CODE_SLOT_DATA);
     }
 }

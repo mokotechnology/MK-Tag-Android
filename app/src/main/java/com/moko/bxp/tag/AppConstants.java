@@ -42,6 +42,4 @@ public class AppConstants {
     // result_code
     public static final int RESULT_CONN_DISCONNECTED = 2;
 
-    public static final int BASE_VERSION = 104;
-    public static final String FIRMWARE_VERSION = "firmwareVersion";
 }

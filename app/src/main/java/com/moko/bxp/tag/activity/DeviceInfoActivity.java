@@ -121,8 +121,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         orderTasks.add(OrderTaskAssembler.getDeviceMac());
         orderTasks.add(OrderTaskAssembler.getSensorType());
         orderTasks.add(OrderTaskAssembler.getHallPowerEnable());
-        //获取固件版本
-        orderTasks.add(OrderTaskAssembler.getFirmwareVersion());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -379,6 +377,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             if (!isSupportAcc && isHallPowerEnable) {
                                                 settingFragment.setSensorGone();
                                             }
+                                            slotFragment.setHallPowerEnable(isHallPowerEnable);
                                         }
                                         break;
 
@@ -424,7 +423,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                         deviceFragment.setSoftwareRevision(value);
                         break;
                     case CHAR_FIRMWARE_REVISION:
-                        setFirmwareVersion(new String(value).trim());
                         deviceFragment.setFirmwareRevision(value);
                         break;
                     case CHAR_HARDWARE_REVISION:
@@ -440,22 +438,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             }
         });
     }
-
-    private int firmwareVersion;
-
-    private void setFirmwareVersion(String firmwareVersion) {
-        if (TextUtils.isEmpty(firmwareVersion)) return;
-        XLog.i("333333**" + firmwareVersion);
-        if (firmwareVersion.startsWith("v") || firmwareVersion.startsWith("V")) {
-            String result = firmwareVersion.substring(1).replaceAll("\\.", "");
-            try {
-                this.firmwareVersion = Integer.parseInt(result);
-            } catch (Exception e) {
-                XLog.i(e);
-            }
-        }
-    }
-
 
     public void getAllSlot() {
         showSyncingProgressDialog();
@@ -676,7 +658,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             getAllSlot();
         } else if (checkedId == R.id.radioBtn_setting) {
             showSettingFragment();
-            settingFragment.setFirmwareVersion(firmwareVersion);
+            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getBatteryMode());
             if (hasPwdChanged) {
                 settingFragment.setResetVisibility(true);
             } else {
@@ -725,7 +707,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void onSensorConfig(View view) {
         if (isWindowLocked()) return;
         Intent intent = new Intent(this, SensorConfigActivity.class);
-        intent.putExtra(AppConstants.FIRMWARE_VERSION, firmwareVersion);
         intent.putExtra("acc", isSupportAcc);
         intent.putExtra("hall", isHallPowerEnable);
         startActivityForResult(intent, 200);
@@ -734,18 +715,16 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void onQuickSwitch(View view) {
         if (isWindowLocked()) return;
         Intent intent = new Intent(this, QuickSwitchActivity.class);
-        intent.putExtra(AppConstants.FIRMWARE_VERSION, firmwareVersion);
         startActivityForResult(intent, AppConstants.REQUEST_CODE_QUICK_SWITCH);
     }
 
     public void onResetBeacon(View view) {
-        if (isWindowLocked())
-            return;
+        if (isWindowLocked()) return;
         AlertMessageDialog resetDeviceDialog = new AlertMessageDialog();
         resetDeviceDialog.setTitle("Warning！");
         resetDeviceDialog.setMessage("Are you sure to reset the Beacon？");
         resetDeviceDialog.setConfirm(R.string.ok);
-        resetDeviceDialog.setOnAlertConfirmListener(() -> resetDevice());
+        resetDeviceDialog.setOnAlertConfirmListener(this::resetDevice);
         resetDeviceDialog.show(getSupportFragmentManager());
     }
 

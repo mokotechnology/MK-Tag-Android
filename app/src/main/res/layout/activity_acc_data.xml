@@ -293,7 +293,6 @@
                 android:background="@drawable/shape_radius_white_bg"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:visibility="gone"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
 

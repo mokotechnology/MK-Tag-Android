@@ -18,6 +18,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
+import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.entity.SlotData;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
@@ -85,6 +86,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     public boolean isConfigError;
     private boolean isTriggerEnable;
     private boolean isSupportAcc;
+    private boolean hallPowerEnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotData = (SlotData) getIntent().getSerializableExtra(AppConstants.EXTRA_KEY_SLOT_DATA);
             isSupportAcc = getIntent().getBooleanExtra(AppConstants.EXTRA_KEY_SUPPORT_ACC, false);
+            hallPowerEnable = getIntent().getBooleanExtra("hall", false);
             currentFrameTypeEnum = slotData.frameTypeEnum;
             triggerType = slotData.triggerType;
             XLog.i(slotData.toString());
@@ -133,22 +136,23 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         }
         createTriggerFragments();
         showTriggerFragment();
-//        setTriggerData();
+        setTriggerData();
         EventBus.getDefault().register(this);
     }
 
-//    private void setTriggerData() {
-//        switch (triggerType) {
-//            case TRIGGER_TYPE_MAGNETIC:
-//                triggerTypeSelected = 0;
-//                break;
-//            case TRIGGER_TYPE_MOTION:
-//                triggerTypeSelected = 1;
-//                break;
-//
-//        }
-//        tvTriggerType.setText(triggerTypes.get(triggerTypeSelected));
-//    }
+    private void setTriggerData() {
+        switch (triggerType) {
+            case TRIGGER_TYPE_MAGNETIC:
+                triggerTypeSelected = 0;
+                break;
+            case TRIGGER_TYPE_MOTION:
+                triggerTypeSelected = 1;
+                break;
+
+        }
+        tvTriggerType.setText(triggerTypes.get(triggerTypeSelected));
+        if (hallPowerEnable) tvTriggerType.setEnabled(false);
+    }
 
     private void showTriggerFragment() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -315,8 +319,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     }
 
     public void onTrigger(View view) {
-        if (isWindowLocked())
-            return;
+        if (isWindowLocked()) return;
         isTriggerEnable = !isTriggerEnable;
         if (isTriggerEnable) {
             triggerType = TRIGGER_TYPE_MOTION;
@@ -334,8 +337,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     }
 
     public void onSave(View view) {
-        if (isWindowLocked())
-            return;
+        if (isWindowLocked()) return;
         OrderTask orderTask = null;
         // 发送触发条件
         switch (triggerType) {
@@ -375,27 +377,27 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     }
 
     public void onTriggerType(View view) {
-//        if (isWindowLocked())
-//            return;
-//        if (!isSupportAcc)
-//            return;
-//        // 选择触发条件
-//        BottomDialog dialog = new BottomDialog();
-//        dialog.setDatas(triggerTypes, triggerTypeSelected);
-//        dialog.setListener(value -> {
-//            triggerTypeSelected = value;
-//            switch (triggerTypeSelected) {
-//                case 0:
-//                    triggerType = TRIGGER_TYPE_MAGNETIC;
-//                    break;
-//                case 1:
-//                    triggerType = TRIGGER_TYPE_MOTION;
-//                    break;
-//            }
-//            showTriggerFragment();
-//            tvTriggerType.setText(triggerTypes.get(value));
-//        });
-//        dialog.show(getSupportFragmentManager());
+        if (isWindowLocked())
+            return;
+        if (!isSupportAcc)
+            return;
+        // 选择触发条件
+        BottomDialog dialog = new BottomDialog();
+        dialog.setDatas(triggerTypes, triggerTypeSelected);
+        dialog.setListener(value -> {
+            triggerTypeSelected = value;
+            switch (triggerTypeSelected) {
+                case 0:
+                    triggerType = TRIGGER_TYPE_MAGNETIC;
+                    break;
+                case 1:
+                    triggerType = TRIGGER_TYPE_MOTION;
+                    break;
+            }
+            showTriggerFragment();
+            tvTriggerType.setText(triggerTypes.get(value));
+        });
+        dialog.show(getSupportFragmentManager());
     }
 
     public void onSelectUrlScheme(View view) {
