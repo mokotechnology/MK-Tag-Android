@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -200,6 +201,7 @@ public class AccDataActivity extends BaseActivity {
                                     case KEY_ACC_TYPE:
                                         //三轴传感器类型
                                         if (length == 1) accType = value[4] & 0xff;
+                                        XLog.i("333333===="+Arrays.toString(value));
                                         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getAxisParams());
                                         break;
 
