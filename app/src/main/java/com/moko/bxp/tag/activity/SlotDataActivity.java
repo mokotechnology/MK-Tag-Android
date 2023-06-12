@@ -120,19 +120,20 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
             }
         }
         tvSlotTitle.setText(slotData.slotEnum.getTitle());
-        if (slotData.frameTypeEnum != SlotFrameTypeEnum.NO_DATA && isSupportAcc) {
+        if (slotData.frameTypeEnum != SlotFrameTypeEnum.NO_DATA && (isSupportAcc || !hallPowerEnable)) {
             rlTriggerSwitch.setVisibility(View.VISIBLE);
         } else {
             rlTriggerSwitch.setVisibility(View.GONE);
         }
+        XLog.i("333333type=" + triggerType + hallPowerEnable);
         if (triggerType > 0) {
             isTriggerEnable = true;
             ivTrigger.setImageResource(R.drawable.ic_checked);
-            rlTrigger.setVisibility(View.VISIBLE);
+//            rlTrigger.setVisibility(View.VISIBLE);
         } else {
             isTriggerEnable = false;
             ivTrigger.setImageResource(R.drawable.ic_unchecked);
-            rlTrigger.setVisibility(View.GONE);
+//            rlTrigger.setVisibility(View.GONE);
         }
         createTriggerFragments();
         showTriggerFragment();
@@ -151,7 +152,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
 
         }
         tvTriggerType.setText(triggerTypes.get(triggerTypeSelected));
-        if (hallPowerEnable) tvTriggerType.setEnabled(false);
+        tvTriggerType.setEnabled(!hallPowerEnable && isSupportAcc);
     }
 
     private void showTriggerFragment() {
@@ -318,11 +319,25 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         slotData.frameTypeEnum = slotFrameTypeEnum;
     }
 
+    /**
+     * 触发开关
+     *
+     * @param view
+     */
     public void onTrigger(View view) {
         if (isWindowLocked()) return;
         isTriggerEnable = !isTriggerEnable;
         if (isTriggerEnable) {
-            triggerType = TRIGGER_TYPE_MOTION;
+            if (!isSupportAcc && !hallPowerEnable) {
+                //霍尔触发
+                triggerType = TRIGGER_TYPE_MAGNETIC;
+            } else if (isSupportAcc && hallPowerEnable) {
+                triggerType = TRIGGER_TYPE_MOTION;
+            } else {
+                triggerType = TRIGGER_TYPE_MOTION;
+            }
+            setTriggerData();
+            showTriggerFragment();
             ivTrigger.setImageResource(R.drawable.ic_checked);
             rlTrigger.setVisibility(View.VISIBLE);
         } else {
@@ -377,10 +392,8 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     }
 
     public void onTriggerType(View view) {
-        if (isWindowLocked())
-            return;
-        if (!isSupportAcc)
-            return;
+        if (isWindowLocked()) return;
+//        if (!isSupportAcc) return;
         // 选择触发条件
         BottomDialog dialog = new BottomDialog();
         dialog.setDatas(triggerTypes, triggerTypeSelected);

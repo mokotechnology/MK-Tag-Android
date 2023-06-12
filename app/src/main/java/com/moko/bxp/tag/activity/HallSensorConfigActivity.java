@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -72,6 +73,7 @@ public class HallSensorConfigActivity extends BaseActivity {
 //            orderTasks.add(OrderTaskAssembler.getHallPowerEnable());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
+//        MokoSupport.getInstance().enableHallStatusNotify();
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
@@ -90,21 +92,21 @@ public class HallSensorConfigActivity extends BaseActivity {
         EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
         runOnUiThread(() -> {
-            if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
-                OrderTaskResponse response = event.getResponse();
-                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
-                int responseType = response.responseType;
-                byte[] value = response.responseValue;
-                switch (orderCHAR) {
-                    case CHAR_HALL: {
-                        if (value.length == 5) {
-                            int status = value[4] & 0xFF;
-                            tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
-                        }
-                    }
-                    break;
-                }
-            }
+//            if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+//                OrderTaskResponse response = event.getResponse();
+//                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
+//                int responseType = response.responseType;
+//                byte[] value = response.responseValue;
+//                switch (orderCHAR) {
+//                    case CHAR_HALL: {
+//                        if (value.length == 5) {
+//                            int status = value[4] & 0xFF;
+//                            tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
             }
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
@@ -168,6 +170,7 @@ public class HallSensorConfigActivity extends BaseActivity {
                                             return;
                                         int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                         tvTriggerCount.setText(String.valueOf(count));
+                                        MokoSupport.getInstance().enableHallStatusNotify();
                                         break;
 //                                    case KEY_HALL_POWER_ENABLE:
 //                                        if (length == 1) {
@@ -185,27 +188,35 @@ public class HallSensorConfigActivity extends BaseActivity {
             }
             if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
-                int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderCHAR) {
-                    case CHAR_HALL:
-                        int header = value[0] & 0xFF;// 0xEB
-                        int flag = value[1] & 0xFF;// read or write
-                        int cmd = value[2] & 0xFF;
-                        if (header != 0xEB)
-                            return;
-                        ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
-                        if (configKeyEnum == null) {
-                            return;
-                        }
-                        int length = value[3] & 0xFF;
-                        if (length == 1) {
-                            int status = value[4] & 0xFF;
-                            tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
-                        }
-                        break;
+                if (null != value && value.length == 5) {
+                    int header = value[0] & 0xFF;// 0xEB
+                    int flag = value[1] & 0xFF;// read or write
+                    int cmd = value[2] & 0xFF;
+                    if (header != 0xEB) return;
+                    int length = value[3] & 0xFF;
+                    if (length == 1 && flag == 2 && cmd == 5) {
+                        int status = value[4] & 0xFF;
+                        tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
+                    }
                 }
+//                switch (orderCHAR) {
+//                    case CHAR_HALL:
+//                        int header = value[0] & 0xFF;// 0xEB
+//                        int flag = value[1] & 0xFF;// read or write
+//                        int cmd = value[2] & 0xFF;
+//                        if (header != 0xEB) return;
+////                        ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+////                        if (configKeyEnum == null) {
+////                            return;
+////                        }
+//                        int length = value[3] & 0xFF;
+//                        if (length == 1&& flag == 2&& cmd == 5) {
+//                            int status = value[4] & 0xFF;
+//                            tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
+//                        }
+//                        break;
+//                }
             }
         });
     }
@@ -237,6 +248,7 @@ public class HallSensorConfigActivity extends BaseActivity {
             // 注销广播
             unregisterReceiver(mReceiver);
         }
+        MokoSupport.getInstance().disableHallStatusNotify();
         EventBus.getDefault().unregister(this);
     }
 
