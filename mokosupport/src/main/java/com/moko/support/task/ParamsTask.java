@@ -112,7 +112,6 @@ public class ParamsTask extends OrderTask {
         };
     }
 
-
     private void createGetParamsData(int paramsKey) {
         data = new byte[]{(byte) 0xEA, (byte) 0x00, (byte) paramsKey, (byte) 0x00};
     }

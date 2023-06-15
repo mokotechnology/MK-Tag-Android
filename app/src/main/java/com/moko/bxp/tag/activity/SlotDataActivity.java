@@ -129,11 +129,11 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         if (triggerType > 0) {
             isTriggerEnable = true;
             ivTrigger.setImageResource(R.drawable.ic_checked);
-//            rlTrigger.setVisibility(View.VISIBLE);
+            rlTrigger.setVisibility(View.VISIBLE);
         } else {
             isTriggerEnable = false;
             ivTrigger.setImageResource(R.drawable.ic_unchecked);
-//            rlTrigger.setVisibility(View.GONE);
+            rlTrigger.setVisibility(View.GONE);
         }
         createTriggerFragments();
         showTriggerFragment();
@@ -149,7 +149,6 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
             case TRIGGER_TYPE_MOTION:
                 triggerTypeSelected = 1;
                 break;
-
         }
         tvTriggerType.setText(triggerTypes.get(triggerTypeSelected));
         tvTriggerType.setEnabled(!hallPowerEnable && isSupportAcc);
@@ -279,7 +278,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
             slotDataActionImpl.resetParams();
         }
         SlotFrameTypeEnum slotFrameTypeEnum = SlotFrameTypeEnum.fromShowName(slotTypeArray[newVal]);
-        if (slotFrameTypeEnum != SlotFrameTypeEnum.NO_DATA && isSupportAcc) {
+        if (slotFrameTypeEnum != SlotFrameTypeEnum.NO_DATA && (isSupportAcc || !hallPowerEnable)) {
             rlTriggerSwitch.setVisibility(View.VISIBLE);
         } else {
             rlTriggerSwitch.setVisibility(View.GONE);
