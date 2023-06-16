@@ -78,6 +78,7 @@ public class QuickSwitchActivity extends BaseActivity {
             orderTasks.add(OrderTaskAssembler.getConnectable());
             orderTasks.add(OrderTaskAssembler.getTriggerLEDIndicatorEnable());
             orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
+//            orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }

@@ -52,9 +52,9 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
             if (validData.type == AdvInfo.VALID_DATA_FRAME_TYPE_TLM) {
                 parent.addView(createTLMView(AdvInfoParser.getTLM(validData.data)));
             }
-            if (validData.type == AdvInfo.VALID_DATA_FRAME_TYPE_IBEACON) {
-                AdvIBeacon beaconXiBeacon = AdvInfoParser.getIBeacon(item.rssi, validData.data);
-                beaconXiBeacon.txPower = validData.txPower + "";
+            if (validData.type == AdvInfo.VALID_DATA_FRAME_TYPE_IBEACON || validData.type == AdvInfo.VALID_DATA_TYPE_IBEACON_APPLE) {
+                AdvIBeacon beaconXiBeacon = AdvInfoParser.getIBeacon(item.rssi, validData.data, validData.type);
+                beaconXiBeacon.txPower = validData.txPower == Integer.MIN_VALUE ? "N/A" : String.valueOf(validData.txPower);
                 parent.addView(createIBeaconView(beaconXiBeacon));
             }
             if (validData.type == AdvInfo.VALID_DATA_FRAME_TYPE_TAG_INFO) {
@@ -62,7 +62,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
                 helper.setVisible(R.id.tv_tag_id, true);
                 helper.setText(R.id.tv_tag_id, String.format("Tag ID:0x%s", validData.data.substring(36)));
             }
-            if (validData.type == AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST){
+            if (validData.type == AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST) {
             }
         }
     }
@@ -117,7 +117,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
         TextView tv_proximity_state = view.findViewById(R.id.tv_proximity_state);
 
         tv_rssi_1m.setText(String.format("%sdBm", iBeacon.rssi));
-        tv_tx_power.setText(String.format("%sdBm", iBeacon.txPower));
+        tv_tx_power.setText("N/A".equals(iBeacon.txPower) ? iBeacon.txPower : (iBeacon.txPower + "dBm"));
         tv_proximity_state.setText(iBeacon.distanceDesc);
         tv_uuid.setText(iBeacon.uuid);
         tv_major.setText(iBeacon.major);

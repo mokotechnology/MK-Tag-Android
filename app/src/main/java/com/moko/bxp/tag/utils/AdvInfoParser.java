@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.entity.AdvIBeacon;
+import com.moko.bxp.tag.entity.AdvInfo;
 import com.moko.bxp.tag.entity.AdvTLM;
 import com.moko.bxp.tag.entity.AdvTag;
 import com.moko.bxp.tag.entity.AdvUID;
@@ -74,30 +75,54 @@ public class AdvInfoParser {
         return tlm;
     }
 
-    public static AdvIBeacon getIBeacon(int rssi, String data) {
+    public static AdvIBeacon getIBeacon(int rssi, String data,int type) {
         // 50ee0c0102030405060708090a0b0c0d0e0f1000010002
         AdvIBeacon iBeacon = new AdvIBeacon();
-        int rssi_1m = Integer.parseInt(data.substring(2, 4), 16);
-        iBeacon.rssi = (byte) rssi_1m + "";
-        String uuid = data.substring(6, 38).toLowerCase();
-        StringBuilder stringBuilder = new StringBuilder(uuid);
-        stringBuilder.insert(8, "-");
-        stringBuilder.insert(13, "-");
-        stringBuilder.insert(18, "-");
-        stringBuilder.insert(23, "-");
-        iBeacon.uuid = stringBuilder.toString();
-        iBeacon.major = Integer.parseInt(data.substring(38, 42), 16) + "";
-        iBeacon.minor = Integer.parseInt(data.substring(42, 46), 16) + "";
-        double distance = MokoUtils.getDistance(rssi, Math.abs((byte) rssi_1m));
-        String distanceDesc = "Unknown";
-        if (distance <= 0.1) {
-            distanceDesc = "Immediate";
-        } else if (distance > 0.1 && distance <= 1.0) {
-            distanceDesc = "Near";
-        } else if (distance > 1.0) {
-            distanceDesc = "Far";
+        if (type == AdvInfo.VALID_DATA_FRAME_TYPE_IBEACON) {
+            int rssi_1m = Integer.parseInt(data.substring(2, 4), 16);
+            iBeacon.rssi = (byte) rssi_1m + "";
+            String uuid = data.substring(6, 38).toLowerCase();
+            StringBuilder stringBuilder = new StringBuilder(uuid);
+            stringBuilder.insert(8, "-");
+            stringBuilder.insert(13, "-");
+            stringBuilder.insert(18, "-");
+            stringBuilder.insert(23, "-");
+            iBeacon.uuid = stringBuilder.toString();
+            iBeacon.major = Integer.parseInt(data.substring(38, 42), 16) + "";
+            iBeacon.minor = Integer.parseInt(data.substring(42, 46), 16) + "";
+            double distance = MokoUtils.getDistance(rssi, Math.abs((byte) rssi_1m));
+            String distanceDesc = "Unknown";
+            if (distance <= 0.1) {
+                distanceDesc = "Immediate";
+            } else if (distance > 0.1 && distance <= 1.0) {
+                distanceDesc = "Near";
+            } else if (distance > 1.0) {
+                distanceDesc = "Far";
+            }
+            iBeacon.distanceDesc = distanceDesc;
+        }else if (type == AdvInfo.VALID_DATA_TYPE_IBEACON_APPLE){
+            String uuid = data.substring(4, 36).toLowerCase();
+            StringBuilder stringBuilder = new StringBuilder(uuid);
+            stringBuilder.insert(8, "-");
+            stringBuilder.insert(13, "-");
+            stringBuilder.insert(18, "-");
+            stringBuilder.insert(23, "-");
+            iBeacon.uuid = stringBuilder.toString();
+            iBeacon.major = Integer.parseInt(data.substring(36, 40), 16) + "";
+            iBeacon.minor = Integer.parseInt(data.substring(40, 44), 16) + "";
+            int rssi_1m = Integer.parseInt(data.substring(44, 46), 16);
+            iBeacon.rssi = (byte) rssi_1m + "";
+            double distance = MokoUtils.getDistance(rssi, Math.abs((byte) rssi_1m));
+            String distanceDesc = "Unknown";
+            if (distance <= 0.1) {
+                distanceDesc = "Immediate";
+            } else if (distance > 0.1 && distance <= 1.0) {
+                distanceDesc = "Near";
+            } else if (distance > 1.0) {
+                distanceDesc = "Far";
+            }
+            iBeacon.distanceDesc = distanceDesc;
         }
-        iBeacon.distanceDesc = distanceDesc;
         return iBeacon;
     }
 

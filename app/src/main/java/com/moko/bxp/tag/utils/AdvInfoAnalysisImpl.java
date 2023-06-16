@@ -3,6 +3,7 @@ package com.moko.bxp.tag.utils;
 import android.os.ParcelUuid;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.utils.MokoUtils;
@@ -29,15 +30,25 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
     @Override
     public AdvInfo parseDeviceInfo(DeviceInfo deviceInfo) {
         int battery = -1;
-        ScanResult result = deviceInfo.scanResult;
-        ScanRecord record = result.getScanRecord();
-        Map<ParcelUuid, byte[]> map = record.getServiceData();
         // filter
         boolean isEddystone = false;
         boolean isTagInfo = false;
         boolean isProductTest = false;
+        boolean isBeacon = false;
         byte[] values = null;
         int type = -1;
+        ScanResult result = deviceInfo.scanResult;
+        ScanRecord record = result.getScanRecord();
+        if (null == record) return null;
+        Map<ParcelUuid, byte[]> map = record.getServiceData();
+        byte[] manufacturerBytes = record.getManufacturerSpecificData(0x004C);
+        if (null != manufacturerBytes && manufacturerBytes.length > 0) {
+            isBeacon = true;
+            if (manufacturerBytes.length != 23)return null;
+            type = AdvInfo.VALID_DATA_TYPE_IBEACON_APPLE;
+            values = manufacturerBytes;
+        }
+
         if (map != null && !map.isEmpty()) {
             Iterator iterator = map.keySet().iterator();
             while (iterator.hasNext()) {
@@ -94,19 +105,18 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
                                     return null;
                                 type = AdvInfo.VALID_DATA_FRAME_TYPE_TAG_INFO;
                                 battery = MokoUtils.toInt(Arrays.copyOfRange(bytes, 16, 18));
-                                XLog.i("333333***"+MokoUtils.bytesToHexString(bytes));
                                 break;
                         }
                     }
                     values = bytes;
                     break;
-                }else if (parcelUuid.toString().startsWith("0000eb01")){
+                } else if (parcelUuid.toString().startsWith("0000eb01")) {
                     isProductTest = true;
                     byte[] bytes = map.get(parcelUuid);
                     if (bytes != null) {
                         switch (bytes[0] & 0xff) {
                             case AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST:
-                                battery = MokoUtils.toInt(Arrays.copyOfRange(bytes,1,3));
+                                battery = MokoUtils.toInt(Arrays.copyOfRange(bytes, 1, 3));
                                 type = AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST;
                                 break;
                         }
@@ -116,7 +126,7 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
                 }
             }
         }
-        if ((!isEddystone && !isTagInfo&& !isProductTest) || values == null || type == -1) {
+        if ((!isEddystone && !isTagInfo && !isProductTest && !isBeacon) || values == null || type == -1) {
             return null;
         }
         // avoid repeat
