@@ -42,9 +42,9 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
         if (null == record) return null;
         Map<ParcelUuid, byte[]> map = record.getServiceData();
         byte[] manufacturerBytes = record.getManufacturerSpecificData(0x004C);
-        if (null != manufacturerBytes && manufacturerBytes.length > 0) {
+        if (null != manufacturerBytes && manufacturerBytes.length ==23) {
             isBeacon = true;
-            if (manufacturerBytes.length != 23)return null;
+//            if (manufacturerBytes.length != 23) return null;
             type = AdvInfo.VALID_DATA_TYPE_IBEACON_APPLE;
             values = manufacturerBytes;
         }
@@ -118,10 +118,10 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
                             case AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST:
                                 battery = MokoUtils.toInt(Arrays.copyOfRange(bytes, 1, 3));
                                 type = AdvInfo.VALID_DATA_FRAME_TYPE_PRODUCTION_TEST;
+                                values = bytes;
                                 break;
                         }
                     }
-                    values = bytes;
                     break;
                 }
             }
@@ -168,6 +168,7 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             beaconXInfoHashMap.put(deviceInfo.mac, advInfo);
         }
         String data = MokoUtils.bytesToHexString(values);
+        XLog.i("333333data=" + data + "length=****" + data.length() + "type=" + type);
         if (advInfo.validDataHashMap.containsKey(data)) {
             return advInfo;
         } else {
