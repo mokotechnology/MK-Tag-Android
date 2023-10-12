@@ -231,7 +231,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 switch (orderCHAR) {
                     case CHAR_OTA_CONTROL:
                     case CHAR_OTA_DATA:
-                        ToastUtils.showToast(this, "Error:DFU Failed!");
+                        XLog.i("dfu time out");
+//                        ToastUtils.showToast(this, "Error:DFU Failed!");
                         MokoSupport.getInstance().disConnectBle();
                         break;
                 }
@@ -275,7 +276,11 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                 }, 1000);
                             }
                         } else {
-                            ToastUtils.showToast(this, "Error:DFU Failed!");
+                            XLog.i(MokoUtils.bytesToHexString(value));
+                            int code = MokoUtils.toInt(value);
+                            if (code != 0) {
+                                ToastUtils.showToast(this, "Error:DFU Failed!");
+                            }
                         }
                         break;
                     case CHAR_OTA_DATA:
