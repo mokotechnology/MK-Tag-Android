@@ -14,7 +14,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
 import com.moko.bxp.tag.activity.SlotDataActivity;
-import com.moko.bxp.tag.databinding.FragmentUidBinding;
+import com.moko.bxp.tag.databinding.FragmentUidTagBinding;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.tag.MokoSupport;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, ISlotDataAction {
 
     private static final String TAG = "UidFragment";
-    private FragmentUidBinding mBind;
+    private FragmentUidTagBinding mBind;
 
     private SlotDataActivity activity;
 
@@ -48,7 +48,7 @@ public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        mBind = FragmentUidBinding.inflate(inflater, container, false);
+        mBind = FragmentUidTagBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         mBind.sbRssi.setOnSeekBarChangeListener(this);
         mBind.sbTxPower.setOnSeekBarChangeListener(this);

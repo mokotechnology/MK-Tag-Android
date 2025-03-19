@@ -12,14 +12,14 @@ import android.view.ViewGroup;
 
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.activity.SlotDataActivity;
-import com.moko.bxp.tag.databinding.FragmentTriggerMagneticBinding;
+import com.moko.bxp.tag.databinding.FragmentTriggerMagneticTagBinding;
 import com.moko.bxp.tag.utils.ToastUtils;
 
 public class TriggerMagneticFragment extends Fragment {
 
     private static final String TAG = TriggerMagneticFragment.class.getSimpleName();
 
-    private FragmentTriggerMagneticBinding mBind;
+    private FragmentTriggerMagneticTagBinding mBind;
 
 
     private SlotDataActivity activity;
@@ -45,7 +45,7 @@ public class TriggerMagneticFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        mBind = FragmentTriggerMagneticBinding.inflate(inflater, container, false);
+        mBind = FragmentTriggerMagneticTagBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         if (activity.slotData.triggerType == 6) {
             // 霍尔触发

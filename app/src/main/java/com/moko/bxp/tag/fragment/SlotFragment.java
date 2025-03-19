@@ -16,7 +16,7 @@ import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.activity.DeviceInfoActivity;
 import com.moko.bxp.tag.activity.SlotDataActivity;
-import com.moko.bxp.tag.databinding.FragmentSlotBinding;
+import com.moko.bxp.tag.databinding.FragmentSlotTagBinding;
 import com.moko.bxp.tag.entity.SlotData;
 import com.moko.bxp.tag.entity.SlotEnum;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
@@ -30,7 +30,7 @@ import java.util.Arrays;
 public class SlotFragment extends Fragment {
 
     private static final String TAG = "SlotFragment";
-    private FragmentSlotBinding mBind;
+    private FragmentSlotTagBinding mBind;
     private DeviceInfoActivity activity;
     private SlotData slotData;
     private boolean hallPowerEnable;
@@ -57,7 +57,7 @@ public class SlotFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        mBind = FragmentSlotBinding.inflate(inflater, container, false);
+        mBind = FragmentSlotTagBinding.inflate(inflater, container, false);
         activity = (DeviceInfoActivity) getActivity();
         return mBind.getRoot();
     }

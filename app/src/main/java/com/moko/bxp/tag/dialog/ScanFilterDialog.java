@@ -4,17 +4,17 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.SeekBar;
 
-import com.moko.bxp.tag.databinding.DialogScanFilterBinding;
+import com.moko.bxp.tag.databinding.DialogScanFilterTagBinding;
 
 
-public class ScanFilterDialog extends BaseDialog<DialogScanFilterBinding> {
+public class ScanFilterDialog extends BaseDialog<DialogScanFilterTagBinding> {
     private int filterRssi;
     private String filterName;
     private String filterMac;
 
     @Override
-    protected DialogScanFilterBinding getViewBind() {
-        return DialogScanFilterBinding.inflate(getLayoutInflater());
+    protected DialogScanFilterTagBinding getViewBind() {
+        return DialogScanFilterTagBinding.inflate(getLayoutInflater());
     }
 
     public ScanFilterDialog(Context context) {

@@ -12,14 +12,14 @@ import android.view.ViewGroup;
 
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.activity.SlotDataActivity;
-import com.moko.bxp.tag.databinding.FragmentTriggerMotionBinding;
+import com.moko.bxp.tag.databinding.FragmentTriggerMotionTagBinding;
 import com.moko.bxp.tag.utils.ToastUtils;
 
 public class TriggerMotionFragment extends Fragment {
 
     private static final String TAG = TriggerMotionFragment.class.getSimpleName();
 
-    private FragmentTriggerMotionBinding mBind;
+    private FragmentTriggerMotionTagBinding mBind;
 
 
     private SlotDataActivity activity;
@@ -46,7 +46,7 @@ public class TriggerMotionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        mBind = FragmentTriggerMotionBinding.inflate(inflater, container, false);
+        mBind = FragmentTriggerMotionTagBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         if (activity.slotData.triggerType == 5) {
             // 移动触发

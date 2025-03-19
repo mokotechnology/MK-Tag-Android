@@ -16,7 +16,7 @@ import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
 import com.moko.bxp.tag.activity.SlotDataActivity;
-import com.moko.bxp.tag.databinding.FragmentUrlBinding;
+import com.moko.bxp.tag.databinding.FragmentUrlTagBinding;
 import com.moko.bxp.tag.dialog.UrlSchemeDialog;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.utils.ToastUtils;
@@ -32,7 +32,7 @@ public class UrlFragment extends Fragment implements SeekBar.OnSeekBarChangeList
 
     private static final String TAG = "UrlFragment";
     private final String FILTER_ASCII = "[!-~]*";
-    private FragmentUrlBinding mBind;
+    private FragmentUrlTagBinding mBind;
 
     private SlotDataActivity activity;
 
@@ -54,7 +54,7 @@ public class UrlFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        mBind = FragmentUrlBinding.inflate(inflater, container, false);
+        mBind = FragmentUrlTagBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         mBind.sbRssi.setOnSeekBarChangeListener(this);
         mBind.sbTxPower.setOnSeekBarChangeListener(this);

@@ -14,7 +14,7 @@ import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
 import com.moko.bxp.tag.activity.SlotDataActivity;
-import com.moko.bxp.tag.databinding.FragmentTlmBinding;
+import com.moko.bxp.tag.databinding.FragmentTlmTagBinding;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.tag.MokoSupport;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, ISlotDataAction {
 
     private static final String TAG = "TlmFragment";
-    private FragmentTlmBinding mBind;
+    private FragmentTlmTagBinding mBind;
     private SlotDataActivity activity;
 
     public TlmFragment() {
@@ -47,7 +47,7 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        mBind = FragmentTlmBinding.inflate(inflater, container, false);
+        mBind = FragmentTlmTagBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         mBind.sbTxPower.setOnSeekBarChangeListener(this);
         setDefault();

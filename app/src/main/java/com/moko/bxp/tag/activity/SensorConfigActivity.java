@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
-import com.moko.bxp.tag.databinding.ActivitySensorConfigBinding;
+import com.moko.bxp.tag.databinding.ActivitySensorConfigTagBinding;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import androidx.annotation.Nullable;
 
-public class SensorConfigActivity extends BaseActivity<ActivitySensorConfigBinding> {
+public class SensorConfigActivity extends BaseActivity<ActivitySensorConfigTagBinding> {
 
     @Override
     protected void onCreate() {
@@ -28,8 +28,8 @@ public class SensorConfigActivity extends BaseActivity<ActivitySensorConfigBindi
     }
 
     @Override
-    protected ActivitySensorConfigBinding getViewBinding() {
-        return ActivitySensorConfigBinding.inflate(getLayoutInflater());
+    protected ActivitySensorConfigTagBinding getViewBinding() {
+        return ActivitySensorConfigTagBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)

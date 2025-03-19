@@ -14,7 +14,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
 import com.moko.bxp.tag.activity.SlotDataActivity;
-import com.moko.bxp.tag.databinding.FragmentIbeaconBinding;
+import com.moko.bxp.tag.databinding.FragmentIbeaconTagBinding;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.tag.MokoSupport;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, ISlotDataAction {
     private static final String TAG = "IBeaconFragment";
 
-    private FragmentIbeaconBinding mBind;
+    private FragmentIbeaconTagBinding mBind;
     private SlotDataActivity activity;
 
     public IBeaconFragment() {
@@ -47,7 +47,7 @@ public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChange
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        mBind = FragmentIbeaconBinding.inflate(inflater, container, false);
+        mBind = FragmentIbeaconTagBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         mBind.sbRssi.setOnSeekBarChangeListener(this);
         mBind.sbTxPower.setOnSeekBarChangeListener(this);

@@ -15,7 +15,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.ActivityHallConfigBinding;
+import com.moko.bxp.tag.databinding.ActivityHallConfigTagBinding;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
@@ -34,7 +34,7 @@ import java.util.Arrays;
 /**
  * 霍尔传感器
  */
-public class HallSensorConfigActivity extends BaseActivity<ActivityHallConfigBinding> {
+public class HallSensorConfigActivity extends BaseActivity<ActivityHallConfigTagBinding> {
     private boolean mReceiverTag = false;
 
     private boolean mIsHallPowerEnable;
@@ -62,8 +62,8 @@ public class HallSensorConfigActivity extends BaseActivity<ActivityHallConfigBin
     }
 
     @Override
-    protected ActivityHallConfigBinding getViewBinding() {
-        return ActivityHallConfigBinding.inflate(getLayoutInflater());
+    protected ActivityHallConfigTagBinding getViewBinding() {
+        return ActivityHallConfigTagBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)

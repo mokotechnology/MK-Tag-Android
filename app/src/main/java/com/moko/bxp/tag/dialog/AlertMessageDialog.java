@@ -8,12 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.DialogAlertBinding;
+import com.moko.bxp.tag.databinding.DialogAlertTagBinding;
 
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
-public class AlertMessageDialog extends MokoBaseDialog<DialogAlertBinding> {
+public class AlertMessageDialog extends MokoBaseDialog<DialogAlertTagBinding> {
     public static final String TAG = AlertMessageDialog.class.getSimpleName();
     private String cancel;
     private String confirm;
@@ -27,8 +27,8 @@ public class AlertMessageDialog extends MokoBaseDialog<DialogAlertBinding> {
     private int messageTextColorId = -1;
 
     @Override
-    protected DialogAlertBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
-        return DialogAlertBinding.inflate(inflater, container, false);
+    protected DialogAlertTagBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DialogAlertTagBinding.inflate(inflater, container, false);
     }
 
     @Override

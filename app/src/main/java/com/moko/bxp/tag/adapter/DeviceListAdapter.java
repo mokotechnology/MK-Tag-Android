@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder> {
     public DeviceListAdapter() {
-        super(R.layout.list_item_device);
+        super(R.layout.list_item_device_tag);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
     }
 
     private View createUIDView(AdvUID uid) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_uid, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_uid_tag, null);
         TextView tvRSSI0M = view.findViewById(R.id.tv_rssi_0m);
         TextView tvNameSpace = view.findViewById(R.id.tv_namespace);
         TextView tvInstanceId = view.findViewById(R.id.tv_instance_id);
@@ -79,7 +79,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
     }
 
     private View createURLView(final AdvURL url) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_url, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_url_tag, null);
         TextView tvRSSI0M = view.findViewById(R.id.tv_rssi_0m);
         TextView tvUrl = view.findViewById(R.id.tv_url);
         tvRSSI0M.setText(String.format("%sdBm", url.rssi));
@@ -95,7 +95,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
     }
 
     private View createTLMView(AdvTLM tlm) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_tlm, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_tlm_tag, null);
         TextView tv_vbatt = view.findViewById(R.id.tv_vbatt);
         TextView tv_temp = view.findViewById(R.id.tv_temp);
         TextView tv_adv_cnt = view.findViewById(R.id.tv_adv_cnt);
@@ -108,7 +108,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
     }
 
     private View createIBeaconView(AdvIBeacon iBeacon) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_ibeacon, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_ibeacon_tag, null);
         TextView tv_tx_power = view.findViewById(R.id.tv_tx_power);
         TextView tv_rssi_1m = view.findViewById(R.id.tv_rssi_1m);
         TextView tv_uuid = view.findViewById(R.id.tv_uuid);
@@ -126,7 +126,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
     }
 
     private View createTagView(AdvTag tag) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_tag_info, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.adv_slot_tag_info_tag, null);
         TextView tvMagneticStatus = view.findViewById(R.id.tv_magnetic_status);
         TextView tvMagneticTriggerCount = view.findViewById(R.id.tv_magnetic_trigger_count);
         LinearLayout llAccInfo = view.findViewById(R.id.ll_acc_info);

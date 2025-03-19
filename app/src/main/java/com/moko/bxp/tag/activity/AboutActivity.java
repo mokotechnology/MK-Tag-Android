@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.moko.bxp.tag.BuildConfig;
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.ActivityAboutBinding;
+import com.moko.bxp.tag.databinding.ActivityAboutTagBinding;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.bxp.tag.utils.Utils;
 
@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.Calendar;
 
 
-public class AboutActivity extends BaseActivity<ActivityAboutBinding> {
+public class AboutActivity extends BaseActivity<ActivityAboutTagBinding> {
 
     @Override
     protected void onCreate() {
@@ -27,8 +27,8 @@ public class AboutActivity extends BaseActivity<ActivityAboutBinding> {
     }
 
     @Override
-    protected ActivityAboutBinding getViewBinding() {
-        return ActivityAboutBinding.inflate(getLayoutInflater());
+    protected ActivityAboutTagBinding getViewBinding() {
+        return ActivityAboutTagBinding.inflate(getLayoutInflater());
     }
 
     public void onBack(View view) {

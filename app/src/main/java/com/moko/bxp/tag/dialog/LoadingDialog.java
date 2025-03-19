@@ -5,17 +5,17 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.DialogLoadingBinding;
+import com.moko.bxp.tag.databinding.DialogLoadingTagBinding;
 import com.moko.bxp.tag.view.ProgressDrawable;
 
 import androidx.core.content.ContextCompat;
 
-public class LoadingDialog extends MokoBaseDialog<DialogLoadingBinding> {
+public class LoadingDialog extends MokoBaseDialog<DialogLoadingTagBinding> {
     public static final String TAG = LoadingDialog.class.getSimpleName();
 
     @Override
-    protected DialogLoadingBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
-        return DialogLoadingBinding.inflate(inflater, container, false);
+    protected DialogLoadingTagBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DialogLoadingTagBinding.inflate(inflater, container, false);
     }
 
     @Override

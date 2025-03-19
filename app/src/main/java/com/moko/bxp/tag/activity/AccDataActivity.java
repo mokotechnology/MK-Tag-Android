@@ -19,7 +19,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.ActivityAccDataBinding;
+import com.moko.bxp.tag.databinding.ActivityAccDataTagBinding;
 import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
@@ -35,7 +35,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AccDataActivity extends BaseActivity<ActivityAccDataBinding> {
+public class AccDataActivity extends BaseActivity<ActivityAccDataTagBinding> {
 
     private boolean mReceiverTag = false;
     private ArrayList<String> axisDataRates;
@@ -83,8 +83,8 @@ public class AccDataActivity extends BaseActivity<ActivityAccDataBinding> {
     }
 
     @Override
-    protected ActivityAccDataBinding getViewBinding() {
-        return ActivityAccDataBinding.inflate(getLayoutInflater());
+    protected ActivityAccDataTagBinding getViewBinding() {
+        return ActivityAccDataTagBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)

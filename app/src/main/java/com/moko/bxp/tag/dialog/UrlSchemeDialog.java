@@ -2,10 +2,10 @@ package com.moko.bxp.tag.dialog;
 
 import android.content.Context;
 
-import com.moko.bxp.tag.databinding.DialogUrlSchemeBinding;
+import com.moko.bxp.tag.databinding.DialogUrlSchemeTagBinding;
 import com.moko.support.tag.entity.UrlSchemeEnum;
 
-public class UrlSchemeDialog extends BaseDialog<DialogUrlSchemeBinding> {
+public class UrlSchemeDialog extends BaseDialog<DialogUrlSchemeTagBinding> {
 
     private String urlScheme;
 
@@ -14,8 +14,8 @@ public class UrlSchemeDialog extends BaseDialog<DialogUrlSchemeBinding> {
     }
 
     @Override
-    protected DialogUrlSchemeBinding getViewBind() {
-        return DialogUrlSchemeBinding.inflate(getLayoutInflater());
+    protected DialogUrlSchemeTagBinding getViewBind() {
+        return DialogUrlSchemeTagBinding.inflate(getLayoutInflater());
     }
 
     @Override

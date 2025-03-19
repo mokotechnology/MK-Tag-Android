@@ -13,7 +13,7 @@ import android.provider.Settings;
 
 import com.elvishew.xlog.XLog;
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.ActivityGuideBinding;
+import com.moko.bxp.tag.databinding.ActivityGuideTagBinding;
 import com.moko.bxp.tag.dialog.PermissionDialog;
 import com.moko.bxp.tag.utils.Utils;
 import com.permissionx.guolindev.PermissionX;
@@ -27,7 +27,7 @@ import androidx.core.content.ContextCompat;
  * @Author wenzheng.liu
  * @Description
  */
-public class GuideActivity extends BaseActivity<ActivityGuideBinding> {
+public class GuideActivity extends BaseActivity<ActivityGuideTagBinding> {
     @Override
     protected void onCreate() {
         if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
@@ -38,8 +38,8 @@ public class GuideActivity extends BaseActivity<ActivityGuideBinding> {
     }
 
     @Override
-    protected ActivityGuideBinding getViewBinding() {
-        return ActivityGuideBinding.inflate(getLayoutInflater());
+    protected ActivityGuideTagBinding getViewBinding() {
+        return ActivityGuideTagBinding.inflate(getLayoutInflater());
     }
 
     private void requestPermission() {

@@ -16,7 +16,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
 import com.moko.bxp.tag.activity.SlotDataActivity;
-import com.moko.bxp.tag.databinding.FragmentTagInfoBinding;
+import com.moko.bxp.tag.databinding.FragmentTagInfoTagBinding;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.tag.MokoSupport;
@@ -29,7 +29,7 @@ public class TagInfoFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     private static final String TAG = "TagInfoFragment";
     private final String FILTER_ASCII = "[ -~]*";
-    private FragmentTagInfoBinding mBind;
+    private FragmentTagInfoTagBinding mBind;
 
 
     private SlotDataActivity activity;
@@ -52,7 +52,7 @@ public class TagInfoFragment extends Fragment implements SeekBar.OnSeekBarChange
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        mBind = FragmentTagInfoBinding.inflate(inflater, container, false);
+        mBind = FragmentTagInfoTagBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         mBind.sbRssi.setOnSeekBarChangeListener(this);
         mBind.sbTxPower.setOnSeekBarChangeListener(this);

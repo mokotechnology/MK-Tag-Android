@@ -7,7 +7,7 @@ import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTaskResponse;
-import com.moko.bxp.tag.databinding.ActivityRemoteReminderBinding;
+import com.moko.bxp.tag.databinding.ActivityRemoteReminderTagBinding;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.tag.MokoSupport;
@@ -24,7 +24,7 @@ import org.greenrobot.eventbus.ThreadMode;
  * @date: 2023/5/9 18:25
  * @des: 远程提醒
  */
-public class RemoteReminderActivity extends BaseActivity<ActivityRemoteReminderBinding> {
+public class RemoteReminderActivity extends BaseActivity<ActivityRemoteReminderTagBinding> {
 
     @Override
     protected void onCreate() {
@@ -33,8 +33,8 @@ public class RemoteReminderActivity extends BaseActivity<ActivityRemoteReminderB
     }
 
     @Override
-    protected ActivityRemoteReminderBinding getViewBinding() {
-        return ActivityRemoteReminderBinding.inflate(getLayoutInflater());
+    protected ActivityRemoteReminderTagBinding getViewBinding() {
+        return ActivityRemoteReminderTagBinding.inflate(getLayoutInflater());
     }
 
     //远程提醒

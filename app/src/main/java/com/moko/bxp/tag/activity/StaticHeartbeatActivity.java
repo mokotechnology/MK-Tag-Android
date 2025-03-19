@@ -9,7 +9,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.ActivityStaticHeartbeatBinding;
+import com.moko.bxp.tag.databinding.ActivityStaticHeartbeatTagBinding;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.tag.MokoSupport;
@@ -28,7 +28,7 @@ import java.util.Arrays;
  * @date: 2023/5/9 9:40
  * @des:
  */
-public class StaticHeartbeatActivity extends BaseActivity<ActivityStaticHeartbeatBinding> {
+public class StaticHeartbeatActivity extends BaseActivity<ActivityStaticHeartbeatTagBinding> {
 
     private boolean isSwitch;
     private final String checkedText = "*Please ensure that all active SLOTs have enabled the Motion detection trigger function.\n\n*Please ensure that the configured static cycle time value is greater than the maximum keep static time value parameter configured for all enabled SLOTs' Motion detection trigger function parameters.";
@@ -43,8 +43,8 @@ public class StaticHeartbeatActivity extends BaseActivity<ActivityStaticHeartbea
     }
 
     @Override
-    protected ActivityStaticHeartbeatBinding getViewBinding() {
-        return ActivityStaticHeartbeatBinding.inflate(getLayoutInflater());
+    protected ActivityStaticHeartbeatTagBinding getViewBinding() {
+        return ActivityStaticHeartbeatTagBinding.inflate(getLayoutInflater());
     }
 
     private void onSwitchClick() {

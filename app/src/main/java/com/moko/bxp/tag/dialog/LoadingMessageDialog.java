@@ -8,21 +8,21 @@ import android.view.ViewGroup;
 
 
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.DialogLoadingMessageBinding;
+import com.moko.bxp.tag.databinding.DialogLoadingMessageTagBinding;
 import com.moko.bxp.tag.view.ProgressDrawable;
 
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
-public class LoadingMessageDialog extends MokoBaseDialog<DialogLoadingMessageBinding> {
+public class LoadingMessageDialog extends MokoBaseDialog<DialogLoadingMessageTagBinding> {
     private static final int DIALOG_DISMISS_DELAY_TIME = 5000;
     public static final String TAG = LoadingMessageDialog.class.getSimpleName();
     private String message;
     private int messageId = -1;
 
     @Override
-    protected DialogLoadingMessageBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
-        return DialogLoadingMessageBinding.inflate(inflater, container, false);
+    protected DialogLoadingMessageTagBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DialogLoadingMessageTagBinding.inflate(inflater, container, false);
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
-import com.moko.bxp.tag.databinding.ActivitySlotDataBinding;
+import com.moko.bxp.tag.databinding.ActivitySlotDataTagBinding;
 import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.entity.SlotData;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 
 import cn.carbswang.android.numberpickerview.library.NumberPickerView;
 
-public class SlotDataActivity extends BaseActivity<ActivitySlotDataBinding> implements NumberPickerView.OnValueChangeListener {
+public class SlotDataActivity extends BaseActivity<ActivitySlotDataTagBinding> implements NumberPickerView.OnValueChangeListener {
     private static final int TRIGGER_TYPE_NULL = 0;
     private static final int TRIGGER_TYPE_MOTION = 5;
     private static final int TRIGGER_TYPE_MAGNETIC = 6;
@@ -116,8 +116,8 @@ public class SlotDataActivity extends BaseActivity<ActivitySlotDataBinding> impl
     }
 
     @Override
-    protected ActivitySlotDataBinding getViewBinding() {
-        return ActivitySlotDataBinding.inflate(getLayoutInflater());
+    protected ActivitySlotDataTagBinding getViewBinding() {
+        return ActivitySlotDataTagBinding.inflate(getLayoutInflater());
     }
 
     private void setTriggerData() {

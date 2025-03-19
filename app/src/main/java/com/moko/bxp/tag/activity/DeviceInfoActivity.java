@@ -26,7 +26,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.ActivityDeviceInfoBinding;
+import com.moko.bxp.tag.databinding.ActivityDeviceInfoTagBinding;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
@@ -57,7 +57,7 @@ import java.util.Arrays;
 
 import androidx.annotation.IdRes;
 
-public class DeviceInfoActivity extends BaseActivity<ActivityDeviceInfoBinding> implements RadioGroup.OnCheckedChangeListener {
+public class DeviceInfoActivity extends BaseActivity<ActivityDeviceInfoTagBinding> implements RadioGroup.OnCheckedChangeListener {
     public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
 
     private FragmentManager fragmentManager;
@@ -106,8 +106,8 @@ public class DeviceInfoActivity extends BaseActivity<ActivityDeviceInfoBinding> 
     }
 
     @Override
-    protected ActivityDeviceInfoBinding getViewBinding() {
-        return ActivityDeviceInfoBinding.inflate(getLayoutInflater());
+    protected ActivityDeviceInfoTagBinding getViewBinding() {
+        return ActivityDeviceInfoTagBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)

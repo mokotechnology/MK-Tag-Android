@@ -6,10 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.moko.bxp.tag.databinding.FragmentDeviceBinding;
+import com.moko.bxp.tag.databinding.FragmentDeviceTagBinding;
 
 public class DeviceFragment extends Fragment {
-    private FragmentDeviceBinding mBind;
+    private FragmentDeviceTagBinding mBind;
 
 
     public DeviceFragment() {
@@ -24,7 +24,7 @@ public class DeviceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBind = FragmentDeviceBinding.inflate(inflater, container, false);
+        mBind = FragmentDeviceTagBinding.inflate(inflater, container, false);
         return mBind.getRoot();
     }
 

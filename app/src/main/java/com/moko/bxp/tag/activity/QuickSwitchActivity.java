@@ -14,7 +14,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
-import com.moko.bxp.tag.databinding.ActivityQuickSwitchBinding;
+import com.moko.bxp.tag.databinding.ActivityQuickSwitchTagBinding;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
@@ -30,7 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuickSwitchActivity extends BaseActivity<ActivityQuickSwitchBinding> {
+public class QuickSwitchActivity extends BaseActivity<ActivityQuickSwitchTagBinding> {
     public boolean isConfigError;
 
     @Override
@@ -56,8 +56,8 @@ public class QuickSwitchActivity extends BaseActivity<ActivityQuickSwitchBinding
     }
 
     @Override
-    protected ActivityQuickSwitchBinding getViewBinding() {
-        return ActivityQuickSwitchBinding.inflate(getLayoutInflater());
+    protected ActivityQuickSwitchTagBinding getViewBinding() {
+        return ActivityQuickSwitchTagBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)

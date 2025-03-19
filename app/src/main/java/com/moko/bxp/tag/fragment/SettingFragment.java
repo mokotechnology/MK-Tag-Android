@@ -6,10 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.moko.bxp.tag.databinding.FragmentSettingBinding;
+import com.moko.bxp.tag.databinding.FragmentSettingTagBinding;
 
 public class SettingFragment extends Fragment {
-    private FragmentSettingBinding mBind;
+    private FragmentSettingTagBinding mBind;
 
     public SettingFragment() {
     }
@@ -27,7 +27,7 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBind = FragmentSettingBinding.inflate(inflater, container, false);
+        mBind = FragmentSettingTagBinding.inflate(inflater, container, false);
         return mBind.getRoot();
     }
 

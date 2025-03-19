@@ -26,7 +26,7 @@ import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.BuildConfig;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.adapter.DeviceListAdapter;
-import com.moko.bxp.tag.databinding.ActivityMainBinding;
+import com.moko.bxp.tag.databinding.ActivityMainTagBinding;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.LoadingDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
@@ -61,7 +61,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
-public class TagMainActivity extends BaseActivity<ActivityMainBinding> implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
+public class TagMainActivity extends BaseActivity<ActivityMainTagBinding> implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
 
     private boolean mReceiverTag = false;
     private ConcurrentHashMap<String, AdvInfo> advInfoHashMap;
@@ -137,8 +137,8 @@ public class TagMainActivity extends BaseActivity<ActivityMainBinding> implement
     }
 
     @Override
-    protected ActivityMainBinding getViewBinding() {
-        return ActivityMainBinding.inflate(getLayoutInflater());
+    protected ActivityMainTagBinding getViewBinding() {
+        return ActivityMainTagBinding.inflate(getLayoutInflater());
     }
 
     private String unLockResponse;
