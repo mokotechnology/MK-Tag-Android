@@ -5,12 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.cardview.widget.CardView;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -19,13 +14,14 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivityQuickSwitchBinding;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.OrderCHAR;
+import com.moko.support.tag.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,35 +30,11 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class QuickSwitchActivity extends BaseActivity {
-    @BindView(R.id.iv_connectable)
-    ImageView ivConnectable;
-    @BindView(R.id.tv_connectable_status)
-    TextView tvConnectableStatus;
-    @BindView(R.id.iv_trigger_led_indicator)
-    ImageView ivTriggerLedIndicator;
-    @BindView(R.id.tv_trigger_led_indicator)
-    TextView tvTriggerLedIndicator;
-    @BindView(R.id.iv_password_verify)
-    ImageView ivPasswordVerify;
-    @BindView(R.id.tv_password_verify)
-    TextView tvPasswordVerify;
-    @BindView(R.id.iv_scan_response_indicator)
-    ImageView ivScanResponseIndicator;
-    @BindView(R.id.tv_scan_response_indicator)
-    TextView tvScanResponseIndicator;
-    @BindView(R.id.cv_scan_response_indicator)
-    CardView cardView;
+public class QuickSwitchActivity extends BaseActivity<ActivityQuickSwitchBinding> {
     public boolean isConfigError;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quick_switch);
-        ButterKnife.bind(this);
+    protected void onCreate() {
 
         EventBus.getDefault().register(this);
         // 注册广播接收器
@@ -81,6 +53,11 @@ public class QuickSwitchActivity extends BaseActivity {
 //            orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
+    }
+
+    @Override
+    protected ActivityQuickSwitchBinding getViewBinding() {
+        return ActivityQuickSwitchBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
@@ -213,36 +190,36 @@ public class QuickSwitchActivity extends BaseActivity {
 
     public void setPasswordVerify(int enable) {
         this.enablePasswordVerify = enable == 1;
-        ivPasswordVerify.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvPasswordVerify.setText(enablePasswordVerify ? "Enable" : "Disable");
-        tvPasswordVerify.setEnabled(enablePasswordVerify);
+        mBind.ivPasswordVerify.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvPasswordVerify.setText(enablePasswordVerify ? "Enable" : "Disable");
+        mBind.tvPasswordVerify.setEnabled(enablePasswordVerify);
     }
 
     boolean enableConnected;
 
     public void setConnectable(int enable) {
         enableConnected = enable == 1;
-        ivConnectable.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvConnectableStatus.setText(enableConnected ? "Enable" : "Disable");
-        tvConnectableStatus.setEnabled(enableConnected);
+        mBind.ivConnectable.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvConnectableStatus.setText(enableConnected ? "Enable" : "Disable");
+        mBind.tvConnectableStatus.setEnabled(enableConnected);
     }
 
     private boolean enableTriggerLEDIndicator;
 
     public void setTriggerLEDIndicator(int enable) {
         this.enableTriggerLEDIndicator = enable == 1;
-        ivTriggerLedIndicator.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvTriggerLedIndicator.setText(enableTriggerLEDIndicator ? "Enable" : "Disable");
-        tvTriggerLedIndicator.setEnabled(enableTriggerLEDIndicator);
+        mBind.ivTriggerLedIndicator.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvTriggerLedIndicator.setText(enableTriggerLEDIndicator ? "Enable" : "Disable");
+        mBind.tvTriggerLedIndicator.setEnabled(enableTriggerLEDIndicator);
     }
 
     private boolean enableScanResponse;
 
     public void setScanResponseIndicator(int enable) {
         enableScanResponse = enable == 1;
-        ivScanResponseIndicator.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvScanResponseIndicator.setText(enable == 1 ? "Enable" : "Disable");
-        tvScanResponseIndicator.setEnabled(enable == 1);
+        mBind.ivScanResponseIndicator.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvScanResponseIndicator.setText(enable == 1 ? "Enable" : "Disable");
+        mBind.tvScanResponseIndicator.setEnabled(enable == 1);
     }
 
     public void onChangeScanResponseIndicator(View view) {

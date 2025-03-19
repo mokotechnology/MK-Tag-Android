@@ -11,17 +11,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
-import android.widget.FrameLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.IdRes;
 
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
@@ -32,20 +26,23 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivityDeviceInfoBinding;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.dialog.ModifyPasswordDialog;
+import com.moko.bxp.tag.entity.SlotEnum;
+import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.fragment.DeviceFragment;
 import com.moko.bxp.tag.fragment.SettingFragment;
 import com.moko.bxp.tag.fragment.SlotFragment;
 import com.moko.bxp.tag.utils.FileUtils;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
-import com.moko.support.task.OTADataTask;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.OrderCHAR;
+import com.moko.support.tag.entity.ParamsKeyEnum;
+import com.moko.support.tag.task.OTADataTask;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,24 +55,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.annotation.IdRes;
 
-public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
+public class DeviceInfoActivity extends BaseActivity<ActivityDeviceInfoBinding> implements RadioGroup.OnCheckedChangeListener {
     public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
 
-    @BindView(R.id.frame_container)
-    FrameLayout frameContainer;
-    @BindView(R.id.radioBtn_slot)
-    RadioButton radioBtnSlot;
-    @BindView(R.id.radioBtn_setting)
-    RadioButton radioBtnSetting;
-    @BindView(R.id.radioBtn_device)
-    RadioButton radioBtnDevice;
-    @BindView(R.id.rg_options)
-    RadioGroup rgOptions;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
     private FragmentManager fragmentManager;
     private SlotFragment slotFragment;
     private SettingFragment settingFragment;
@@ -93,15 +77,12 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private int mAdvModeSelected;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device_info);
-        ButterKnife.bind(this);
+    protected void onCreate() {
         fragmentManager = getFragmentManager();
         isVerifyPassword = getIntent().getBooleanExtra(AppConstants.EXTRA_KEY_PASSWORD_VERIFICATION, false);
         enablePasswordVerify = isVerifyPassword;
         initFragment();
-        rgOptions.setOnCheckedChangeListener(this);
+        mBind.rgOptions.setOnCheckedChangeListener(this);
         EventBus.getDefault().register(this);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
@@ -122,6 +103,11 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         orderTasks.add(OrderTaskAssembler.getSensorType());
         orderTasks.add(OrderTaskAssembler.getHallPowerEnable());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+    }
+
+    @Override
+    protected ActivityDeviceInfoBinding getViewBinding() {
+        return ActivityDeviceInfoBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
@@ -262,7 +248,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                     mIndex = 0;
                                     mLastPackage = false;
                                     mPackageCount = 0;
-                                    tvTitle.postDelayed(() -> {
+                                    mBind.tvTitle.postDelayed(() -> {
                                         writeDataToDevice();
                                     }, 500);
                                 }
@@ -271,7 +257,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                 // 完成升级
                                 XLog.w("onDfuCompleted...");
                                 isUpgradeCompleted = true;
-                                tvTitle.postDelayed(() -> {
+                                mBind.tvTitle.postDelayed(() -> {
                                     MokoSupport.getInstance().disConnectBle();
                                 }, 1000);
                             }
@@ -446,7 +432,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     public void getAllSlot() {
         showSyncingProgressDialog();
-        tvTitle.postDelayed(() -> {
+        mBind.tvTitle.postDelayed(() -> {
             MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getAllSlot());
         }, 1500);
     }
@@ -546,7 +532,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             if (resultCode == RESULT_OK) {
                 int slotType = data.getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
                 showSyncingProgressDialog();
-                tvTitle.postDelayed(() -> {
+                mBind.tvTitle.postDelayed(() -> {
                     ArrayList<OrderTask> orderTasks = new ArrayList<>();
                     if (slotType == 0)
                         orderTasks.add(OrderTaskAssembler.getSlotParams(0));
@@ -631,7 +617,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     .show(slotFragment)
                     .commit();
         }
-        tvTitle.setText(getString(R.string.slot_title));
+        mBind.tvTitle.setText(getString(R.string.slot_title));
     }
 
     private void showSettingFragment() {
@@ -642,7 +628,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     .show(settingFragment)
                     .commit();
         }
-        tvTitle.setText(getString(R.string.setting_title));
+        mBind.tvTitle.setText(getString(R.string.setting_title));
     }
 
     private void showDeviceFragment() {
@@ -653,7 +639,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     .show(deviceFragment)
                     .commit();
         }
-        tvTitle.setText(getString(R.string.device_title));
+        mBind.tvTitle.setText(getString(R.string.device_title));
     }
 
     @Override
@@ -800,7 +786,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     }
 
     private void reconnectOTADevice() {
-        tvTitle.postDelayed(() -> {
+        mBind.tvTitle.postDelayed(() -> {
             if (mDFUDialog != null && mDFUDialog.isShowing())
                 mDFUDialog.setMessage("DeviceConnecting...");
             MokoSupport.getInstance().connDevice(mDeviceMac);
@@ -810,7 +796,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     // 1.
     private void otaBegin() {
         //Writing 0x00 to control characteristic to DFU mode  target device begins OTA process
-        tvTitle.postDelayed(() -> {
+        mBind.tvTitle.postDelayed(() -> {
             XLog.i("OTA BEGIN");
             MokoSupport.getInstance().sendOrder(OrderTaskAssembler.startDFU());
         }, 500);
@@ -838,7 +824,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     // 3.
     private void otaEnd() {
-        tvTitle.postDelayed(() -> {
+        mBind.tvTitle.postDelayed(() -> {
             XLog.i("OTA END");
             MokoSupport.getInstance().sendOrder(OrderTaskAssembler.endDFU());
         }, 500);
@@ -892,5 +878,47 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         });
         dialog.show(getSupportFragmentManager());
+    }
+
+    public void onSlot1(View view) {
+        if (slotFragment != null) {
+            SlotFrameTypeEnum frameType = (SlotFrameTypeEnum) view.getTag();
+            slotFragment.createData(frameType, SlotEnum.SLOT1);
+        }
+    }
+
+    public void onSlot2(View view) {
+        if (slotFragment != null) {
+            SlotFrameTypeEnum frameType = (SlotFrameTypeEnum) view.getTag();
+            slotFragment.createData(frameType, SlotEnum.SLOT2);
+        }
+    }
+
+    public void onSlot3(View view) {
+        if (slotFragment != null) {
+            SlotFrameTypeEnum frameType = (SlotFrameTypeEnum) view.getTag();
+            slotFragment.createData(frameType, SlotEnum.SLOT3);
+        }
+    }
+
+    public void onSlot4(View view) {
+        if (slotFragment != null) {
+            SlotFrameTypeEnum frameType = (SlotFrameTypeEnum) view.getTag();
+            slotFragment.createData(frameType, SlotEnum.SLOT4);
+        }
+    }
+
+    public void onSlot5(View view) {
+        if (slotFragment != null) {
+            SlotFrameTypeEnum frameType = (SlotFrameTypeEnum) view.getTag();
+            slotFragment.createData(frameType, SlotEnum.SLOT5);
+        }
+    }
+
+    public void onSlot6(View view) {
+        if (slotFragment != null) {
+            SlotFrameTypeEnum frameType = (SlotFrameTypeEnum) view.getTag();
+            slotFragment.createData(frameType, SlotEnum.SLOT6);
+        }
     }
 }

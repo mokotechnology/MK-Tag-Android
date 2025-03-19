@@ -2,12 +2,7 @@ package com.moko.bxp.tag.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
@@ -18,6 +13,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.tag.AppConstants;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
+import com.moko.bxp.tag.databinding.ActivitySlotDataBinding;
 import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.entity.SlotData;
@@ -30,10 +26,10 @@ import com.moko.bxp.tag.fragment.TriggerMotionFragment;
 import com.moko.bxp.tag.fragment.UidFragment;
 import com.moko.bxp.tag.fragment.UrlFragment;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.OrderCHAR;
+import com.moko.support.tag.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,33 +37,13 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.carbswang.android.numberpickerview.library.NumberPickerView;
 
-public class SlotDataActivity extends BaseActivity implements NumberPickerView.OnValueChangeListener {
+public class SlotDataActivity extends BaseActivity<ActivitySlotDataBinding> implements NumberPickerView.OnValueChangeListener {
     private static final int TRIGGER_TYPE_NULL = 0;
     private static final int TRIGGER_TYPE_MOTION = 5;
     private static final int TRIGGER_TYPE_MAGNETIC = 6;
 
-    @BindView(R.id.tv_slot_title)
-    TextView tvSlotTitle;
-    @BindView(R.id.iv_save)
-    ImageView ivSave;
-    @BindView(R.id.frame_slot_container)
-    FrameLayout frameSlotContainer;
-    @BindView(R.id.npv_slot_type)
-    NumberPickerView npvSlotType;
-    @BindView(R.id.iv_trigger)
-    ImageView ivTrigger;
-    @BindView(R.id.tv_trigger_type)
-    TextView tvTriggerType;
-    @BindView(R.id.frame_trigger_container)
-    FrameLayout frameTriggerContainer;
-    @BindView(R.id.rl_trigger)
-    RelativeLayout rlTrigger;
-    @BindView(R.id.rl_trigger_switch)
-    RelativeLayout rlTriggerSwitch;
     private FragmentManager fragmentManager;
     private UidFragment uidFragment;
     private UrlFragment urlFragment;
@@ -89,10 +65,8 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
     private boolean hallPowerEnable;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_slot_data);
-        ButterKnife.bind(this);
+    protected void onCreate() {
+
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotData = (SlotData) getIntent().getSerializableExtra(AppConstants.EXTRA_KEY_SLOT_DATA);
             isSupportAcc = getIntent().getBooleanExtra(AppConstants.EXTRA_KEY_SUPPORT_ACC, false);
@@ -105,40 +79,45 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         createFragments();
         triggerTypes = new ArrayList<>();
         slotTypeArray = getResources().getStringArray(R.array.slot_type);
-        npvSlotType.setDisplayedValues(slotTypeArray);
+        mBind.npvSlotType.setDisplayedValues(slotTypeArray);
         triggerTypes.add("Magnetic detection");
         triggerTypes.add("Motion detection");
         final int length = slotTypeArray.length;
-        npvSlotType.setMinValue(0);
-        npvSlotType.setMaxValue(5);
-        npvSlotType.setOnValueChangedListener(this);
+        mBind.npvSlotType.setMinValue(0);
+        mBind.npvSlotType.setMaxValue(5);
+        mBind.npvSlotType.setOnValueChangedListener(this);
         for (int i = 0; i < length; i++) {
             if (slotData.frameTypeEnum.getShowName().equals(slotTypeArray[i])) {
-                npvSlotType.setValue(i);
+                mBind.npvSlotType.setValue(i);
                 showFragment(i);
                 break;
             }
         }
-        tvSlotTitle.setText(slotData.slotEnum.getTitle());
+        mBind.tvSlotTitle.setText(slotData.slotEnum.getTitle());
         if (slotData.frameTypeEnum != SlotFrameTypeEnum.NO_DATA && (isSupportAcc || !hallPowerEnable)) {
-            rlTriggerSwitch.setVisibility(View.VISIBLE);
+            mBind.rlTriggerSwitch.setVisibility(View.VISIBLE);
         } else {
-            rlTriggerSwitch.setVisibility(View.GONE);
+            mBind.rlTriggerSwitch.setVisibility(View.GONE);
         }
         XLog.i("333333type=" + triggerType + hallPowerEnable);
         if (triggerType > 0) {
             isTriggerEnable = true;
-            ivTrigger.setImageResource(R.drawable.ic_checked);
-            rlTrigger.setVisibility(View.VISIBLE);
+            mBind.ivTrigger.setImageResource(R.drawable.ic_checked);
+            mBind.rlTrigger.setVisibility(View.VISIBLE);
         } else {
             isTriggerEnable = false;
-            ivTrigger.setImageResource(R.drawable.ic_unchecked);
-            rlTrigger.setVisibility(View.GONE);
+            mBind.ivTrigger.setImageResource(R.drawable.ic_unchecked);
+            mBind.rlTrigger.setVisibility(View.GONE);
         }
         createTriggerFragments();
         showTriggerFragment();
         setTriggerData();
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected ActivitySlotDataBinding getViewBinding() {
+        return ActivitySlotDataBinding.inflate(getLayoutInflater());
     }
 
     private void setTriggerData() {
@@ -150,8 +129,8 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
                 triggerTypeSelected = 1;
                 break;
         }
-        tvTriggerType.setText(triggerTypes.get(triggerTypeSelected));
-        tvTriggerType.setEnabled(!hallPowerEnable && isSupportAcc);
+        mBind.tvTriggerType.setText(triggerTypes.get(triggerTypeSelected));
+        mBind.tvTriggerType.setEnabled(!hallPowerEnable && isSupportAcc);
     }
 
     private void showTriggerFragment() {
@@ -279,9 +258,9 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
         }
         SlotFrameTypeEnum slotFrameTypeEnum = SlotFrameTypeEnum.fromShowName(slotTypeArray[newVal]);
         if (slotFrameTypeEnum != SlotFrameTypeEnum.NO_DATA && (isSupportAcc || !hallPowerEnable)) {
-            rlTriggerSwitch.setVisibility(View.VISIBLE);
+            mBind.rlTriggerSwitch.setVisibility(View.VISIBLE);
         } else {
-            rlTriggerSwitch.setVisibility(View.GONE);
+            mBind.rlTriggerSwitch.setVisibility(View.GONE);
         }
     }
 
@@ -337,12 +316,12 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
             }
             setTriggerData();
             showTriggerFragment();
-            ivTrigger.setImageResource(R.drawable.ic_checked);
-            rlTrigger.setVisibility(View.VISIBLE);
+            mBind.ivTrigger.setImageResource(R.drawable.ic_checked);
+            mBind.rlTrigger.setVisibility(View.VISIBLE);
         } else {
             triggerType = TRIGGER_TYPE_NULL;
-            ivTrigger.setImageResource(R.drawable.ic_unchecked);
-            rlTrigger.setVisibility(View.GONE);
+            mBind.ivTrigger.setImageResource(R.drawable.ic_unchecked);
+            mBind.rlTrigger.setVisibility(View.GONE);
         }
     }
 
@@ -407,7 +386,7 @@ public class SlotDataActivity extends BaseActivity implements NumberPickerView.O
                     break;
             }
             showTriggerFragment();
-            tvTriggerType.setText(triggerTypes.get(value));
+            mBind.tvTriggerType.setText(triggerTypes.get(value));
         });
         dialog.show(getSupportFragmentManager());
     }

@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.moko.bxp.tag.activity.MainActivity"
+            android:name="com.moko.bxp.tag.activity.TagMainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
@@ -67,8 +67,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <service android:name="com.moko.bxp.tag.service.DfuService" />
 
     </application>
 

@@ -5,28 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.moko.bxp.tag.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.moko.bxp.tag.databinding.FragmentSettingBinding;
 
 public class SettingFragment extends Fragment {
-
-    @BindView(R.id.ll_reset)
-    LinearLayout llReset;
-    @BindView(R.id.ll_modify_password)
-    LinearLayout llModifyPassword;
-    @BindView(R.id.tv_adv_mode)
-    TextView tvAdvMode;
-    @BindView(R.id.tvResetBattery)
-    TextView tvResetBattery;
-    @BindView(R.id.lineBattery)
-    View viewLine;
-    @BindView(R.id.layoutSensor)
-    LinearLayout layoutSensor;
+    private FragmentSettingBinding mBind;
 
     public SettingFragment() {
     }
@@ -37,31 +20,30 @@ public class SettingFragment extends Fragment {
     }
 
     public void visibleResetBattery() {
-        tvResetBattery.setVisibility(View.VISIBLE);
-        viewLine.setVisibility(View.VISIBLE);
+        mBind.tvResetBattery.setVisibility(View.VISIBLE);
+        mBind.lineBattery.setVisibility(View.VISIBLE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_setting, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        mBind = FragmentSettingBinding.inflate(inflater, container, false);
+        return mBind.getRoot();
     }
 
     public void setResetVisibility(boolean enablePasswordVerify) {
-        llReset.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
+        mBind.llReset.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
     }
 
     public void setModifyPasswordShown(boolean enablePasswordVerify) {
-        llModifyPassword.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
+        mBind.llModifyPassword.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
     }
 
     public void setAdvMode(String advMode) {
-        tvAdvMode.setText(advMode);
+        mBind.tvAdvMode.setText(advMode);
     }
 
     public void setSensorGone() {
-        layoutSensor.setVisibility(View.GONE);
+        mBind.layoutSensor.setVisibility(View.GONE);
     }
 }

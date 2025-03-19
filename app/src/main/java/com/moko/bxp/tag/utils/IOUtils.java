@@ -13,7 +13,8 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
 import com.elvishew.xlog.XLog;
-import com.moko.bxp.tag.BaseApplication;
+import com.moko.bxp.tag.BuildConfig;
+import com.moko.bxp.tag.activity.TagMainActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +48,7 @@ public class IOUtils {
         boolean exist = isSdCardExist();
         String sdpath = "";
         if (exist) {
-            sdpath = BaseApplication.PATH_LOGCAT;
+            sdpath = TagMainActivity.PATH_LOGCAT;
         }
         return sdpath;
 
@@ -61,7 +62,7 @@ public class IOUtils {
      */
     public static String getDefaultFilePath(Context context) {
         String filepath = "";
-        File file = new File(BaseApplication.PATH_LOGCAT, CRASH_FILE);
+        File file = new File( TagMainActivity.PATH_LOGCAT, CRASH_FILE);
         try {
             if (file.exists()) {
                 filepath = file.getAbsolutePath();
@@ -82,7 +83,7 @@ public class IOUtils {
      */
     public static String getFilePath(String fileName) {
         String filepath = "";
-        File file = new File(BaseApplication.PATH_LOGCAT, fileName);
+        File file = new File( TagMainActivity.PATH_LOGCAT, fileName);
         try {
             if (file.exists()) {
                 filepath = file.getAbsolutePath();
@@ -223,7 +224,7 @@ public class IOUtils {
         values.put(MediaStore.DownloadColumns.DISPLAY_NAME, file.getName());
         values.put(MediaStore.DownloadColumns.TITLE, file.getName());
         values.put(MediaStore.DownloadColumns.MIME_TYPE, "*/*");
-        values.put(MediaStore.DownloadColumns.RELATIVE_PATH, "Download/MOKOTAG");
+        values.put(MediaStore.DownloadColumns.RELATIVE_PATH, BuildConfig.IS_LIBRARY ? "Download/mokoBeaconXPro" : "Download/MOKOTAG");
         Uri external = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
         Uri uri = null;
         ContentResolver cr = context.getContentResolver();

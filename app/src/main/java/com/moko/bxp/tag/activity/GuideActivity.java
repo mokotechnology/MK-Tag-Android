@@ -11,31 +11,35 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
-
 import com.elvishew.xlog.XLog;
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivityGuideBinding;
 import com.moko.bxp.tag.dialog.PermissionDialog;
 import com.moko.bxp.tag.utils.Utils;
 import com.permissionx.guolindev.PermissionX;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 
 /**
  * @Date 2017/12/7 0007
  * @Author wenzheng.liu
  * @Description
  */
-public class GuideActivity extends BaseActivity {
+public class GuideActivity extends BaseActivity<ActivityGuideBinding> {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guide);
+    protected void onCreate() {
         if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
             finish();
             return;
         }
         requestPermission();
+    }
+
+    @Override
+    protected ActivityGuideBinding getViewBinding() {
+        return ActivityGuideBinding.inflate(getLayoutInflater());
     }
 
     private void requestPermission() {
@@ -80,7 +84,7 @@ public class GuideActivity extends BaseActivity {
 
     private void gotoMain() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, TagMainActivity.class));
             finish();
         }, 1000);
     }

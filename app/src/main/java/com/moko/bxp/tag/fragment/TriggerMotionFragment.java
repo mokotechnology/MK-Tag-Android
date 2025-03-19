@@ -9,33 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.activity.SlotDataActivity;
+import com.moko.bxp.tag.databinding.FragmentTriggerMotionBinding;
 import com.moko.bxp.tag.utils.ToastUtils;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TriggerMotionFragment extends Fragment {
 
     private static final String TAG = TriggerMotionFragment.class.getSimpleName();
 
-    @BindView(R.id.iv_start)
-    ImageView ivStart;
-    @BindView(R.id.et_duration)
-    EditText etDuration;
-    @BindView(R.id.et_static)
-    EditText etStatic;
-    @BindView(R.id.iv_stop)
-    ImageView ivStop;
-    @BindView(R.id.et_stop_static)
-    EditText etStopStatic;
-    @BindView(R.id.tv_trigger_tips)
-    TextView tvTriggerTips;
+    private FragmentTriggerMotionBinding mBind;
 
 
     private SlotDataActivity activity;
@@ -62,8 +46,7 @@ public class TriggerMotionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        View view = inflater.inflate(R.layout.fragment_trigger_motion, container, false);
-        ButterKnife.bind(this, view);
+        mBind = FragmentTriggerMotionBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         if (activity.slotData.triggerType == 5) {
             // 移动触发
@@ -73,15 +56,15 @@ public class TriggerMotionFragment extends Fragment {
         }
         changeTips();
         if (mIsStart) {
-            etDuration.setText(String.valueOf(mDuration));
-            etStatic.setText(String.valueOf(mStatic));
-            etStopStatic.setText("60");
+            mBind.etDuration.setText(String.valueOf(mDuration));
+            mBind.etStatic.setText(String.valueOf(mStatic));
+            mBind.etStopStatic.setText("60");
         } else {
-            etDuration.setText("30");
-            etStatic.setText("60");
-            etStopStatic.setText(String.valueOf(mStatic));
+            mBind.etDuration.setText("30");
+            mBind.etStatic.setText("60");
+            mBind.etStopStatic.setText(String.valueOf(mStatic));
         }
-        etDuration.addTextChangedListener(new TextWatcher() {
+        mBind.etDuration.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -99,7 +82,7 @@ public class TriggerMotionFragment extends Fragment {
                 changeTips();
             }
         });
-        etStatic.addTextChangedListener(new TextWatcher() {
+        mBind.etStatic.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -119,7 +102,7 @@ public class TriggerMotionFragment extends Fragment {
                 }
             }
         });
-        etStopStatic.addTextChangedListener(new TextWatcher() {
+        mBind.etStopStatic.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -139,7 +122,7 @@ public class TriggerMotionFragment extends Fragment {
                 }
             }
         });
-        return view;
+        return mBind.getRoot();
     }
 
     @Override
@@ -161,7 +144,7 @@ public class TriggerMotionFragment extends Fragment {
     }
 
     public int getStaticDuration() {
-        String staticStr = mIsStart ? etStatic.getText().toString() : etStopStatic.getText().toString();
+        String staticStr = mIsStart ? mBind.etStatic.getText().toString() : mBind.etStopStatic.getText().toString();
         if (TextUtils.isEmpty(staticStr)) {
             ToastUtils.showToast(getActivity(), "The static duration can not be empty.");
             return -1;
@@ -176,7 +159,7 @@ public class TriggerMotionFragment extends Fragment {
 
     public int getDuration() {
         if (mIsStart) {
-            String durationStr = etDuration.getText().toString();
+            String durationStr = mBind.etDuration.getText().toString();
             if (TextUtils.isEmpty(durationStr)) {
                 ToastUtils.showToast(getActivity(), "The advertising can not be empty.");
                 return -1;
@@ -194,13 +177,13 @@ public class TriggerMotionFragment extends Fragment {
 
     public void motionStart() {
         mIsStart = true;
-        mStatic = etStatic.getText().toString();
+        mStatic = mBind.etStatic.getText().toString();
         changeTips();
     }
 
     public void motionStop() {
         mIsStart = false;
-        mStatic = etStopStatic.getText().toString();
+        mStatic = mBind.etStopStatic.getText().toString();
         changeTips();
     }
 
@@ -212,9 +195,9 @@ public class TriggerMotionFragment extends Fragment {
                                 : String.format("start advertising for %ss", mDuration))
                         : "stop advertising", mStatic,
                 mIsStart ? "stop" : "start");
-        tvTriggerTips.setText(triggerTips);
-        ivStart.setImageResource(mIsStart ? R.drawable.icon_selected : R.drawable.icon_unselected);
-        ivStop.setImageResource(mIsStart ? R.drawable.icon_unselected : R.drawable.icon_selected);
+        mBind.tvTriggerTips.setText(triggerTips);
+        mBind.ivStart.setImageResource(mIsStart ? R.drawable.icon_selected : R.drawable.icon_unselected);
+        mBind.ivStop.setImageResource(mIsStart ? R.drawable.icon_unselected : R.drawable.icon_selected);
     }
 
     public int getTriggerAdvStatus() {

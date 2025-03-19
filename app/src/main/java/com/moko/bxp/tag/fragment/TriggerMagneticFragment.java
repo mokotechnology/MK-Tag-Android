@@ -9,29 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.activity.SlotDataActivity;
+import com.moko.bxp.tag.databinding.FragmentTriggerMagneticBinding;
 import com.moko.bxp.tag.utils.ToastUtils;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TriggerMagneticFragment extends Fragment {
 
     private static final String TAG = TriggerMagneticFragment.class.getSimpleName();
 
-    @BindView(R.id.iv_start)
-    ImageView ivStart;
-    @BindView(R.id.et_duration)
-    EditText etDuration;
-    @BindView(R.id.iv_stop)
-    ImageView ivStop;
-    @BindView(R.id.tv_trigger_tips)
-    TextView tvTriggerTips;
+    private FragmentTriggerMagneticBinding mBind;
 
 
     private SlotDataActivity activity;
@@ -57,8 +45,7 @@ public class TriggerMagneticFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        View view = inflater.inflate(R.layout.fragment_trigger_magnetic, container, false);
-        ButterKnife.bind(this, view);
+        mBind = FragmentTriggerMagneticBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
         if (activity.slotData.triggerType == 6) {
             // 霍尔触发
@@ -66,8 +53,8 @@ public class TriggerMagneticFragment extends Fragment {
             mDuration = String.valueOf(activity.slotData.triggerAdvDuration);
         }
         changeTips();
-        etDuration.setText(mDuration);
-        etDuration.addTextChangedListener(new TextWatcher() {
+        mBind.etDuration.setText(mDuration);
+        mBind.etDuration.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -85,7 +72,7 @@ public class TriggerMagneticFragment extends Fragment {
                 changeTips();
             }
         });
-        return view;
+        return mBind.getRoot();
     }
 
     @Override
@@ -108,7 +95,7 @@ public class TriggerMagneticFragment extends Fragment {
 
     public int getDuration() {
         if (mIsStart) {
-            String durationStr = etDuration.getText().toString();
+            String durationStr = mBind.etDuration.getText().toString();
             if (TextUtils.isEmpty(durationStr)) {
                 ToastUtils.showToast(getActivity(), "The advertising can not be empty.");
                 return -1;
@@ -139,9 +126,9 @@ public class TriggerMagneticFragment extends Fragment {
         String triggerTips = getString(R.string.trigger_magnetic_tips, mIsStart ?
                 ("0".equals(mDuration) ? "start advertising" : String.format("start advertising for %ss", mDuration)) :
                 "stop advertising", mIsStart ? "stop" : "start");
-        tvTriggerTips.setText(triggerTips);
-        ivStart.setImageResource(mIsStart ? R.drawable.icon_selected : R.drawable.icon_unselected);
-        ivStop.setImageResource(mIsStart ? R.drawable.icon_unselected : R.drawable.icon_selected);
+        mBind.tvTriggerTips.setText(triggerTips);
+        mBind.ivStart.setImageResource(mIsStart ? R.drawable.icon_selected : R.drawable.icon_unselected);
+        mBind.ivStop.setImageResource(mIsStart ? R.drawable.icon_unselected : R.drawable.icon_selected);
     }
 
     public int getTriggerAdvStatus() {

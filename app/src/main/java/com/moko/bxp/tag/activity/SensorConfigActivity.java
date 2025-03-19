@@ -1,44 +1,36 @@
 package com.moko.bxp.tag.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
-import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivitySensorConfigBinding;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.annotation.Nullable;
 
-public class SensorConfigActivity extends BaseActivity {
-    @BindView(R.id.tv_acc_config)
-    TextView tvAccConfig;
-    @BindView(R.id.tvHall)
-    TextView tvHall;
+public class SensorConfigActivity extends BaseActivity<ActivitySensorConfigBinding> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sensor_config);
-        ButterKnife.bind(this);
+    protected void onCreate() {
         EventBus.getDefault().register(this);
 //        showSyncingProgressDialog();
 //        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSensorType());
         boolean isSupportAcc = getIntent().getBooleanExtra("acc", false);
         boolean isHallPowerEnable = getIntent().getBooleanExtra("hall", false);
-        tvAccConfig.setVisibility(isSupportAcc ? View.VISIBLE : View.GONE);
-        tvHall.setVisibility(isHallPowerEnable ? View.GONE : View.VISIBLE);
+        mBind.tvAccConfig.setVisibility(isSupportAcc ? View.VISIBLE : View.GONE);
+        mBind.tvHall.setVisibility(isHallPowerEnable ? View.GONE : View.VISIBLE);
     }
 
+    @Override
+    protected ActivitySensorConfigBinding getViewBinding() {
+        return ActivitySensorConfigBinding.inflate(getLayoutInflater());
+    }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
@@ -155,7 +147,7 @@ public class SensorConfigActivity extends BaseActivity {
             if (null != data) {
                 status = data.getIntExtra("status", 0);
                 if (status == 1) {
-                    tvHall.setVisibility(View.GONE);
+                    mBind.tvHall.setVisibility(View.GONE);
                 }
             }
         }

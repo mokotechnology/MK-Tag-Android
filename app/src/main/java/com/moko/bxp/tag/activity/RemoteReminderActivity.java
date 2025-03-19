@@ -1,57 +1,50 @@
 package com.moko.bxp.tag.activity;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTaskResponse;
-import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivityRemoteReminderBinding;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.OrderCHAR;
+import com.moko.support.tag.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author: jun.liu
  * @date: 2023/5/9 18:25
  * @des: 远程提醒
  */
-public class RemoteReminderActivity extends BaseActivity {
-    @BindView(R.id.etTime)
-    EditText etTime;
-    @BindView(R.id.etInterval)
-    EditText etInterval;
+public class RemoteReminderActivity extends BaseActivity<ActivityRemoteReminderBinding> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_remote_reminder);
-        ButterKnife.bind(this);
+    protected void onCreate() {
         EventBus.getDefault().register(this);
-        findViewById(R.id.btnRemind).setOnClickListener(v -> onRemindClick());
+        mBind.btnRemind.setOnClickListener(v -> onRemindClick());
+    }
+
+    @Override
+    protected ActivityRemoteReminderBinding getViewBinding() {
+        return ActivityRemoteReminderBinding.inflate(getLayoutInflater());
     }
 
     //远程提醒
     private void onRemindClick() {
-        if (TextUtils.isEmpty(etInterval.getText()) || TextUtils.isEmpty(etTime.getText())) {
+        if (TextUtils.isEmpty(mBind.etInterval.getText()) || TextUtils.isEmpty(mBind.etTime.getText())) {
             ToastUtils.showToast(this, "Opps！Please check the input characters and try again.");
             return;
         }
-        int interval = Integer.parseInt(etInterval.getText().toString().trim());
-        int time = Integer.parseInt(etTime.getText().toString().trim());
+        int interval = Integer.parseInt(mBind.etInterval.getText().toString().trim());
+        int time = Integer.parseInt(mBind.etTime.getText().toString().trim());
         if (interval < 1 || interval > 100) {
             ToastUtils.showToast(this, "Blinking interval should in 1~100");
             return;

@@ -1,36 +1,30 @@
 package com.moko.bxp.tag.dialog;
 
 import android.view.Gravity;
-import android.view.View;
-import android.widget.ImageView;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.DialogLoadingBinding;
 import com.moko.bxp.tag.view.ProgressDrawable;
 
 import androidx.core.content.ContextCompat;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class LoadingDialog extends MokoBaseDialog {
-
+public class LoadingDialog extends MokoBaseDialog<DialogLoadingBinding> {
     public static final String TAG = LoadingDialog.class.getSimpleName();
-    @BindView(R.id.iv_loading)
-    ImageView ivLoading;
 
     @Override
-    public int getLayoutRes() {
-        return R.layout.dialog_loading;
+    protected DialogLoadingBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DialogLoadingBinding.inflate(inflater, container, false);
     }
 
     @Override
-    public void bindView(View v) {
-        ButterKnife.bind(this, v);
+    protected void onCreateView() {
         ProgressDrawable progressDrawable = new ProgressDrawable();
         progressDrawable.setColor(ContextCompat.getColor(getContext(), R.color.text_black_4d4d4d));
-        ivLoading.setImageDrawable(progressDrawable);
+        mBind.ivLoading.setImageDrawable(progressDrawable);
         progressDrawable.start();
     }
-
 
     @Override
     public int getDialogStyle() {
@@ -65,6 +59,6 @@ public class LoadingDialog extends MokoBaseDialog {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ((ProgressDrawable) ivLoading.getDrawable()).stop();
+        ((ProgressDrawable) mBind.ivLoading.getDrawable()).stop();
     }
 }

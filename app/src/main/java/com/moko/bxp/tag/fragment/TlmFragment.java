@@ -7,42 +7,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
 import com.moko.bxp.tag.activity.SlotDataActivity;
+import com.moko.bxp.tag.databinding.FragmentTlmBinding;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.TxPowerEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.TxPowerEnum;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, ISlotDataAction {
 
     private static final String TAG = "TlmFragment";
-
-
-    @BindView(R.id.sb_tx_power)
-    SeekBar sbTxPower;
-    @BindView(R.id.tv_tx_power)
-    TextView tvTxPower;
-    @BindView(R.id.et_adv_interval)
-    EditText etAdvInterval;
-    @BindView(R.id.et_adv_duration)
-    EditText etAdvDuration;
-    @BindView(R.id.et_standby_duration)
-    EditText etStandbyDuration;
-
+    private FragmentTlmBinding mBind;
     private SlotDataActivity activity;
 
     public TlmFragment() {
@@ -63,29 +47,28 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        View view = inflater.inflate(R.layout.fragment_tlm, container, false);
-        ButterKnife.bind(this, view);
+        mBind = FragmentTlmBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
-        sbTxPower.setOnSeekBarChangeListener(this);
+        mBind.sbTxPower.setOnSeekBarChangeListener(this);
         setDefault();
-        return view;
+        return mBind.getRoot();
     }
 
     private void setDefault() {
         if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.NO_DATA) {
-            etAdvInterval.setText("10");
-            etAdvDuration.setText("10");
-            etStandbyDuration.setText("0");
-            sbTxPower.setProgress(5);
+            mBind.etAdvInterval.setText("10");
+            mBind.etAdvDuration.setText("10");
+            mBind.etStandbyDuration.setText("0");
+            mBind.sbTxPower.setProgress(5);
         } else {
-            etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
-            etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
-            etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
+            mBind.etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
+            mBind.etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
+            mBind.etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
 
             int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
+            mBind.sbTxPower.setProgress(txPowerProgress);
             mTxPower = activity.slotData.txPower;
-            tvTxPower.setText(String.format("%ddBm", mTxPower));
+            mBind.tvTxPower.setText(String.format("%ddBm", mTxPower));
         }
     }
 
@@ -121,7 +104,7 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
         if (viewId == R.id.sb_tx_power) {
             TxPowerEnum txPowerEnum = TxPowerEnum.fromOrdinal(progress);
             int txPower = txPowerEnum.getTxPower();
-            tvTxPower.setText(String.format("%ddBm", txPower));
+            mBind.tvTxPower.setText(String.format("%ddBm", txPower));
             mTxPower = txPower;
         }
     }
@@ -138,9 +121,9 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
 
     @Override
     public boolean isValid() {
-        String advInterval = etAdvInterval.getText().toString();
-        String advDuration = etAdvDuration.getText().toString();
-        String standbyDuration = etStandbyDuration.getText().toString();
+        String advInterval = mBind.etAdvInterval.getText().toString();
+        String advDuration = mBind.etAdvDuration.getText().toString();
+        String standbyDuration = mBind.etStandbyDuration.getText().toString();
         if (TextUtils.isEmpty(advInterval)) {
             ToastUtils.showToast(activity, "The Adv interval can not be empty.");
             return false;
@@ -188,17 +171,17 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     @Override
     public void resetParams() {
         if (activity.slotData.frameTypeEnum == activity.currentFrameTypeEnum) {
-            etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
-            etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
-            etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
+            mBind.etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
+            mBind.etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
+            mBind.etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
 
             int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
+            mBind.sbTxPower.setProgress(txPowerProgress);
         } else {
-            etAdvInterval.setText("10");
-            etAdvDuration.setText("10");
-            etStandbyDuration.setText("0");
-            sbTxPower.setProgress(5);
+            mBind.etAdvInterval.setText("10");
+            mBind.etAdvDuration.setText("10");
+            mBind.etStandbyDuration.setText("0");
+            mBind.sbTxPower.setProgress(5);
         }
     }
 }

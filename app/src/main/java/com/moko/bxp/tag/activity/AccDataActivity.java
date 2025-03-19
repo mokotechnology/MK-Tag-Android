@@ -6,15 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
@@ -24,13 +19,14 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivityAccDataBinding;
 import com.moko.bxp.tag.dialog.BottomDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.OrderCHAR;
+import com.moko.support.tag.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,33 +35,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+public class AccDataActivity extends BaseActivity<ActivityAccDataBinding> {
 
-public class AccDataActivity extends BaseActivity {
-
-    @BindView(R.id.iv_sync)
-    ImageView ivSync;
-    @BindView(R.id.tv_sync)
-    TextView tvSync;
-    @BindView(R.id.tv_x_data)
-    TextView tvXData;
-    @BindView(R.id.tv_y_data)
-    TextView tvYData;
-    @BindView(R.id.tv_z_data)
-    TextView tvZData;
-    @BindView(R.id.tv_axis_scale)
-    TextView tvAxisScale;
-    @BindView(R.id.tv_axis_data_rate)
-    TextView tvAxisDataRate;
-    @BindView(R.id.et_motion_threshold)
-    EditText etMotionThreshold;
-    @BindView(R.id.tv_motion_threshold_unit)
-    TextView tvMotionThresholdUnit;
-    @BindView(R.id.tv_trigger_count)
-    TextView tvTriggerCount;
-    @BindView(R.id.layoutStaticHeart)
-    LinearLayout layoutStaticHeart;
     private boolean mReceiverTag = false;
     private ArrayList<String> axisDataRates;
     private ArrayList<String> axisScales;
@@ -76,10 +47,7 @@ public class AccDataActivity extends BaseActivity {
     private int accType = -1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_acc_data);
-        ButterKnife.bind(this);
+    protected void onCreate() {
         axisDataRates = new ArrayList<>();
         axisDataRates.add("1Hz");
         axisDataRates.add("10Hz");
@@ -111,7 +79,12 @@ public class AccDataActivity extends BaseActivity {
             orderTasks.add(OrderTaskAssembler.getAccType());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
-        layoutStaticHeart.setOnClickListener(v -> startActivity(new Intent(this, StaticHeartbeatActivity.class)));
+        mBind.layoutStaticHeart.setOnClickListener(v -> startActivity(new Intent(this, StaticHeartbeatActivity.class)));
+    }
+
+    @Override
+    protected ActivityAccDataBinding getViewBinding() {
+        return ActivityAccDataBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
@@ -176,24 +149,24 @@ public class AccDataActivity extends BaseActivity {
                                     case KEY_MOTION_TRIGGER_COUNT:
                                         if (length != 2) return;
                                         int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                        tvTriggerCount.setText(String.valueOf(count));
+                                        mBind.tvTriggerCount.setText(String.valueOf(count));
                                         break;
                                     case KEY_AXIS_PARAMS:
                                         if (length == 3) {
                                             mSelectedRate = value[4] & 0xFF;
                                             mSelectedScale = value[5] & 0xFF;
                                             int threshold = value[6] & 0xFF;
-                                            tvAxisDataRate.setText(axisDataRates.get(mSelectedRate));
-                                            tvAxisScale.setText(axisScales.get(mSelectedScale));
-                                            etMotionThreshold.setText(String.valueOf(threshold));
+                                            mBind.tvAxisDataRate.setText(axisDataRates.get(mSelectedRate));
+                                            mBind.tvAxisScale.setText(axisScales.get(mSelectedScale));
+                                            mBind.etMotionThreshold.setText(String.valueOf(threshold));
                                             if (mSelectedScale == 0) {
-                                                tvMotionThresholdUnit.setText(accType == 1 ? "x3.91mg" : "x16mg");
+                                                mBind.tvMotionThresholdUnit.setText(accType == 1 ? "x3.91mg" : "x16mg");
                                             } else if (mSelectedScale == 1) {
-                                                tvMotionThresholdUnit.setText(accType == 1 ? "x7.81mg" : "x32mg");
+                                                mBind.tvMotionThresholdUnit.setText(accType == 1 ? "x7.81mg" : "x32mg");
                                             } else if (mSelectedScale == 2) {
-                                                tvMotionThresholdUnit.setText(accType == 1 ? "x15.63mg" : "x62mg");
+                                                mBind.tvMotionThresholdUnit.setText(accType == 1 ? "x15.63mg" : "x62mg");
                                             } else if (mSelectedScale == 3) {
-                                                tvMotionThresholdUnit.setText(accType == 1 ? "x31.25mg" : "x186mg");
+                                                mBind.tvMotionThresholdUnit.setText(accType == 1 ? "x31.25mg" : "x186mg");
                                             }
                                         }
                                         break;
@@ -201,7 +174,7 @@ public class AccDataActivity extends BaseActivity {
                                     case KEY_ACC_TYPE:
                                         //三轴传感器类型
                                         if (length == 1) accType = value[4] & 0xff;
-                                        XLog.i("333333===="+Arrays.toString(value));
+                                        XLog.i("333333====" + Arrays.toString(value));
                                         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getAxisParams());
                                         break;
 
@@ -219,9 +192,9 @@ public class AccDataActivity extends BaseActivity {
                 switch (orderCHAR) {
                     case CHAR_ACC:
                         if (value.length > 9) {
-                            tvXData.setText(String.format("X-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 4, 6))));
-                            tvYData.setText(String.format("Y-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 6, 8))));
-                            tvZData.setText(String.format("Z-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 8, 10))));
+                            mBind.tvXData.setText(String.format("X-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 4, 6))));
+                            mBind.tvYData.setText(String.format("Y-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 6, 8))));
+                            mBind.tvZData.setText(String.format("Z-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value, 8, 10))));
                         }
                         break;
                 }
@@ -290,7 +263,7 @@ public class AccDataActivity extends BaseActivity {
 
     public void onSave(View view) {
         if (isWindowLocked()) return;
-        String thresholdStr = etMotionThreshold.getText().toString();
+        String thresholdStr = mBind.etMotionThreshold.getText().toString();
         if (TextUtils.isEmpty(thresholdStr)) {
             ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
             return;
@@ -326,13 +299,13 @@ public class AccDataActivity extends BaseActivity {
             isSync = true;
             MokoSupport.getInstance().enableAccNotify();
             Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
-            ivSync.startAnimation(animation);
-            tvSync.setText("Stop");
+            mBind.ivSync.startAnimation(animation);
+            mBind.tvSync.setText("Stop");
         } else {
             MokoSupport.getInstance().disableAccNotify();
             isSync = false;
-            ivSync.clearAnimation();
-            tvSync.setText("Sync");
+            mBind.ivSync.clearAnimation();
+            mBind.tvSync.setText("Sync");
         }
     }
 
@@ -343,15 +316,15 @@ public class AccDataActivity extends BaseActivity {
         scaleDialog.setListener(value -> {
             mSelectedScale = value;
             if (mSelectedScale == 0) {
-                tvMotionThresholdUnit.setText(accType == 1 ? "x3.91mg" : "x16mg");
+                mBind.tvMotionThresholdUnit.setText(accType == 1 ? "x3.91mg" : "x16mg");
             } else if (mSelectedScale == 1) {
-                tvMotionThresholdUnit.setText(accType == 1 ? "x7.81mg" : "x32mg");
+                mBind.tvMotionThresholdUnit.setText(accType == 1 ? "x7.81mg" : "x32mg");
             } else if (mSelectedScale == 2) {
-                tvMotionThresholdUnit.setText(accType == 1 ? "x15.63mg" : "x62mg");
+                mBind.tvMotionThresholdUnit.setText(accType == 1 ? "x15.63mg" : "x62mg");
             } else if (mSelectedScale == 3) {
-                tvMotionThresholdUnit.setText(accType == 1 ? "x31.25mg" : "x186mg");
+                mBind.tvMotionThresholdUnit.setText(accType == 1 ? "x31.25mg" : "x186mg");
             }
-            tvAxisScale.setText(axisScales.get(value));
+            mBind.tvAxisScale.setText(axisScales.get(value));
         });
         scaleDialog.show(getSupportFragmentManager());
     }
@@ -362,7 +335,7 @@ public class AccDataActivity extends BaseActivity {
         dataRateDialog.setDatas(axisDataRates, mSelectedRate);
         dataRateDialog.setListener(value -> {
             mSelectedRate = value;
-            tvAxisDataRate.setText(axisDataRates.get(value));
+            mBind.tvAxisDataRate.setText(axisDataRates.get(value));
         });
         dataRateDialog.show(getSupportFragmentManager());
     }

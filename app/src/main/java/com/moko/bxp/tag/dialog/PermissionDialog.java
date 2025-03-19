@@ -10,13 +10,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.moko.bxp.tag.R;
 import com.permissionx.guolindev.dialog.RationaleDialogFragment;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * @author: jun.liu

@@ -3,39 +3,33 @@ package com.moko.bxp.tag.activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
-import com.moko.bxp.tag.BaseApplication;
+import com.moko.bxp.tag.BuildConfig;
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivityAboutBinding;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.bxp.tag.utils.Utils;
 
 import java.io.File;
 import java.util.Calendar;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
-
-public class AboutActivity extends BaseActivity {
-    @BindView(R.id.app_version)
-    TextView appVersion;
-    @BindView(R.id.tv_feedback_log)
-    TextView tvFeedbackLog;
-    @BindView(R.id.tv_company_website)
-    TextView tvCompanyWebsite;
+public class AboutActivity extends BaseActivity<ActivityAboutBinding> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-        ButterKnife.bind(this);
-        appVersion.setText(String.format("Version:V%s", Utils.getVersionInfo(this)));
-        tvCompanyWebsite.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+    protected void onCreate() {
+        if (!BuildConfig.IS_LIBRARY) {
+            mBind.appVersion.setText(String.format("APP Version:V%s", Utils.getVersionInfo(this)));
+            mBind.tvFeedbackLog.setVisibility(View.VISIBLE);
+        }
+        mBind.tvCompanyWebsite.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
 
+    @Override
+    protected ActivityAboutBinding getViewBinding() {
+        return ActivityAboutBinding.inflate(getLayoutInflater());
+    }
 
     public void onBack(View view) {
         finish();
@@ -52,9 +46,9 @@ public class AboutActivity extends BaseActivity {
     public void onFeedback(View view) {
         if (isWindowLocked())
             return;
-        File trackerLog = new File(BaseApplication.PATH_LOGCAT + File.separator + "MOKOTAG.txt");
-        File trackerLogBak = new File(BaseApplication.PATH_LOGCAT + File.separator + "MOKOTAG.txt.bak");
-        File trackerCrashLog = new File(BaseApplication.PATH_LOGCAT + File.separator + "crash_log.txt");
+        File trackerLog = new File(TagMainActivity.PATH_LOGCAT + File.separator + "MOKOTAG.txt");
+        File trackerLogBak = new File(TagMainActivity.PATH_LOGCAT + File.separator + "MOKOTAG.txt.bak");
+        File trackerCrashLog = new File(TagMainActivity.PATH_LOGCAT + File.separator + "crash_log.txt");
         if (!trackerLog.exists() || !trackerLog.canRead()) {
             ToastUtils.showToast(this, "File is not exists!");
             return;

@@ -3,13 +3,12 @@ package com.moko.bxp.tag.utils;
 import android.os.ParcelUuid;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.entity.AdvInfo;
-import com.moko.support.entity.DeviceInfo;
-import com.moko.support.service.DeviceInfoAnalysis;
+import com.moko.support.tag.entity.DeviceInfo;
+import com.moko.support.tag.service.DeviceInfoAnalysis;
 
 import java.util.Arrays;
 import java.util.HashMap;

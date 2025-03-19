@@ -8,50 +8,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
 import com.moko.bxp.tag.activity.SlotDataActivity;
+import com.moko.bxp.tag.databinding.FragmentIbeaconBinding;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.TxPowerEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.TxPowerEnum;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, ISlotDataAction {
     private static final String TAG = "IBeaconFragment";
 
-    @BindView(R.id.sb_rssi)
-    SeekBar sbRssi;
-    @BindView(R.id.sb_tx_power)
-    SeekBar sbTxPower;
-    @BindView(R.id.et_major)
-    EditText etMajor;
-    @BindView(R.id.et_minor)
-    EditText etMinor;
-    @BindView(R.id.et_uuid)
-    EditText etUuid;
-    @BindView(R.id.tv_adv_tx_power)
-    TextView tvRssi;
-    @BindView(R.id.tv_tx_power)
-    TextView tvTxPower;
-    @BindView(R.id.et_adv_interval)
-    EditText etAdvInterval;
-    @BindView(R.id.et_adv_duration)
-    EditText etAdvDuration;
-    @BindView(R.id.et_standby_duration)
-    EditText etStandbyDuration;
-
-
+    private FragmentIbeaconBinding mBind;
     private SlotDataActivity activity;
 
     public IBeaconFragment() {
@@ -72,57 +47,56 @@ public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChange
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        View view = inflater.inflate(R.layout.fragment_ibeacon, container, false);
-        ButterKnife.bind(this, view);
+        mBind = FragmentIbeaconBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
-        sbRssi.setOnSeekBarChangeListener(this);
-        sbTxPower.setOnSeekBarChangeListener(this);
+        mBind.sbRssi.setOnSeekBarChangeListener(this);
+        mBind.sbTxPower.setOnSeekBarChangeListener(this);
         //限制只输入大写，自动小写转大写
-        etUuid.setTransformationMethod(new A2bigA());
+        mBind.etUuid.setTransformationMethod(new A2bigA());
         setDefault();
-        return view;
+        return mBind.getRoot();
     }
 
     private void setDefault() {
         if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.NO_DATA) {
-            etAdvInterval.setText("10");
-            etAdvDuration.setText("10");
-            etStandbyDuration.setText("0");
-            sbRssi.setProgress(41);
-            sbTxPower.setProgress(5);
+            mBind.etAdvInterval.setText("10");
+            mBind.etAdvDuration.setText("10");
+            mBind.etStandbyDuration.setText("0");
+            mBind.sbRssi.setProgress(41);
+            mBind.sbTxPower.setProgress(5);
         } else {
-            etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
-            etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
-            etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
+            mBind.etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
+            mBind.etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
+            mBind.etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
 
             if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.IBEACON) {
                 int rssiProgress = activity.slotData.rssi_1m + 100;
-                sbRssi.setProgress(rssiProgress);
+                mBind.sbRssi.setProgress(rssiProgress);
                 mRssi = activity.slotData.rssi_1m;
-                tvRssi.setText(String.format("%ddBm", mRssi));
+                mBind.tvAdvTxPower.setText(String.format("%ddBm", mRssi));
             } else if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.TLM) {
-                sbRssi.setProgress(41);
+                mBind.sbRssi.setProgress(41);
                 mRssi = -59;
-                tvRssi.setText(String.format("%ddBm", mRssi));
+                mBind.tvAdvTxPower.setText(String.format("%ddBm", mRssi));
             } else {
                 int advTxPowerProgress = activity.slotData.rssi_0m + 100;
-                sbRssi.setProgress(advTxPowerProgress);
+                mBind.sbRssi.setProgress(advTxPowerProgress);
                 mRssi = activity.slotData.rssi_0m;
-                tvRssi.setText(String.format("%ddBm", mRssi));
+                mBind.tvAdvTxPower.setText(String.format("%ddBm", mRssi));
             }
 
             int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
+            mBind.sbTxPower.setProgress(txPowerProgress);
             mTxPower = activity.slotData.txPower;
-            tvTxPower.setText(String.format("%ddBm", mTxPower));
+            mBind.tvTxPower.setText(String.format("%ddBm", mTxPower));
         }
         if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.IBEACON) {
-            etMajor.setText(String.valueOf(Integer.parseInt(activity.slotData.major, 16)));
-            etMinor.setText(String.valueOf(Integer.parseInt(activity.slotData.minor, 16)));
-            etUuid.setText(activity.slotData.iBeaconUUID.toUpperCase());
-            etMajor.setSelection(etMajor.getText().toString().length());
-            etMinor.setSelection(etMinor.getText().toString().length());
-            etUuid.setSelection(etUuid.getText().toString().length());
+            mBind.etMajor.setText(String.valueOf(Integer.parseInt(activity.slotData.major, 16)));
+            mBind.etMinor.setText(String.valueOf(Integer.parseInt(activity.slotData.minor, 16)));
+            mBind.etUuid.setText(activity.slotData.iBeaconUUID.toUpperCase());
+            mBind.etMajor.setSelection(mBind.etMajor.getText().toString().length());
+            mBind.etMinor.setSelection(mBind.etMinor.getText().toString().length());
+            mBind.etUuid.setSelection(mBind.etUuid.getText().toString().length());
         }
     }
 
@@ -162,12 +136,12 @@ public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChange
     public void updateData(int viewId, int progress) {
         if (viewId == R.id.sb_rssi) {
             int rssi = progress - 100;
-            tvRssi.setText(String.format("%ddBm", rssi));
+            mBind.tvAdvTxPower.setText(String.format("%ddBm", rssi));
             mRssi = rssi;
         } else if (viewId == R.id.sb_tx_power) {
             TxPowerEnum txPowerEnum = TxPowerEnum.fromOrdinal(progress);
             int txPower = txPowerEnum.getTxPower();
-            tvTxPower.setText(String.format("%ddBm", txPower));
+            mBind.tvTxPower.setText(String.format("%ddBm", txPower));
             mTxPower = txPower;
         }
     }
@@ -185,12 +159,12 @@ public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     @Override
     public boolean isValid() {
-        String majorStr = etMajor.getText().toString();
-        String minorStr = etMinor.getText().toString();
-        String uuidStr = etUuid.getText().toString();
-        String advInterval = etAdvInterval.getText().toString();
-        String advDuration = etAdvDuration.getText().toString();
-        String standbyDuration = etStandbyDuration.getText().toString();
+        String majorStr = mBind.etMajor.getText().toString();
+        String minorStr = mBind.etMinor.getText().toString();
+        String uuidStr = mBind.etUuid.getText().toString();
+        String advInterval = mBind.etAdvInterval.getText().toString();
+        String advDuration = mBind.etAdvDuration.getText().toString();
+        String standbyDuration = mBind.etStandbyDuration.getText().toString();
         if (TextUtils.isEmpty(majorStr) || TextUtils.isEmpty(minorStr) || TextUtils.isEmpty(uuidStr)) {
             ToastUtils.showToast(activity, "Data format incorrect!");
             return false;
@@ -264,32 +238,32 @@ public class IBeaconFragment extends Fragment implements SeekBar.OnSeekBarChange
     @Override
     public void resetParams() {
         if (activity.slotData.frameTypeEnum == activity.currentFrameTypeEnum) {
-            etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
-            etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
-            etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
+            mBind.etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
+            mBind.etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
+            mBind.etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
 
             int rssiProgress = activity.slotData.rssi_1m + 100;
-            sbRssi.setProgress(rssiProgress);
+            mBind.sbRssi.setProgress(rssiProgress);
 
             int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
+            mBind.sbTxPower.setProgress(txPowerProgress);
 
-            etMajor.setText(Integer.parseInt(activity.slotData.major, 16) + "");
-            etMinor.setText(Integer.parseInt(activity.slotData.minor, 16) + "");
-            etUuid.setText(activity.slotData.iBeaconUUID.toUpperCase());
-            etMajor.setSelection(etMajor.getText().toString().length());
-            etMinor.setSelection(etMinor.getText().toString().length());
-            etUuid.setSelection(etUuid.getText().toString().length());
+            mBind.etMajor.setText(Integer.parseInt(activity.slotData.major, 16) + "");
+            mBind.etMinor.setText(Integer.parseInt(activity.slotData.minor, 16) + "");
+            mBind.etUuid.setText(activity.slotData.iBeaconUUID.toUpperCase());
+            mBind.etMajor.setSelection(mBind.etMajor.getText().toString().length());
+            mBind.etMinor.setSelection(mBind.etMinor.getText().toString().length());
+            mBind.etUuid.setSelection(mBind.etUuid.getText().toString().length());
         } else {
-            etAdvInterval.setText("10");
-            etAdvDuration.setText("10");
-            etStandbyDuration.setText("0");
-            sbRssi.setProgress(41);
-            sbTxPower.setProgress(5);
+            mBind.etAdvInterval.setText("10");
+            mBind.etAdvDuration.setText("10");
+            mBind.etStandbyDuration.setText("0");
+            mBind.sbRssi.setProgress(41);
+            mBind.sbTxPower.setProgress(5);
 
-            etMajor.setText("");
-            etMinor.setText("");
-            etUuid.setText("");
+            mBind.etMajor.setText("");
+            mBind.etMinor.setText("");
+            mBind.etUuid.setText("");
         }
     }
 }

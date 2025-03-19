@@ -8,46 +8,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.able.ISlotDataAction;
 import com.moko.bxp.tag.activity.SlotDataActivity;
+import com.moko.bxp.tag.databinding.FragmentUidBinding;
 import com.moko.bxp.tag.entity.SlotFrameTypeEnum;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.TxPowerEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.TxPowerEnum;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, ISlotDataAction {
 
     private static final String TAG = "UidFragment";
-    @BindView(R.id.et_namespace)
-    EditText etNamespace;
-    @BindView(R.id.et_instance_id)
-    EditText etInstanceId;
-    @BindView(R.id.sb_rssi)
-    SeekBar sbRssi;
-    @BindView(R.id.sb_tx_power)
-    SeekBar sbTxPower;
-    @BindView(R.id.tv_adv_tx_power)
-    TextView tvRssi;
-    @BindView(R.id.tv_tx_power)
-    TextView tvTxPower;
-    @BindView(R.id.et_adv_interval)
-    EditText etAdvInterval;
-    @BindView(R.id.et_adv_duration)
-    EditText etAdvDuration;
-    @BindView(R.id.et_standby_duration)
-    EditText etStandbyDuration;
+    private FragmentUidBinding mBind;
 
     private SlotDataActivity activity;
 
@@ -69,50 +48,49 @@ public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: ");
-        View view = inflater.inflate(R.layout.fragment_uid, container, false);
-        ButterKnife.bind(this, view);
+        mBind = FragmentUidBinding.inflate(inflater, container, false);
         activity = (SlotDataActivity) getActivity();
-        sbRssi.setOnSeekBarChangeListener(this);
-        sbTxPower.setOnSeekBarChangeListener(this);
-        etNamespace.setTransformationMethod(new A2bigA());
-        etInstanceId.setTransformationMethod(new A2bigA());
+        mBind.sbRssi.setOnSeekBarChangeListener(this);
+        mBind.sbTxPower.setOnSeekBarChangeListener(this);
+        mBind.etNamespace.setTransformationMethod(new A2bigA());
+        mBind.etInstanceId.setTransformationMethod(new A2bigA());
         setDefault();
-        return view;
+        return mBind.getRoot();
     }
 
     private void setDefault() {
         if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.NO_DATA) {
-            etAdvInterval.setText("10");
-            etAdvDuration.setText("10");
-            etStandbyDuration.setText("0");
-            sbRssi.setProgress(100);
-            sbTxPower.setProgress(5);
+            mBind.etAdvInterval.setText("10");
+            mBind.etAdvDuration.setText("10");
+            mBind.etStandbyDuration.setText("0");
+            mBind.sbRssi.setProgress(100);
+            mBind.sbTxPower.setProgress(5);
         } else {
-            etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
-            etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
-            etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
+            mBind.etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
+            mBind.etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
+            mBind.etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
 
             if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.TLM) {
-                sbRssi.setProgress(100);
+                mBind.sbRssi.setProgress(100);
                 mRssi = 0;
-                tvRssi.setText(String.format("%ddBm", mRssi));
+                mBind.tvAdvTxPower.setText(String.format("%ddBm", mRssi));
             } else {
                 int advTxPowerProgress = activity.slotData.rssi_0m + 100;
-                sbRssi.setProgress(advTxPowerProgress);
+                mBind.sbRssi.setProgress(advTxPowerProgress);
                 mRssi = activity.slotData.rssi_0m;
-                tvRssi.setText(String.format("%ddBm", mRssi));
+                mBind.tvAdvTxPower.setText(String.format("%ddBm", mRssi));
             }
 
             int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
+            mBind.sbTxPower.setProgress(txPowerProgress);
             mTxPower = activity.slotData.txPower;
-            tvTxPower.setText(String.format("%ddBm", mTxPower));
+            mBind.tvTxPower.setText(String.format("%ddBm", mTxPower));
         }
         if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.UID) {
-            etNamespace.setText(activity.slotData.namespace);
-            etInstanceId.setText(activity.slotData.instanceId);
-            etNamespace.setSelection(etNamespace.getText().toString().length());
-            etInstanceId.setSelection(etInstanceId.getText().toString().length());
+            mBind.etNamespace.setText(activity.slotData.namespace);
+            mBind.etInstanceId.setText(activity.slotData.instanceId);
+            mBind.etNamespace.setSelection(mBind.etNamespace.getText().toString().length());
+            mBind.etInstanceId.setSelection(mBind.etInstanceId.getText().toString().length());
         }
     }
 
@@ -150,12 +128,12 @@ public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     public void updateData(int viewId, int progress) {
         if (viewId == R.id.sb_rssi) {
             int rssi = progress - 100;
-            tvRssi.setText(String.format("%ddBm", rssi));
+            mBind.tvAdvTxPower.setText(String.format("%ddBm", rssi));
             mRssi = rssi;
         } else if (viewId == R.id.sb_tx_power) {
             TxPowerEnum txPowerEnum = TxPowerEnum.fromOrdinal(progress);
             int txPower = txPowerEnum.getTxPower();
-            tvTxPower.setText(String.format("%ddBm", txPower));
+            mBind.tvTxPower.setText(String.format("%ddBm", txPower));
             mTxPower = txPower;
         }
     }
@@ -172,11 +150,11 @@ public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeList
 
     @Override
     public boolean isValid() {
-        String namespace = etNamespace.getText().toString();
-        String instanceId = etInstanceId.getText().toString();
-        String advInterval = etAdvInterval.getText().toString();
-        String advDuration = etAdvDuration.getText().toString();
-        String standbyDuration = etStandbyDuration.getText().toString();
+        String namespace = mBind.etNamespace.getText().toString();
+        String instanceId = mBind.etInstanceId.getText().toString();
+        String advInterval = mBind.etAdvInterval.getText().toString();
+        String advDuration = mBind.etAdvDuration.getText().toString();
+        String standbyDuration = mBind.etStandbyDuration.getText().toString();
         if (TextUtils.isEmpty(namespace) || TextUtils.isEmpty(instanceId)) {
             ToastUtils.showToast(activity, "Data format incorrect!");
             return false;
@@ -248,27 +226,27 @@ public class UidFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     @Override
     public void resetParams() {
         if (activity.slotData.frameTypeEnum == activity.currentFrameTypeEnum) {
-            etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
-            etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
-            etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
+            mBind.etAdvInterval.setText(String.valueOf(activity.slotData.advInterval));
+            mBind.etAdvDuration.setText(String.valueOf(activity.slotData.advDuration));
+            mBind.etStandbyDuration.setText(String.valueOf(activity.slotData.standbyDuration));
 
             int rssiProgress = activity.slotData.rssi_0m + 100;
-            sbRssi.setProgress(rssiProgress);
+            mBind.sbRssi.setProgress(rssiProgress);
 
             int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
+            mBind.sbTxPower.setProgress(txPowerProgress);
 
-            etNamespace.setText(activity.slotData.namespace);
-            etInstanceId.setText(activity.slotData.instanceId);
+            mBind.etNamespace.setText(activity.slotData.namespace);
+            mBind.etInstanceId.setText(activity.slotData.instanceId);
         } else {
-            etAdvInterval.setText("10");
-            etAdvDuration.setText("10");
-            etStandbyDuration.setText("0");
-            sbRssi.setProgress(100);
-            sbTxPower.setProgress(5);
+            mBind.etAdvInterval.setText("10");
+            mBind.etAdvDuration.setText("10");
+            mBind.etStandbyDuration.setText("0");
+            mBind.sbRssi.setProgress(100);
+            mBind.sbTxPower.setProgress(5);
 
-            etNamespace.setText("");
-            etInstanceId.setText("");
+            mBind.etNamespace.setText("");
+            mBind.etInstanceId.setText("");
         }
     }
 }

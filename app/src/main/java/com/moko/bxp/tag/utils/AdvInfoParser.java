@@ -9,8 +9,8 @@ import com.moko.bxp.tag.entity.AdvTLM;
 import com.moko.bxp.tag.entity.AdvTag;
 import com.moko.bxp.tag.entity.AdvUID;
 import com.moko.bxp.tag.entity.AdvURL;
-import com.moko.support.entity.UrlExpansionEnum;
-import com.moko.support.entity.UrlSchemeEnum;
+import com.moko.support.tag.entity.UrlExpansionEnum;
+import com.moko.support.tag.entity.UrlSchemeEnum;
 
 
 public class AdvInfoParser {

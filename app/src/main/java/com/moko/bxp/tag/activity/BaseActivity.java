@@ -11,9 +11,11 @@ import com.elvishew.xlog.XLog;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.viewbinding.ViewBinding;
 
 
-public class BaseActivity extends FragmentActivity {
+public abstract class BaseActivity<VM extends ViewBinding> extends FragmentActivity {
+    protected VM mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +26,15 @@ public class BaseActivity extends FragmentActivity {
             startActivity(intent);
             return;
         }
+        mBind = getViewBinding();
+        setContentView(mBind.getRoot());
+        onCreate();
     }
+
+    protected void onCreate() {
+    }
+
+    protected abstract VM getViewBinding();
 
     @Override
     protected void onDestroy() {
@@ -37,7 +47,6 @@ public class BaseActivity extends FragmentActivity {
         XLog.i("onConfigurationChanged...");
         finish();
     }
-
 
     // 记录上次页面控件点击时间,屏蔽无效点击事件
     protected long mLastOnClickTime = 0;

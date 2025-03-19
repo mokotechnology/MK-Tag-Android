@@ -6,12 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -19,13 +15,14 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivityHallConfigBinding;
 import com.moko.bxp.tag.dialog.AlertMessageDialog;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.OrderCHAR;
+import com.moko.support.tag.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,28 +31,16 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * 霍尔传感器
  */
-public class HallSensorConfigActivity extends BaseActivity {
-    @BindView(R.id.tv_magnet_status)
-    TextView tvMagnetStatus;
-    @BindView(R.id.tv_trigger_count)
-    TextView tvTriggerCount;
-    @BindView(R.id.iv_hall_sensor_enable)
-    ImageView ivHallSensorEnable;
+public class HallSensorConfigActivity extends BaseActivity<ActivityHallConfigBinding> {
     private boolean mReceiverTag = false;
 
     private boolean mIsHallPowerEnable;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hall_config);
-        ButterKnife.bind(this);
+    protected void onCreate() {
         EventBus.getDefault().register(this);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
@@ -74,6 +59,11 @@ public class HallSensorConfigActivity extends BaseActivity {
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
 //        MokoSupport.getInstance().enableHallStatusNotify();
+    }
+
+    @Override
+    protected ActivityHallConfigBinding getViewBinding() {
+        return ActivityHallConfigBinding.inflate(getLayoutInflater());
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
@@ -121,7 +111,7 @@ public class HallSensorConfigActivity extends BaseActivity {
                     case CHAR_HALL: {
                         if (value.length == 5) {
                             int status = value[4] & 0xFF;
-                            tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
+                            mBind.tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
                         }
                     }
                     break;
@@ -169,7 +159,7 @@ public class HallSensorConfigActivity extends BaseActivity {
                                         if (length != 2)
                                             return;
                                         int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                        tvTriggerCount.setText(String.valueOf(count));
+                                        mBind.tvTriggerCount.setText(String.valueOf(count));
                                         MokoSupport.getInstance().enableHallStatusNotify();
                                         break;
 //                                    case KEY_HALL_POWER_ENABLE:
@@ -197,7 +187,7 @@ public class HallSensorConfigActivity extends BaseActivity {
                     int length = value[3] & 0xFF;
                     if (length == 1 && flag == 2 && cmd == 5) {
                         int status = value[4] & 0xFF;
-                        tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
+                        mBind.tvMagnetStatus.setText(status == 0 ? "Present" : "Absent");
                     }
                 }
 //                switch (orderCHAR) {

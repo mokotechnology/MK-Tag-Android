@@ -1,13 +1,7 @@
 package com.moko.bxp.tag.activity;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.constraintlayout.widget.Group;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -15,12 +9,13 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
+import com.moko.bxp.tag.databinding.ActivityStaticHeartbeatBinding;
 import com.moko.bxp.tag.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
-import com.moko.support.MokoSupport;
-import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.tag.MokoSupport;
+import com.moko.support.tag.OrderTaskAssembler;
+import com.moko.support.tag.entity.OrderCHAR;
+import com.moko.support.tag.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -28,45 +23,35 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * @author: jun.liu
  * @date: 2023/5/9 9:40
  * @des:
  */
-public class StaticHeartbeatActivity extends BaseActivity {
-    @BindView(R.id.ivSwitch)
-    ImageView ivSwitch;
-    @BindView(R.id.etStaticTime)
-    EditText etStaticTime;
-    @BindView(R.id.etDuration)
-    EditText etDuration;
-    @BindView(R.id.group)
-    Group group;
-    @BindView(R.id.tvTips)
-    TextView tvTips;
+public class StaticHeartbeatActivity extends BaseActivity<ActivityStaticHeartbeatBinding> {
+
     private boolean isSwitch;
     private final String checkedText = "*Please ensure that all active SLOTs have enabled the Motion detection trigger function.\n\n*Please ensure that the configured static cycle time value is greater than the maximum keep static time value parameter configured for all enabled SLOTs' Motion detection trigger function parameters.";
     private final String uncheckedText = "*Before enabling the static heartbeat function, please ensure that all active SLOTs have enabled the Motion detection trigger function.";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_static_heartbeat);
-        ButterKnife.bind(this);
+    protected void onCreate() {
         EventBus.getDefault().register(this);
         showSyncingProgressDialog();
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getStaticHeartbeat());
-        ivSwitch.setOnClickListener(v -> onSwitchClick());
+        mBind.ivSwitch.setOnClickListener(v -> onSwitchClick());
+    }
+
+    @Override
+    protected ActivityStaticHeartbeatBinding getViewBinding() {
+        return ActivityStaticHeartbeatBinding.inflate(getLayoutInflater());
     }
 
     private void onSwitchClick() {
         isSwitch = !isSwitch;
-        group.setVisibility(isSwitch ? View.VISIBLE : View.GONE);
-        ivSwitch.setImageResource(isSwitch ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvTips.setText(isSwitch ? checkedText : uncheckedText);
+        mBind.group.setVisibility(isSwitch ? View.VISIBLE : View.GONE);
+        mBind.ivSwitch.setImageResource(isSwitch ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvTips.setText(isSwitch ? checkedText : uncheckedText);
     }
 
     public void onBack(View view) {
@@ -75,15 +60,15 @@ public class StaticHeartbeatActivity extends BaseActivity {
 
     public void onSave(View view) {
         if (isWindowLocked()) return;
-        int time = TextUtils.isEmpty(etStaticTime.getText()) ? 1 : Integer.parseInt(etStaticTime.getText().toString());
-        int duration = TextUtils.isEmpty(etDuration.getText()) ? 1 : Integer.parseInt(etDuration.getText().toString());
+        int time = TextUtils.isEmpty(mBind.etStaticTime.getText()) ? 1 : Integer.parseInt(mBind.etStaticTime.getText().toString());
+        int duration = TextUtils.isEmpty(mBind.etDuration.getText()) ? 1 : Integer.parseInt(mBind.etDuration.getText().toString());
         if (isSwitch) {
-            if (TextUtils.isEmpty(etStaticTime.getText()) || TextUtils.isEmpty(etDuration.getText())) {
+            if (TextUtils.isEmpty(mBind.etStaticTime.getText()) || TextUtils.isEmpty(mBind.etDuration.getText())) {
                 ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
                 return;
             }
-            time = Integer.parseInt(etStaticTime.getText().toString());
-            duration = Integer.parseInt(etDuration.getText().toString());
+            time = Integer.parseInt(mBind.etStaticTime.getText().toString());
+            duration = Integer.parseInt(mBind.etDuration.getText().toString());
             if (!isValid(time)) {
                 ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
                 return;
@@ -147,20 +132,20 @@ public class StaticHeartbeatActivity extends BaseActivity {
                         if (flag == 0x00) {
                             if (configKeyEnum == ParamsKeyEnum.KEY_STATIC_HEARTBEAT && length == 5) {
                                 int enable = value[4] & 0xff;
-                                group.setVisibility(enable == 1 ? View.VISIBLE : View.GONE);
+                                mBind.group.setVisibility(enable == 1 ? View.VISIBLE : View.GONE);
                                 isSwitch = enable == 1;
                                 if (enable == 1) {
-                                    tvTips.setText(checkedText);
+                                    mBind.tvTips.setText(checkedText);
                                 } else {
-                                    tvTips.setText(uncheckedText);
+                                    mBind.tvTips.setText(uncheckedText);
                                 }
-                                ivSwitch.setImageResource(isSwitch ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+                                mBind.ivSwitch.setImageResource(isSwitch ? R.drawable.ic_checked : R.drawable.ic_unchecked);
                                 staticTime = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                 staticDuration = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
-                                etStaticTime.setText(String.valueOf(staticTime));
-                                etStaticTime.setSelection(etStaticTime.getText().length());
-                                etDuration.setText(String.valueOf(staticDuration));
-                                etDuration.setSelection(etDuration.getText().length());
+                                mBind.etStaticTime.setText(String.valueOf(staticTime));
+                                mBind.etStaticTime.setSelection(mBind.etStaticTime.getText().length());
+                                mBind.etDuration.setText(String.valueOf(staticDuration));
+                                mBind.etDuration.setSelection(mBind.etDuration.getText().length());
                             }
                         }
                     }

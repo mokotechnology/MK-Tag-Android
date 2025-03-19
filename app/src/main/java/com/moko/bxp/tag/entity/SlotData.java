@@ -1,7 +1,7 @@
 package com.moko.bxp.tag.entity;
 
 
-import com.moko.support.entity.UrlSchemeEnum;
+import com.moko.support.tag.entity.UrlSchemeEnum;
 
 import java.io.Serializable;
 

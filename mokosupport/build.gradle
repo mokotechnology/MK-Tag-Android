@@ -1,13 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    namespace "com.moko.support.tag"
+    compileSdk 34
 
     defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion 31
-        versionCode 3
-        versionName "3.0"
+        minSdk 18
+        targetSdk 34
+        versionCode 4
+        versionName "4.0"
     }
     buildTypes {
         release {
@@ -19,16 +20,21 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    lintOptions {
+        abortOnError false
+        disable 'SetTextI18n'
+        checkReleaseBuilds false
+    }
 }
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api 'no.nordicsemi.android.support.v18:scanner:1.6.0'
-    api 'no.nordicsemi.android:dfu:2.2.0'
-    api 'org.greenrobot:eventbus:3.2.0'
+    api 'org.greenrobot:eventbus:3.3.1'
     api 'com.elvishew:xlog:1.6.1'
-    implementation 'no.nordicsemi.android:ble:2.5.1'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    api 'com.google.code.gson:gson:2.10.1'
+    implementation 'no.nordicsemi.android:ble:2.7.3'
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 }
 
 //修改jar名字+将指定jar生成的地方
