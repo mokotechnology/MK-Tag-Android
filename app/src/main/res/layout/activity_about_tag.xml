@@ -102,5 +102,5 @@
         android:text="Feedback log"
         android:textColor="@color/white_ffffff"
         android:textSize="20dp"
-        android:visibility="visible" />
+        android:visibility="gone" />
 </RelativeLayout>
