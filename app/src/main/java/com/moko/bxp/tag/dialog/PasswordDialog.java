@@ -40,7 +40,7 @@ public class PasswordDialog extends MokoBaseDialog<DialogPasswordTagBinding> {
                 return null;
             }
         };
-        mBind.etPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8), filter});
+        mBind.etPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(16), filter});
         if (!TextUtils.isEmpty(password)) {
             mBind.etPassword.setText(password);
             mBind.etPassword.setSelection(password.length());
