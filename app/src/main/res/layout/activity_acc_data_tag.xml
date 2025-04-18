@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:drawableLeft="@drawable/back"
+            android:drawableLeft="@drawable/ic_back"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
             android:onClick="onBack"
@@ -43,7 +43,7 @@
             android:onClick="onSave"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:src="@drawable/save" />
+            android:src="@drawable/ic_save" />
     </RelativeLayout>
 
     <ScrollView
@@ -308,7 +308,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/arrow_right" />
+                    android:src="@drawable/ic_arrow_right" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

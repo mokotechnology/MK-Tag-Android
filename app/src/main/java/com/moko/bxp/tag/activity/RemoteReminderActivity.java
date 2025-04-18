@@ -8,7 +8,7 @@ import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.tag.databinding.ActivityRemoteReminderTagBinding;
-import com.moko.bxp.tag.dialog.LoadingMessageDialog;
+import com.moko.lib.bxpui.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.tag.MokoSupport;
 import com.moko.support.tag.OrderTaskAssembler;

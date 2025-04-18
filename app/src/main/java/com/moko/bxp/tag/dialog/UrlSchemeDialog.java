@@ -3,6 +3,7 @@ package com.moko.bxp.tag.dialog;
 import android.content.Context;
 
 import com.moko.bxp.tag.databinding.DialogUrlSchemeTagBinding;
+import com.moko.lib.bxpui.dialog.BaseDialog;
 import com.moko.support.tag.entity.UrlSchemeEnum;
 
 public class UrlSchemeDialog extends BaseDialog<DialogUrlSchemeTagBinding> {

@@ -10,7 +10,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.tag.R;
 import com.moko.bxp.tag.databinding.ActivityStaticHeartbeatTagBinding;
-import com.moko.bxp.tag.dialog.LoadingMessageDialog;
+import com.moko.lib.bxpui.dialog.LoadingMessageDialog;
 import com.moko.bxp.tag.utils.ToastUtils;
 import com.moko.support.tag.MokoSupport;
 import com.moko.support.tag.OrderTaskAssembler;

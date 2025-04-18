@@ -6,7 +6,7 @@ import android.view.View;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.bxp.tag.databinding.ActivitySensorConfigTagBinding;
-import com.moko.bxp.tag.dialog.LoadingMessageDialog;
+import com.moko.lib.bxpui.dialog.LoadingMessageDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
