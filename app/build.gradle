@@ -11,8 +11,8 @@ android {
     defaultConfig {
         minSdk 26
         targetSdk 34
-        versionCode 111
-        versionName "1.1.1"
+        versionCode 112
+        versionName "1.1.2"
         def formatDate = new Date().format("yyyyMMddHHmm")
         setProperty("archivesBaseName", "MOKOTAG_${versionName}_${formatDate}")
     }
@@ -87,10 +87,10 @@ android {
 dependencies {
     if (!isLibrary.toBoolean()) {
         implementation project(path: ':mokosupport')
-        implementation 'com.github.MOKO-Android-Base-Library:MKBXPUILib:1.0.3'
+        implementation 'com.github.MOKO-Android-Base-Library:MKBXPUILib:1.0.4'
     } else {
         implementation files('libs/mokoSupport.jar')
-        compileOnly 'com.github.MOKO-Android-Base-Library:MKBXPUILib:1.0.3'
+        compileOnly 'com.github.MOKO-Android-Base-Library:MKBXPUILib:1.0.4'
         compileOnly 'com.github.MOKO-Android-Base-Library:MKBleLib:1.0.0-beacon'
     }
 }
